@@ -1,0 +1,350 @@
+/* Calendly Design Guidelines Tokens */
+:root {
+  --color-1: #071A31;
+  --color-2: #3D464E;
+  --color-3: #93A0AA;
+  --color-4: #F5F3EE;
+  --color-5: #FCFBF8;
+
+  --text-xs: 12px;
+  --text-sm: 14px;
+  --text-base: 16px;
+  --text-lg: 20px;
+  --text-xl: 24px;
+
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 48px;
+  --space-7: 96px;
+
+  --radius-sm: 8px;
+  --radius-md: 16px;
+  --radius-full: 50%;
+
+  --shadow-sm: rgba(71, 103, 136, 0.04) 0px 4px 5px 0px, rgba(71, 103, 136, 0.03) 0px 8px 15px 0px, rgba(71, 103, 136, 0.06) 0px 15px 30px 0px;
+  --shadow-md: rgba(0, 0, 0, 0.06) 0px 1px 6px 0px, rgba(0, 0, 0, 0.16) 0px 2px 32px 0px;
+
+  --duration-fast: 0.15s;
+  --duration-base: 0.2s;
+}
+
+.cardsSection {
+  background-color: var(--color-4);
+  padding: var(--space-6) var(--space-5);
+  margin: var(--space-4) var(--space-5);
+  border-radius: var(--radius-md);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-family: var(--font-geist-sans), sans-serif;
+}
+
+.cardsGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-5);
+  max-width: 1200px;
+  width: 100%;
+  margin: 0 auto;
+  align-items: stretch;
+}
+
+@media (max-width: 1024px) {
+  .cardsGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media (max-width: 640px) {
+  .cardsGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.card {
+  background-color: var(--color-5);
+  border-radius: var(--radius-md);
+  padding: 0;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  transition: transform var(--duration-base) cubic-bezier(0.4, 0, 0.2, 1), box-shadow var(--duration-base) cubic-bezier(0.4, 0, 0.2, 1);
+}
+.card:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-4px);
+}
+
+.cardPopularWrapper {
+  background-color: var(--color-1);
+  border-radius: var(--radius-md);
+  padding: var(--space-1);
+  display: flex;
+  flex-direction: column;
+  box-shadow: var(--shadow-md);
+  margin-top: calc(-1 * var(--space-5));
+  margin-bottom: calc(-1 * var(--space-5));
+  z-index: 10;
+}
+
+.popularBadge {
+  background-color: var(--color-1);
+  color: var(--color-5);
+  text-transform: uppercase;
+  font-size: var(--text-xs);
+  font-weight: 500;
+  text-align: center;
+  padding: var(--space-3) 0;
+  border-top-left-radius: var(--radius-md);
+  border-top-right-radius: var(--radius-md);
+  letter-spacing: 0.05em;
+}
+
+.cardInner {
+  background-color: var(--color-5);
+  border-bottom-left-radius: var(--radius-md);
+  border-bottom-right-radius: var(--radius-md);
+  border-top-left-radius: var(--radius-sm); /* smaller radius to fit inside padding */
+  border-top-right-radius: var(--radius-sm);
+  padding: 0;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.priceCardWrapper {
+  background-color: var(--color-5);
+  border-top-left-radius: var(--radius-md);
+  border-top-right-radius: var(--radius-md);
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  padding: var(--space-5) var(--space-4) var(--space-4) var(--space-4);
+  box-shadow: var(--shadow-sm);
+  margin-bottom: 0;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  z-index: 2;
+}
+
+.featuresContainer {
+  padding: var(--space-4);
+  background-color: var(--color-5);
+  border-bottom-left-radius: var(--radius-md);
+  border-bottom-right-radius: var(--radius-md);
+  flex-grow: 1;
+}
+
+.cardPlanName {
+  font-size: var(--text-xl);
+  font-weight: 500;
+  color: var(--color-1);
+  margin-bottom: var(--space-4);
+}
+
+.cardToggleWrapper {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  margin-bottom: var(--space-4);
+  cursor: pointer;
+  user-select: none;
+}
+
+.miniToggle {
+  width: var(--space-5);
+  height: var(--space-3);
+  background: var(--color-3);
+  border-radius: var(--radius-full);
+  position: relative;
+  transition: background-color var(--duration-fast);
+}
+.miniToggle.active {
+  background: var(--color-1);
+}
+
+.miniToggleKnob {
+  width: var(--space-2);
+  height: var(--space-2);
+  background: var(--color-5);
+  border-radius: var(--radius-full);
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  box-shadow: var(--shadow-sm);
+  transition: transform var(--duration-fast);
+}
+.miniToggle.active .miniToggleKnob {
+  transform: translateX(12px);
+}
+
+.cardPriceWrapper {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-1);
+  min-height: 60px;
+}
+
+.cardPriceTitle {
+  font-size: var(--text-xl);
+  font-weight: 500;
+  color: var(--color-1);
+}
+
+.cardPriceValue {
+  font-size: 3rem;
+  font-weight: 500;
+  color: var(--color-1);
+  line-height: 1;
+}
+
+.cardPriceSub {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-1);
+}
+
+.cardPriceSeat {
+  font-size: var(--text-xs);
+  color: var(--color-3);
+}
+
+.badgeSmall {
+  background-color: var(--color-4);
+  color: var(--color-2);
+  font-size: var(--text-xs);
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-sm);
+  font-weight: 500;
+}
+
+/* Base button styles to ensure consistency and interactive states */
+.cardButtonOutline {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: var(--space-3) var(--space-4);
+  background-color: transparent;
+  border: 1px solid var(--color-1);
+  border-radius: var(--radius-sm);
+  font-size: var(--text-base);
+  font-weight: 500;
+  color: var(--color-1);
+  cursor: pointer;
+  margin-top: var(--space-5);
+  transition: all var(--duration-fast);
+}
+.cardButtonOutline:hover {
+  background-color: var(--color-1);
+  color: var(--color-5);
+}
+.cardButtonOutline:focus-visible {
+  outline: 2px solid var(--color-1);
+  outline-offset: 2px;
+}
+.cardButtonOutline:active {
+  transform: scale(0.98);
+}
+.cardButtonOutline:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.cardButtonSolid {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: var(--space-3) var(--space-4);
+  background-color: var(--color-1);
+  border: 1px solid var(--color-1);
+  border-radius: var(--radius-sm);
+  font-size: var(--text-base);
+  font-weight: 500;
+  color: var(--color-5);
+  cursor: pointer;
+  margin-top: var(--space-5);
+  transition: all var(--duration-fast);
+}
+.cardButtonSolid:hover {
+  background-color: var(--color-2);
+  border-color: var(--color-2);
+}
+.cardButtonSolid:focus-visible {
+  outline: 2px solid var(--color-1);
+  outline-offset: 2px;
+}
+.cardButtonSolid:active {
+  transform: scale(0.98);
+}
+.cardButtonSolid:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.cardFeaturesHeader {
+  font-size: var(--text-sm);
+  color: var(--color-3);
+  margin-bottom: var(--space-4);
+}
+
+.featureCategory {
+  margin-bottom: var(--space-4);
+}
+
+.featureCategoryTitle {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-weight: 500;
+  font-size: var(--text-sm);
+  color: var(--color-1);
+  margin-bottom: var(--space-3);
+}
+
+.featureList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.featureList li {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+  font-size: var(--text-sm);
+  color: var(--color-2);
+  line-height: 1.4;
+}
+
+.disabledCategory {
+  opacity: 0.5;
+}
+
+.tag {
+  font-size: var(--text-xs);
+  background: var(--color-4);
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-sm);
+  color: var(--color-3);
+  font-weight: 500;
+}
+
+.cardsFooterText {
+  margin-top: var(--space-6);
+  font-size: var(--text-sm);
+  color: var(--color-3);
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}

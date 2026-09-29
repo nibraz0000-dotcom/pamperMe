@@ -7,10 +7,9 @@ export default function Pricing() {
   return (
     <div className={pageStyles.container}>
       <Navbar />
-      
+
       <main className={styles.main}>
         <div className={styles.heroSection}>
-          <span className={styles.badge}>Pricing</span>
           <h1 className={styles.title}>Software that grows with your business</h1>
           <p className={styles.subtitle}>A simple plan that scales as your business does</p>
           <a href="#plans" className={styles.arrowLink}>
@@ -18,7 +17,7 @@ export default function Pricing() {
             <span className={styles.arrow}>↓</span>
           </a>
         </div>
-        
+
         <Cards />
       </main>
     </div>

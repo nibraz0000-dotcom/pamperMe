@@ -1,11 +1,53 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styles from './cards.module.css';
 
+function useCountdownPrice(defaultPrice: number, targetPrice: number, peakPrice: number, isEnabled: boolean) {
+  const [currentPrice, setCurrentPrice] = useState(defaultPrice);
+
+  useEffect(() => {
+    if (isEnabled) {
+      // 1. Immediately show peak price and hold for 1.5 seconds
+      setCurrentPrice(peakPrice);
+      let val = peakPrice;
+      let interval: NodeJS.Timeout;
+
+      const holdTimeout = setTimeout(() => {
+        // 2. Count down smoothly to targetPrice over ~2.5 to 3 seconds
+        const steps = peakPrice - targetPrice;
+        const stepDelay = Math.max(120, Math.floor(2700 / steps));
+
+        interval = setInterval(() => {
+          val -= 1;
+          if (val <= targetPrice) {
+            setCurrentPrice(targetPrice);
+            clearInterval(interval);
+          } else {
+            setCurrentPrice(val);
+          }
+        }, stepDelay);
+      }, 1500);
+
+      return () => {
+        clearTimeout(holdTimeout);
+        if (interval) clearInterval(interval);
+      };
+    } else {
+      setCurrentPrice(defaultPrice);
+    }
+  }, [isEnabled, defaultPrice, targetPrice, peakPrice]);
+
+  return currentPrice;
+}
+
 export default function Cards() {
-  const [standardAddon, setStandardAddon] = useState(false);
-  const [teamsAddon, setTeamsAddon] = useState(false);
+  const [addonEnabled, setAddonEnabled] = useState(false);
+
+  const toggleAddon = () => setAddonEnabled(prev => !prev);
+
+  const standardPrice = useCountdownPrice(10, 20, 30, addonEnabled);
+  const teamsPrice = useCountdownPrice(16, 26, 35, addonEnabled);
 
   return (
     <div className={styles.container} id="plans">
@@ -13,94 +55,234 @@ export default function Cards() {
         
         {/* FREE PLAN */}
         <div className={styles.card}>
-          <h2 className={styles.planName}>Free</h2>
-          <div className={styles.priceContainer}>
-            <span className={styles.priceText}>Always free</span>
-          </div>
-          <button className={`${styles.btn} ${styles.btnOutline}`}>
-            Get started <ArrowIcon />
-          </button>
-          
-          <div className={styles.includesLabel}>Includes:</div>
-          
-          <div className={styles.category}>
-            <div className={styles.categoryHeader}>
-              <div className={`${styles.iconWrapper} ${styles.iconBlue}`}><HourglassIcon /></div>
-              <span className={styles.categoryName}>Scheduling</span>
+          <div className={styles.topCard}>
+            <h2 className={styles.planName}>Free</h2>
+            <div className={styles.toggleSpacer}></div>
+            <div className={styles.priceContainer}>
+              <span className={styles.priceText}>Always free</span>
             </div>
-            <ul className={styles.featureList}>
-              <li><CheckIcon /> One event type</li>
-              <li><CheckIcon /> One calendar connection</li>
-              <li><CheckIcon /> One-on-one scheduling</li>
-              <li><CheckIcon /> Customizable booking page</li>
-              <li><CheckIcon /> Browser extension</li>
-            </ul>
+            <button className={`${styles.btn} ${styles.btnOutline}`}>
+              Get started <ArrowIcon />
+            </button>
+          </div>
+          
+          <div className={styles.cardBody}>
+            <div className={styles.includesLabel}>Includes:</div>
+            
+            <div className={styles.category}>
+              <div className={styles.categoryHeader}>
+                <div className={`${styles.iconWrapper} ${styles.iconBlue}`}><HourglassIcon /></div>
+                <span className={styles.categoryName}>Scheduling</span>
+              </div>
+              <ul className={styles.featureList}>
+                <li><CheckIcon /> One event type</li>
+                <li><CheckIcon /> One calendar connection</li>
+                <li><CheckIcon /> One-on-one scheduling</li>
+                <li><CheckIcon /> Customizable booking page</li>
+                <li><CheckIcon /> Browser extension</li>
+              </ul>
+            </div>
           </div>
         </div>
 
         {/* STANDARD PLAN */}
         <div className={styles.card}>
-          <h2 className={styles.planName}>Standard</h2>
-          
-          <div className={styles.toggleWrapper}>
-            <button 
-              className={`${styles.toggle} ${standardAddon ? styles.toggleOn : ''}`}
-              onClick={() => setStandardAddon(!standardAddon)}
-            >
-              <div className={styles.toggleKnob}></div>
+          <div className={styles.topCard}>
+            <h2 className={styles.planName}>Standard</h2>
+            
+            <div className={styles.toggleWrapper}>
+              <button 
+                className={`${styles.toggle} ${addonEnabled ? styles.toggleOn : ''}`}
+                onClick={toggleAddon}
+              >
+                <div className={styles.toggleKnob}></div>
+              </button>
+              <span className={`${styles.toggleLabel} ${addonEnabled ? styles.toggleLabelActive : ''}`}>
+                Add Notetaker & Callie
+              </span>
+            </div>
+
+            <div className={styles.priceContainer}>
+              <span className={styles.currency}>$</span>
+              <span className={styles.priceAmount}>{standardPrice}</span>
+              <div className={styles.priceSuffix}>
+                <span className={styles.perUnit}>/seat/mo</span>
+                <span className={styles.saveBadge}>Save 17%</span>
+              </div>
+            </div>
+            
+            <button className={`${styles.btn} ${styles.btnOutline}`}>
+              Get started <ArrowIcon />
             </button>
-            <span className={styles.toggleLabel}>Add Notetaker & Callie</span>
-          </div>
-
-          <div className={styles.priceContainer}>
-            <span className={styles.currency}>$</span>
-            <span className={styles.priceAmount}>{standardAddon ? '20' : '10'}</span>
-            <div className={styles.priceSuffix}>
-              <span className={styles.perUnit}>/seat/mo</span>
-              <span className={styles.saveBadge}>Save 17%</span>
-            </div>
           </div>
           
-          <button className={`${styles.btn} ${styles.btnOutline}`}>
-            Get started <ArrowIcon />
-          </button>
-          
-          <div className={styles.includesLabel}>Everything in Free, and:</div>
-          
-          <div className={styles.category}>
-            <div className={styles.categoryHeader}>
-              <div className={`${styles.iconWrapper} ${styles.iconBlue}`}><HourglassIcon /></div>
-              <span className={styles.categoryName}>Scheduling</span>
+          <div className={styles.cardBody}>
+            <div className={styles.includesLabel}>Everything in Free, and:</div>
+            
+            <div className={styles.category}>
+              <div className={styles.categoryHeader}>
+                <div className={`${styles.iconWrapper} ${styles.iconBlue}`}><HourglassIcon /></div>
+                <span className={styles.categoryName}>Scheduling</span>
+              </div>
+              <ul className={styles.featureList}>
+                <li><CheckIcon /> Unlimited event types</li>
+                <li><CheckIcon /> Connect multiple calendars</li>
+                <li><CheckIcon /> Automations & reminders</li>
+                <li><CheckIcon /> Connect Hubspot, Mailchimp</li>
+              </ul>
             </div>
-            <ul className={styles.featureList}>
-              <li><CheckIcon /> Unlimited event types</li>
-              <li><CheckIcon /> Connect multiple calendars</li>
-              <li><CheckIcon /> Automations & reminders</li>
-              <li><CheckIcon /> Connect Hubspot, Mailchimp</li>
-            </ul>
-          </div>
 
-          <div className={styles.category}>
-            <div className={styles.categoryHeader}>
-              <div className={`${styles.iconWrapper} ${styles.iconGreen}`}><CardIcon /></div>
-              <span className={styles.categoryName}>Payments</span>
+            <div className={styles.category}>
+              <div className={styles.categoryHeader}>
+                <div className={`${styles.iconWrapper} ${styles.iconGreen}`}><CardIcon /></div>
+                <span className={styles.categoryName}>Payments</span>
+              </div>
+              <ul className={styles.featureList}>
+                <li><CheckIcon /> Connect Stripe, PayPal</li>
+              </ul>
             </div>
-            <ul className={styles.featureList}>
-              <li><CheckIcon /> Connect Stripe, PayPal</li>
-            </ul>
-          </div>
 
-          <div className={`${styles.addonSection} ${!standardAddon ? styles.disabled : ''}`}>
+            <div className={`${styles.addonSection} ${!addonEnabled ? styles.disabled : ''}`}>
+              <div className={styles.category}>
+                <div className={styles.categoryHeader}>
+                  <div className={`${styles.iconWrapper} ${styles.iconPurple}`}><NotetakerIcon /></div>
+                  <span className={styles.categoryName}>Notetaker</span>
+                  {!addonEnabled && <span className={styles.notIncludedBadge}>Not included</span>}
+                </div>
+                <ul className={styles.featureList}>
+                  <li><CheckIcon /> Recordings & transcripts</li>
+                  <li><CheckIcon /> Shareable meeting recaps</li>
+                  <li><CheckIcon /> Joins Zoom, Google Meet, Microsoft Teams</li>
+                </ul>
+              </div>
+
+              <div className={styles.category}>
+                <div className={styles.categoryHeader}>
+                  <div className={`${styles.iconWrapper} ${styles.iconLime}`}><CallieIcon /></div>
+                  <span className={styles.categoryName}>Callie</span>
+                  <span className={styles.betaBadge}>Beta</span>
+                </div>
+                <ul className={styles.featureList}>
+                  <li><CheckIcon /> An AI assistant that schedules over email</li>
+                  <li><CheckIcon /> Ask Callie interactive chat</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* TEAMS PLAN */}
+        <div className={styles.popularWrapper}>
+          <div className={styles.popularHeader}>POPULAR PLAN</div>
+          <div className={`${styles.card} ${styles.popularCard}`}>
+            <div className={styles.topCard}>
+              <h2 className={styles.planName}>Teams</h2>
+              
+              <div className={styles.toggleWrapper}>
+                <button 
+                  className={`${styles.toggle} ${addonEnabled ? styles.toggleOn : ''}`}
+                  onClick={toggleAddon}
+                >
+                  <div className={styles.toggleKnob}></div>
+                </button>
+                <span className={`${styles.toggleLabel} ${addonEnabled ? styles.toggleLabelActive : ''}`}>
+                  Add Notetaker & Callie
+                </span>
+              </div>
+
+              <div className={styles.priceContainer}>
+                <span className={styles.currency}>$</span>
+                <span className={styles.priceAmount}>{teamsPrice}</span>
+                <div className={styles.priceSuffix}>
+                  <span className={styles.perUnit}>/seat/mo</span>
+                  <span className={styles.saveBadge}>Save 20%</span>
+                </div>
+              </div>
+              
+              <button className={`${styles.btn} ${styles.btnDark}`}>
+                Get started <ArrowIcon />
+              </button>
+            </div>
+            
+            <div className={styles.cardBody}>
+              <div className={styles.includesLabel}>Everything in Standard, and:</div>
+              
+              <div className={styles.category}>
+                <div className={styles.categoryHeader}>
+                  <div className={`${styles.iconWrapper} ${styles.iconBlue}`}><HourglassIcon /></div>
+                  <span className={styles.categoryName}>Scheduling</span>
+                </div>
+                <ul className={styles.featureList}>
+                  <li><CheckIcon /> Round-robin & team scheduling</li>
+                  <li><CheckIcon /> Qualify, route, & schedule leads</li>
+                  <li><CheckIcon /> Centrally managed event types</li>
+                  <li><CheckIcon /> Connect Marketo, Pardot</li>
+                  <li><CheckIcon /> Send meetings to Salesforce</li>
+                  <li><CheckIcon /> SSO security add-on (optional)</li>
+                </ul>
+              </div>
+
+              <div className={`${styles.addonSection} ${!addonEnabled ? styles.disabled : ''}`}>
+                <div className={styles.category}>
+                  <div className={styles.categoryHeader}>
+                    <div className={`${styles.iconWrapper} ${styles.iconPurple}`}><NotetakerIcon /></div>
+                    <span className={styles.categoryName}>Notetaker</span>
+                    {!addonEnabled && <span className={styles.notIncludedBadge}>Not included</span>}
+                  </div>
+                  <ul className={styles.featureList}>
+                    <li><CheckIcon /> Advanced admin controls</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* ENTERPRISE PLAN */}
+        <div className={styles.card}>
+          <div className={styles.topCard}>
+            <h2 className={styles.planName}>Enterprise</h2>
+            <div className={styles.toggleSpacer}></div>
+            <div className={styles.priceContainerEnterprise}>
+              <span className={styles.startsAt}>Starts at</span>
+              <span className={styles.currency}>$</span>
+              <span className={styles.priceAmount}>15k</span>
+              <span className={styles.perUnit}>/yr</span>
+            </div>
+            
+            <button className={`${styles.btn} ${styles.btnOutline}`}>
+              Talk to sales <ArrowIcon />
+            </button>
+          </div>
+          
+          <div className={styles.cardBody}>
+            <div className={styles.includesLabel}>Teams plan scheduling features, and:</div>
+            
+            <div className={styles.category}>
+              <div className={styles.categoryHeader}>
+                <div className={`${styles.iconWrapper} ${styles.iconBlue}`}><HourglassIcon /></div>
+                <span className={styles.categoryName}>Scheduling</span>
+              </div>
+              <ul className={styles.featureList}>
+                <li><CheckIcon /> Route with Salesforce lookup</li>
+                <li><CheckIcon /> Connect Microsoft Dynamics</li>
+                <li><CheckIcon /> Enable SSO & SAML</li>
+                <li><CheckIcon /> Domain control</li>
+                <li><CheckIcon /> Audit log compliance</li>
+                <li><CheckIcon /> Data deletion API</li>
+                <li><CheckIcon /> Onboarding & implementation</li>
+                <li><CheckIcon /> Dedicated account support</li>
+              </ul>
+            </div>
+
             <div className={styles.category}>
               <div className={styles.categoryHeader}>
                 <div className={`${styles.iconWrapper} ${styles.iconPurple}`}><NotetakerIcon /></div>
                 <span className={styles.categoryName}>Notetaker</span>
-                {!standardAddon && <span className={styles.notIncludedBadge}>Not included</span>}
+                <span className={styles.optionalBadge}>Optional</span>
               </div>
               <ul className={styles.featureList}>
-                <li><CheckIcon /> Recordings & transcripts</li>
-                <li><CheckIcon /> Shareable meeting recaps</li>
-                <li><CheckIcon /> Joins Zoom, Google Meet, Microsoft Teams</li>
+                <li><CheckIcon /> Inquire about Notetaker access</li>
               </ul>
             </div>
 
@@ -111,128 +293,9 @@ export default function Cards() {
                 <span className={styles.betaBadge}>Beta</span>
               </div>
               <ul className={styles.featureList}>
-                <li><CheckIcon /> An AI assistant that schedules over email</li>
-                <li><CheckIcon /> Ask Callie interactive chat</li>
+                <li><CheckIcon /> Inquire about Callie access</li>
               </ul>
             </div>
-          </div>
-        </div>
-
-        {/* TEAMS PLAN */}
-        <div className={styles.popularWrapper}>
-          <div className={styles.popularHeader}>POPULAR PLAN</div>
-          <div className={`${styles.card} ${styles.popularCard}`}>
-            <h2 className={styles.planName}>Teams</h2>
-            
-            <div className={styles.toggleWrapper}>
-              <button 
-                className={`${styles.toggle} ${teamsAddon ? styles.toggleOn : ''}`}
-                onClick={() => setTeamsAddon(!teamsAddon)}
-              >
-                <div className={styles.toggleKnob}></div>
-              </button>
-              <span className={styles.toggleLabel}>Add Notetaker & Callie</span>
-            </div>
-
-            <div className={styles.priceContainer}>
-              <span className={styles.currency}>$</span>
-              <span className={styles.priceAmount}>{teamsAddon ? '26' : '16'}</span>
-              <div className={styles.priceSuffix}>
-                <span className={styles.perUnit}>/seat/mo</span>
-                <span className={styles.saveBadge}>Save 20%</span>
-              </div>
-            </div>
-            
-            <button className={`${styles.btn} ${styles.btnDark}`}>
-              Get started <ArrowIcon />
-            </button>
-            
-            <div className={styles.includesLabel}>Everything in Standard, and:</div>
-            
-            <div className={styles.category}>
-              <div className={styles.categoryHeader}>
-                <div className={`${styles.iconWrapper} ${styles.iconBlue}`}><HourglassIcon /></div>
-                <span className={styles.categoryName}>Scheduling</span>
-              </div>
-              <ul className={styles.featureList}>
-                <li><CheckIcon /> Round-robin & team scheduling</li>
-                <li><CheckIcon /> Qualify, route, & schedule leads</li>
-                <li><CheckIcon /> Centrally managed event types</li>
-                <li><CheckIcon /> Connect Marketo, Pardot</li>
-                <li><CheckIcon /> Send meetings to Salesforce</li>
-                <li><CheckIcon /> SSO security add-on (optional)</li>
-              </ul>
-            </div>
-
-            <div className={`${styles.addonSection} ${!teamsAddon ? styles.disabled : ''}`}>
-              <div className={styles.category}>
-                <div className={styles.categoryHeader}>
-                  <div className={`${styles.iconWrapper} ${styles.iconPurple}`}><NotetakerIcon /></div>
-                  <span className={styles.categoryName}>Notetaker</span>
-                  {!teamsAddon && <span className={styles.notIncludedBadge}>Not included</span>}
-                </div>
-                <ul className={styles.featureList}>
-                  <li><CheckIcon /> Advanced admin controls</li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* ENTERPRISE PLAN */}
-        <div className={styles.card}>
-          <h2 className={styles.planName}>Enterprise</h2>
-          
-          <div className={styles.priceContainerEnterprise}>
-            <span className={styles.startsAt}>Starts at</span>
-            <span className={styles.currency}>$</span>
-            <span className={styles.priceAmount}>15k</span>
-            <span className={styles.perUnit}>/yr</span>
-          </div>
-          
-          <button className={`${styles.btn} ${styles.btnOutline}`}>
-            Talk to sales <ArrowIcon />
-          </button>
-          
-          <div className={styles.includesLabel}>Teams plan scheduling features, and:</div>
-          
-          <div className={styles.category}>
-            <div className={styles.categoryHeader}>
-              <div className={`${styles.iconWrapper} ${styles.iconBlue}`}><HourglassIcon /></div>
-              <span className={styles.categoryName}>Scheduling</span>
-            </div>
-            <ul className={styles.featureList}>
-              <li><CheckIcon /> Route with Salesforce lookup</li>
-              <li><CheckIcon /> Connect Microsoft Dynamics</li>
-              <li><CheckIcon /> Enable SSO & SAML</li>
-              <li><CheckIcon /> Domain control</li>
-              <li><CheckIcon /> Audit log compliance</li>
-              <li><CheckIcon /> Data deletion API</li>
-              <li><CheckIcon /> Onboarding & implementation</li>
-              <li><CheckIcon /> Dedicated account support</li>
-            </ul>
-          </div>
-
-          <div className={styles.category}>
-            <div className={styles.categoryHeader}>
-              <div className={`${styles.iconWrapper} ${styles.iconPurple}`}><NotetakerIcon /></div>
-              <span className={styles.categoryName}>Notetaker</span>
-              <span className={styles.optionalBadge}>Optional</span>
-            </div>
-            <ul className={styles.featureList}>
-              <li><CheckIcon /> Inquire about Notetaker access</li>
-            </ul>
-          </div>
-
-          <div className={styles.category}>
-            <div className={styles.categoryHeader}>
-              <div className={`${styles.iconWrapper} ${styles.iconLime}`}><CallieIcon /></div>
-              <span className={styles.categoryName}>Callie</span>
-              <span className={styles.betaBadge}>Beta</span>
-            </div>
-            <ul className={styles.featureList}>
-              <li><CheckIcon /> Inquire about Callie access</li>
-            </ul>
           </div>
         </div>
 

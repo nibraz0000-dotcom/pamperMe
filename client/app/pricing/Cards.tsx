@@ -3,42 +3,104 @@
 import React, { useState, useEffect } from 'react';
 import styles from './cards.module.css';
 
-function useCountdownPrice(defaultPrice: number, targetPrice: number, peakPrice: number, isEnabled: boolean) {
+function useCountdownPrice(
+  defaultPrice: number, 
+  targetPrice: number, 
+  peakPrice: number, 
+  offPeakPrice: number, 
+  isEnabled: boolean
+) {
   const [currentPrice, setCurrentPrice] = useState(defaultPrice);
+  const [isPopping, setIsPopping] = useState(false);
+  const prevEnabledRef = React.useRef(isEnabled);
 
   useEffect(() => {
+    // Only run animations when isEnabled changes (not on initial mount or re-renders)
+    if (prevEnabledRef.current === isEnabled) {
+      return;
+    }
+    prevEnabledRef.current = isEnabled;
+
+    setIsPopping(false);
+    let interval: NodeJS.Timeout | null = null;
+    let holdTimeout: NodeJS.Timeout | null = null;
+    let holdTimeout2: NodeJS.Timeout | null = null;
+    let popTimeout: NodeJS.Timeout | null = null;
+
     if (isEnabled) {
-      // 1. Immediately show peak price and hold for 1.5 seconds
+      // 1. Immediately jump to peak price (e.g. 30 / 35)
       setCurrentPrice(peakPrice);
       let val = peakPrice;
-      let interval: NodeJS.Timeout;
 
-      const holdTimeout = setTimeout(() => {
-        // 2. Count down smoothly to targetPrice over ~2.5 to 3 seconds
+      // 2. Hold for 1 second
+      holdTimeout = setTimeout(() => {
+        // 3. Count down from peakPrice to targetPrice over ~3 seconds
         const steps = peakPrice - targetPrice;
-        const stepDelay = Math.max(120, Math.floor(2700 / steps));
+        const stepDelay = Math.max(100, Math.floor(3000 / steps));
 
         interval = setInterval(() => {
           val -= 1;
           if (val <= targetPrice) {
             setCurrentPrice(targetPrice);
-            clearInterval(interval);
+            if (interval) clearInterval(interval);
+            // 3D projectile / pop bounce effect
+            setIsPopping(true);
+            popTimeout = setTimeout(() => setIsPopping(false), 700);
           } else {
             setCurrentPrice(val);
           }
         }, stepDelay);
-      }, 1500);
-
-      return () => {
-        clearTimeout(holdTimeout);
-        if (interval) clearInterval(interval);
-      };
+      }, 1000);
     } else {
-      setCurrentPrice(defaultPrice);
-    }
-  }, [isEnabled, defaultPrice, targetPrice, peakPrice]);
+      // OFF Transition:
+      // 1. Immediately show 0
+      setCurrentPrice(0);
+      let val = 0;
 
-  return currentPrice;
+      // 2. Count UP from 0 to offPeakPrice (15 for Standard, 22 for Teams) over 3 seconds (3000ms)
+      const upSteps = offPeakPrice;
+      const upStepDelay = Math.max(30, Math.floor(3000 / upSteps));
+
+      interval = setInterval(() => {
+        val += 1;
+        if (val >= offPeakPrice) {
+          setCurrentPrice(offPeakPrice);
+          if (interval) clearInterval(interval);
+
+          // 3. Hold at 15 (or 22) for 1 second
+          holdTimeout2 = setTimeout(() => {
+            // 4. Count down from offPeakPrice to defaultPrice (15 -> 10, 22 -> 16) over 2 seconds
+            const downSteps = offPeakPrice - defaultPrice;
+            const downStepDelay = Math.floor(2000 / downSteps);
+
+            interval = setInterval(() => {
+              val -= 1;
+              if (val <= defaultPrice) {
+                setCurrentPrice(defaultPrice);
+                if (interval) clearInterval(interval);
+                // 5. Trigger 3D projectile bounce effect on final price ($10 / $16)
+                setIsPopping(true);
+                popTimeout = setTimeout(() => setIsPopping(false), 700);
+              } else {
+                setCurrentPrice(val);
+              }
+            }, downStepDelay);
+          }, 1000);
+        } else {
+          setCurrentPrice(val);
+        }
+      }, upStepDelay);
+    }
+
+    return () => {
+      if (holdTimeout) clearTimeout(holdTimeout);
+      if (holdTimeout2) clearTimeout(holdTimeout2);
+      if (interval) clearInterval(interval);
+      if (popTimeout) clearTimeout(popTimeout);
+    };
+  }, [isEnabled, defaultPrice, targetPrice, peakPrice, offPeakPrice]);
+
+  return { price: currentPrice, isPopping };
 }
 
 export default function Cards() {
@@ -46,8 +108,8 @@ export default function Cards() {
 
   const toggleAddon = () => setAddonEnabled(prev => !prev);
 
-  const standardPrice = useCountdownPrice(10, 20, 30, addonEnabled);
-  const teamsPrice = useCountdownPrice(16, 26, 35, addonEnabled);
+  const { price: standardPrice, isPopping: isStandardPopping } = useCountdownPrice(10, 20, 30, 15, addonEnabled);
+  const { price: teamsPrice, isPopping: isTeamsPopping } = useCountdownPrice(16, 26, 35, 22, addonEnabled);
 
   return (
     <div className={styles.container} id="plans">
@@ -88,7 +150,10 @@ export default function Cards() {
         {/* STANDARD PLAN */}
         <div className={styles.card}>
           <div className={styles.topCard}>
-            <h2 className={styles.planName}>Standard</h2>
+            <h2 className={styles.planName}>
+              Standard
+              {addonEnabled && <span className={styles.plusBadge}>Plus</span>}
+            </h2>
             
             <div className={styles.toggleWrapper}>
               <button 
@@ -104,7 +169,9 @@ export default function Cards() {
 
             <div className={styles.priceContainer}>
               <span className={styles.currency}>$</span>
-              <span className={styles.priceAmount}>{standardPrice}</span>
+              <span className={`${styles.priceAmount} ${isStandardPopping ? styles.pricePopping : ''}`}>
+                {standardPrice}
+              </span>
               <div className={styles.priceSuffix}>
                 <span className={styles.perUnit}>/seat/mo</span>
                 <span className={styles.saveBadge}>Save 17%</span>
@@ -176,7 +243,10 @@ export default function Cards() {
           <div className={styles.popularHeader}>POPULAR PLAN</div>
           <div className={`${styles.card} ${styles.popularCard}`}>
             <div className={styles.topCard}>
-              <h2 className={styles.planName}>Teams</h2>
+              <h2 className={styles.planName}>
+                Teams
+                {addonEnabled && <span className={styles.plusBadge}>Plus</span>}
+              </h2>
               
               <div className={styles.toggleWrapper}>
                 <button 
@@ -192,7 +262,9 @@ export default function Cards() {
 
               <div className={styles.priceContainer}>
                 <span className={styles.currency}>$</span>
-                <span className={styles.priceAmount}>{teamsPrice}</span>
+                <span className={`${styles.priceAmount} ${isTeamsPopping ? styles.pricePopping : ''}`}>
+                  {teamsPrice}
+                </span>
                 <div className={styles.priceSuffix}>
                   <span className={styles.perUnit}>/seat/mo</span>
                   <span className={styles.saveBadge}>Save 20%</span>

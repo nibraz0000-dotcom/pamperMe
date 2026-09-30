@@ -1,272 +1,492 @@
+"use client";
+
 import React, { useState, useEffect } from 'react';
 import styles from './cards.module.css';
 
-const ArrowRight = ({ white = false }: { white?: boolean }) => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={white ? "var(--color-5)" : "currentColor"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ marginLeft: '8px' }}>
-    <line x1="5" y1="12" x2="19" y2="12"></line>
-    <polyline points="12 5 19 12 12 19"></polyline>
+function useCountdownPrice(
+  defaultPrice: number,
+  targetPrice: number,
+  peakPrice: number,
+  offPeakPrice: number,
+  isEnabled: boolean
+) {
+  const [currentPrice, setCurrentPrice] = useState(isEnabled ? targetPrice : defaultPrice);
+  const [isPopping, setIsPopping] = useState(false);
+  const prevEnabledRef = React.useRef(isEnabled);
+  const prevDefaultPriceRef = React.useRef(defaultPrice);
+  const prevTargetPriceRef = React.useRef(targetPrice);
+
+  useEffect(() => {
+    // If billing cycle changed (prices changed) but toggle didn't
+    if (prevEnabledRef.current === isEnabled &&
+      (prevDefaultPriceRef.current !== defaultPrice || prevTargetPriceRef.current !== targetPrice)) {
+      setCurrentPrice(isEnabled ? targetPrice : defaultPrice);
+      prevDefaultPriceRef.current = defaultPrice;
+      prevTargetPriceRef.current = targetPrice;
+      return;
+    }
+
+    // Only run animations when isEnabled changes
+    if (prevEnabledRef.current === isEnabled) {
+      return;
+    }
+    prevEnabledRef.current = isEnabled;
+    prevDefaultPriceRef.current = defaultPrice;
+    prevTargetPriceRef.current = targetPrice;
+
+    setIsPopping(false);
+    let interval: NodeJS.Timeout | null = null;
+    let holdTimeout: NodeJS.Timeout | null = null;
+    let holdTimeout2: NodeJS.Timeout | null = null;
+    let popTimeout: NodeJS.Timeout | null = null;
+
+    if (isEnabled) {
+      // 1. Immediately jump to peak price (e.g. 30 / 35)
+      setCurrentPrice(peakPrice);
+      let val = peakPrice;
+
+      // 2. Hold for 1 second
+      holdTimeout = setTimeout(() => {
+        // 3. Count down from peakPrice to targetPrice over ~3 seconds
+        const steps = peakPrice - targetPrice;
+        const stepDelay = Math.max(100, Math.floor(3000 / steps));
+
+        interval = setInterval(() => {
+          val -= 1;
+          if (val <= targetPrice) {
+            setCurrentPrice(targetPrice);
+            if (interval) clearInterval(interval);
+            // 3D projectile / pop bounce effect
+            setIsPopping(true);
+            popTimeout = setTimeout(() => setIsPopping(false), 700);
+          } else {
+            setCurrentPrice(val);
+          }
+        }, stepDelay);
+      }, 1000);
+    } else {
+      // OFF Transition:
+      // 1. Immediately show 0
+      setCurrentPrice(0);
+      let val = 0;
+
+      // 2. Count UP from 0 to offPeakPrice (15 for Standard, 22 for Teams) over 3 seconds (3000ms)
+      const upSteps = offPeakPrice;
+      const upStepDelay = Math.max(30, Math.floor(3000 / upSteps));
+
+      interval = setInterval(() => {
+        val += 1;
+        if (val >= offPeakPrice) {
+          setCurrentPrice(offPeakPrice);
+          if (interval) clearInterval(interval);
+
+          // 3. Hold at 15 (or 22) for 1 second
+          holdTimeout2 = setTimeout(() => {
+            // 4. Count down from offPeakPrice to defaultPrice (15 -> 10, 22 -> 16) over 2 seconds
+            const downSteps = offPeakPrice - defaultPrice;
+            const downStepDelay = Math.floor(2000 / downSteps);
+
+            interval = setInterval(() => {
+              val -= 1;
+              if (val <= defaultPrice) {
+                setCurrentPrice(defaultPrice);
+                if (interval) clearInterval(interval);
+                // 5. Trigger 3D projectile bounce effect on final price ($10 / $16)
+                setIsPopping(true);
+                popTimeout = setTimeout(() => setIsPopping(false), 700);
+              } else {
+                setCurrentPrice(val);
+              }
+            }, downStepDelay);
+          }, 1000);
+        } else {
+          setCurrentPrice(val);
+        }
+      }, upStepDelay);
+    }
+
+    return () => {
+      if (holdTimeout) clearTimeout(holdTimeout);
+      if (holdTimeout2) clearTimeout(holdTimeout2);
+      if (interval) clearInterval(interval);
+      if (popTimeout) clearTimeout(popTimeout);
+    };
+  }, [isEnabled, defaultPrice, targetPrice, peakPrice, offPeakPrice]);
+
+  return { price: currentPrice, isPopping };
+}
+
+interface CardsProps {
+  addonEnabled?: boolean;
+  setAddonEnabled?: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+export default function Cards({
+  addonEnabled: externalAddonEnabled,
+  setAddonEnabled: externalSetAddonEnabled
+}: CardsProps = {}) {
+  const [internalAddonEnabled, setInternalAddonEnabled] = useState(false);
+  const addonEnabled = externalAddonEnabled !== undefined ? externalAddonEnabled : internalAddonEnabled;
+  const setAddonEnabled = externalSetAddonEnabled || setInternalAddonEnabled;
+  const [isYearly, setIsYearly] = useState(false);
+
+  const toggleAddon = () => setAddonEnabled(prev => !prev);
+
+  const standardBase = isYearly ? 10 : 12;
+  const standardPlus = isYearly ? 18 : 24;
+  const standardPeak = 30;
+  const standardOffPeak = isYearly ? 15 : 16;
+
+  const teamsBase = isYearly ? 16 : 20;
+  const teamsPlus = isYearly ? 24 : 32;
+  const teamsPeak = isYearly ? 35 : 36;
+  const teamsOffPeak = isYearly ? 22 : 25;
+
+  const { price: standardPrice, isPopping: isStandardPopping } = useCountdownPrice(
+    standardBase, standardPlus, standardPeak, standardOffPeak, addonEnabled
+  );
+
+  const { price: teamsPrice, isPopping: isTeamsPopping } = useCountdownPrice(
+    teamsBase, teamsPlus, teamsPeak, teamsOffPeak, addonEnabled
+  );
+
+  return (
+    <div className={styles.container} id="plans">
+      <div className={styles.headerSection}>
+        <div className={styles.headerLeft}>
+          <h1 className={styles.headerTitle}>
+            Add AI & automation to<br />
+            Standard or Teams plan
+          </h1>
+        </div>
+        <div className={styles.headerRight}>
+          <p className={styles.headerSubtitle}>
+            Save hours every week with intelligent scheduling and <br />
+            AI-powered assistant.
+          </p>
+          <div className={styles.billingToggle}>
+            <label className={styles.radioLabel}>
+              <input
+                type="radio"
+                name="billing"
+                checked={!isYearly}
+                onChange={() => setIsYearly(false)}
+                className={styles.radioInput}
+              />
+              <span className={styles.radioText}>Billed monthly</span>
+            </label>
+            <span className={styles.divider}>|</span>
+            <label className={styles.radioLabel}>
+              <input
+                type="radio"
+                name="billing"
+                checked={isYearly}
+                onChange={() => setIsYearly(true)}
+                className={styles.radioInput}
+              />
+              <span className={styles.radioText}>Billed yearly</span>
+            </label>
+            <span className={styles.saveBadgeHeader}>Save up to 20%</span>
+          </div>
+        </div>
+      </div>
+      <div className={styles.grid} id="cards-grid">
+
+        {/* FREE PLAN */}
+        <div className={styles.card}>
+          <div className={styles.topCard} id="top-card-sample">
+            <h2 className={styles.planName}>Free</h2>
+            <div className={styles.toggleSpacer}></div>
+            <div className={styles.priceContainer}>
+              <span className={styles.priceText}>Always free</span>
+            </div>
+            <button className={`${styles.btn} ${styles.btnOutline}`}>
+              Get started <ArrowIcon />
+            </button>
+          </div>
+
+          <div className={styles.cardBody}>
+            <div className={styles.includesLabel}>Includes:</div>
+
+            <div className={styles.category}>
+              <div className={styles.categoryHeader}>
+                <div className={`${styles.iconWrapper} ${styles.iconBlue}`}><HourglassIcon /></div>
+                <span className={styles.categoryName}>Scheduling</span>
+              </div>
+              <ul className={styles.featureList}>
+                <li><CheckIcon /> One event type</li>
+                <li><CheckIcon /> One calendar connection</li>
+                <li><CheckIcon /> One-on-one scheduling</li>
+                <li><CheckIcon /> Customizable booking page</li>
+                <li><CheckIcon /> Browser extension</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        {/* STANDARD PLAN */}
+        <div className={styles.card}>
+          <div className={styles.topCard}>
+            <h2 className={styles.planName}>
+              Standard
+              {addonEnabled && <span className={styles.plusBadge}>Plus</span>}
+            </h2>
+
+            <div className={styles.toggleWrapper}>
+              <button
+                className={`${styles.toggle} ${addonEnabled ? styles.toggleOn : ''}`}
+                onClick={toggleAddon}
+              >
+                <div className={styles.toggleKnob}></div>
+              </button>
+              <span className={`${styles.toggleLabel} ${addonEnabled ? styles.toggleLabelActive : ''}`}>
+                Add Notetaker & Callie
+              </span>
+            </div>
+
+            <div className={styles.priceContainer}>
+              <span className={styles.currency}>$</span>
+              <span className={`${styles.priceAmount} ${isStandardPopping ? styles.pricePopping : ''}`}>
+                {standardPrice}
+              </span>
+              <div className={styles.priceSuffix}>
+                <span className={styles.perUnit}>/seat/mo</span>
+                <span className={styles.saveBadge}>Save 17%</span>
+              </div>
+            </div>
+
+            <button className={`${styles.btn} ${styles.btnOutline}`}>
+              Get started <ArrowIcon />
+            </button>
+          </div>
+
+          <div className={styles.cardBody}>
+            <div className={styles.includesLabel}>Everything in Free, and:</div>
+
+            <div className={styles.category}>
+              <div className={styles.categoryHeader}>
+                <div className={`${styles.iconWrapper} ${styles.iconBlue}`}><HourglassIcon /></div>
+                <span className={styles.categoryName}>Scheduling</span>
+              </div>
+              <ul className={styles.featureList}>
+                <li><CheckIcon /> Unlimited event types</li>
+                <li><CheckIcon /> Connect multiple calendars</li>
+                <li><CheckIcon /> Automations & reminders</li>
+                <li><CheckIcon /> Connect Hubspot, Mailchimp</li>
+              </ul>
+            </div>
+
+            <div className={styles.category}>
+              <div className={styles.categoryHeader}>
+                <div className={`${styles.iconWrapper} ${styles.iconGreen}`}><CardIcon /></div>
+                <span className={styles.categoryName}>Payments</span>
+              </div>
+              <ul className={styles.featureList}>
+                <li><CheckIcon /> Connect Stripe, PayPal</li>
+              </ul>
+            </div>
+
+            <div className={`${styles.addonSection} ${!addonEnabled ? styles.disabled : ''}`}>
+              <div className={styles.category}>
+                <div className={styles.categoryHeader}>
+                  <div className={`${styles.iconWrapper} ${styles.iconPurple}`}><NotetakerIcon /></div>
+                  <span className={styles.categoryName}>Notetaker</span>
+                  {!addonEnabled && <span className={styles.notIncludedBadge}>Not included</span>}
+                </div>
+                <ul className={styles.featureList}>
+                  <li><CheckIcon /> Recordings & transcripts</li>
+                  <li><CheckIcon /> Shareable meeting recaps</li>
+                  <li><CheckIcon /> Joins Zoom, Google Meet, Microsoft Teams</li>
+                </ul>
+              </div>
+
+              <div className={styles.category}>
+                <div className={styles.categoryHeader}>
+                  <div className={`${styles.iconWrapper} ${styles.iconLime}`}><CallieIcon /></div>
+                  <span className={styles.categoryName}>Callie</span>
+                  <span className={styles.betaBadge}>Beta</span>
+                </div>
+                <ul className={styles.featureList}>
+                  <li><CheckIcon /> An AI assistant that schedules over email</li>
+                  <li><CheckIcon /> Ask Callie interactive chat</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* TEAMS PLAN */}
+        <div className={styles.popularWrapper}>
+          <div className={styles.popularHeader}>POPULAR PLAN</div>
+          <div className={`${styles.card} ${styles.popularCard}`}>
+            <div className={styles.topCard}>
+              <h2 className={styles.planName}>
+                Teams
+                {addonEnabled && <span className={styles.plusBadge}>Plus</span>}
+              </h2>
+
+              <div className={styles.toggleWrapper}>
+                <button
+                  className={`${styles.toggle} ${addonEnabled ? styles.toggleOn : ''}`}
+                  onClick={toggleAddon}
+                >
+                  <div className={styles.toggleKnob}></div>
+                </button>
+                <span className={`${styles.toggleLabel} ${addonEnabled ? styles.toggleLabelActive : ''}`}>
+                  Add Notetaker & Callie
+                </span>
+              </div>
+
+              <div className={styles.priceContainer}>
+                <span className={styles.currency}>$</span>
+                <span className={`${styles.priceAmount} ${isTeamsPopping ? styles.pricePopping : ''}`}>
+                  {teamsPrice}
+                </span>
+                <div className={styles.priceSuffix}>
+                  <span className={styles.perUnit}>/seat/mo</span>
+                  <span className={styles.saveBadge}>Save 20%</span>
+                </div>
+              </div>
+
+              <button className={`${styles.btn} ${styles.btnDark}`}>
+                Get started <ArrowIcon />
+              </button>
+            </div>
+
+            <div className={styles.cardBody}>
+              <div className={styles.includesLabel}>Everything in Standard, and:</div>
+
+              <div className={styles.category}>
+                <div className={styles.categoryHeader}>
+                  <div className={`${styles.iconWrapper} ${styles.iconBlue}`}><HourglassIcon /></div>
+                  <span className={styles.categoryName}>Scheduling</span>
+                </div>
+                <ul className={styles.featureList}>
+                  <li><CheckIcon /> Round-robin & team scheduling</li>
+                  <li><CheckIcon /> Qualify, route, & schedule leads</li>
+                  <li><CheckIcon /> Centrally managed event types</li>
+                  <li><CheckIcon /> Connect Marketo, Pardot</li>
+                  <li><CheckIcon /> Send meetings to Salesforce</li>
+                  <li><CheckIcon /> SSO security add-on (optional)</li>
+                </ul>
+              </div>
+
+              <div className={`${styles.addonSection} ${!addonEnabled ? styles.disabled : ''}`}>
+                <div className={styles.category}>
+                  <div className={styles.categoryHeader}>
+                    <div className={`${styles.iconWrapper} ${styles.iconPurple}`}><NotetakerIcon /></div>
+                    <span className={styles.categoryName}>Notetaker</span>
+                    {!addonEnabled && <span className={styles.notIncludedBadge}>Not included</span>}
+                  </div>
+                  <ul className={styles.featureList}>
+                    <li><CheckIcon /> Advanced admin controls</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* ENTERPRISE PLAN */}
+        <div className={styles.card}>
+          <div className={styles.topCard}>
+            <h2 className={styles.planName}>Enterprise</h2>
+            <div className={styles.toggleSpacer}></div>
+            <div className={styles.priceContainerEnterprise}>
+              <span className={styles.startsAt}>Starts at</span>
+              <span className={styles.currency}>$</span>
+              <span className={styles.priceAmount}>15k</span>
+              <span className={styles.perUnit}>/yr</span>
+            </div>
+
+            <button className={`${styles.btn} ${styles.btnOutline}`}>
+              Talk to sales <ArrowIcon />
+            </button>
+          </div>
+
+          <div className={styles.cardBody}>
+            <div className={styles.includesLabel}>Teams plan scheduling features, and:</div>
+
+            <div className={styles.category}>
+              <div className={styles.categoryHeader}>
+                <div className={`${styles.iconWrapper} ${styles.iconBlue}`}><HourglassIcon /></div>
+                <span className={styles.categoryName}>Scheduling</span>
+              </div>
+              <ul className={styles.featureList}>
+                <li><CheckIcon /> Route with Salesforce lookup</li>
+                <li><CheckIcon /> Connect Microsoft Dynamics</li>
+                <li><CheckIcon /> Enable SSO & SAML</li>
+                <li><CheckIcon /> Domain control</li>
+                <li><CheckIcon /> Audit log compliance</li>
+                <li><CheckIcon /> Data deletion API</li>
+                <li><CheckIcon /> Onboarding & implementation</li>
+                <li><CheckIcon /> Dedicated account support</li>
+              </ul>
+            </div>
+
+            <div className={styles.category}>
+              <div className={styles.categoryHeader}>
+                <div className={`${styles.iconWrapper} ${styles.iconPurple}`}><NotetakerIcon /></div>
+                <span className={styles.categoryName}>Notetaker</span>
+                <span className={styles.optionalBadge}>Optional</span>
+              </div>
+              <ul className={styles.featureList}>
+                <li><CheckIcon /> Inquire about Notetaker access</li>
+              </ul>
+            </div>
+
+            <div className={styles.category}>
+              <div className={styles.categoryHeader}>
+                <div className={`${styles.iconWrapper} ${styles.iconLime}`}><CallieIcon /></div>
+                <span className={styles.categoryName}>Callie</span>
+                <span className={styles.betaBadge}>Beta</span>
+              </div>
+              <ul className={styles.featureList}>
+                <li><CheckIcon /> Inquire about Callie access</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  );
+}
+
+// SVG Components
+const ArrowIcon = () => (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M5 12h14M12 5l7 7-7 7" />
   </svg>
 );
 
-const IconBadge = ({ color, bg, children }: any) => (
-  <div style={{ backgroundColor: bg, color: color, width: '24px', height: '24px', borderRadius: '6px', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-    {children}
-  </div>
-);
-
-const HourglassIcon = () => (
-  <IconBadge bg="var(--color-4)" color="var(--color-1)">
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
-  </IconBadge>
-);
-
-const PaymentsIcon = () => (
-  <IconBadge bg="var(--color-4)" color="var(--color-1)">
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="2" y="5" width="20" height="14" rx="2"></rect><line x1="2" y1="10" x2="22" y2="10"></line></svg>
-  </IconBadge>
-);
-
-const NotetakerIcon = ({ disabled = false }: { disabled?: boolean }) => (
-  <IconBadge bg={disabled ? "var(--color-4)" : "var(--color-1)"} color={disabled ? "var(--color-3)" : "var(--color-5)"}>
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
-  </IconBadge>
-);
-
-const CallieIcon = ({ disabled = false }: { disabled?: boolean }) => (
-  <IconBadge bg={disabled ? "var(--color-4)" : "var(--color-1)"} color={disabled ? "var(--color-3)" : "var(--color-5)"}>
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
-  </IconBadge>
-);
-
-const CheckIconSmall = ({ disabled = false }: { disabled?: boolean }) => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={disabled ? "var(--color-3)" : "var(--color-1)"} strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0, marginTop: '2px' }}>
+const CheckIcon = () => (
+  <svg className={styles.checkIcon} width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
     <polyline points="20 6 9 17 4 12"></polyline>
   </svg>
 );
 
-const AnimatedPrice = ({ targetPrice }: { targetPrice: number }) => {
-  const [displayPrice, setDisplayPrice] = useState(targetPrice);
-  
-  useEffect(() => {
-    let current = displayPrice;
-    if (current === targetPrice) return;
-    
-    const step = targetPrice > current ? 1 : -1;
-    const interval = setInterval(() => {
-      current += step;
-      setDisplayPrice(current);
-      if (current === targetPrice) {
-        clearInterval(interval);
-      }
-    }, 50);
-    
-    return () => clearInterval(interval);
-  }, [targetPrice]);
+const HourglassIcon = () => (
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M4 4h16v4L15 13l5 5v4H4v-4l5-5-5-5z" />
+  </svg>
+);
 
-  return <span>${displayPrice}</span>;
-};
+const CardIcon = () => (
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <rect x="2" y="5" width="20" height="14" rx="2" />
+    <line x1="2" y1="10" x2="22" y2="10" />
+  </svg>
+);
 
-export default function PricingCards() {
-  const [addonEnabled, setAddonEnabled] = useState(false);
+const NotetakerIcon = () => (
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M12 20h9M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
+  </svg>
+);
 
-  return (
-    <section className={styles.cardsSection}>
-      <div className={styles.cardsGrid}>
-        
-        {/* FREE */}
-        <div className={styles.card}>
-          <div className={styles.priceCardWrapper}>
-            <h2 className={styles.cardPlanName}>Free</h2>
-            <div className={styles.cardPriceWrapper}>
-              <div className={styles.cardPriceTitle}>Always free</div>
-            </div>
-            <button className={styles.cardButtonOutline}>Get started <ArrowRight /></button>
-          </div>
-          
-          <div className={styles.featuresContainer}>
-            <div className={styles.cardFeaturesHeader}>Includes:</div>
-            <div className={styles.featureCategory}>
-              <div className={styles.featureCategoryTitle}>
-                <HourglassIcon /> Scheduling
-              </div>
-              <ul className={styles.featureList}>
-                <li><CheckIconSmall /> One event type</li>
-                <li><CheckIconSmall /> One calendar connection</li>
-                <li><CheckIconSmall /> One-on-one scheduling</li>
-                <li><CheckIconSmall /> Customizable booking page</li>
-                <li><CheckIconSmall /> Browser extension</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-
-        {/* STANDARD */}
-        <div className={styles.card}>
-          <div className={styles.priceCardWrapper}>
-            <h2 className={styles.cardPlanName}>Standard{addonEnabled && '+'}</h2>
-            <div className={styles.cardToggleWrapper} onClick={() => setAddonEnabled(!addonEnabled)}>
-              <div className={`${styles.miniToggle} ${addonEnabled ? styles.active : ''}`}><div className={styles.miniToggleKnob}></div></div> 
-              <span style={{ color: addonEnabled ? 'var(--color-1)' : 'var(--color-3)' }}>Add Notetaker & Callie</span>
-            </div>
-            <div className={styles.cardPriceWrapper}>
-              <div className={styles.cardPriceValue}><AnimatedPrice targetPrice={addonEnabled ? 15 : 10} /></div>
-              <div className={styles.cardPriceSub}>
-                <span className={styles.cardPriceSeat}>/seat/mo</span>
-                <span className={styles.badgeSmall}>Save 17%</span>
-              </div>
-            </div>
-            <button className={styles.cardButtonOutline}>Get started <ArrowRight /></button>
-          </div>
-          
-          <div className={styles.featuresContainer}>
-            <div className={styles.cardFeaturesHeader}>Everything in Free, and:</div>
-            <div className={styles.featureCategory}>
-              <div className={styles.featureCategoryTitle}>
-                <HourglassIcon /> Scheduling
-              </div>
-              <ul className={styles.featureList}>
-                <li><CheckIconSmall /> Unlimited event types</li>
-                <li><CheckIconSmall /> Connect multiple calendars</li>
-                <li><CheckIconSmall /> Automations & reminders</li>
-                <li><CheckIconSmall /> Connect Hubspot, Mailchimp</li>
-              </ul>
-            </div>
-
-            <div className={styles.featureCategory}>
-              <div className={styles.featureCategoryTitle}>
-                <PaymentsIcon /> Payments
-              </div>
-              <ul className={styles.featureList}>
-                <li><CheckIconSmall /> Connect Stripe, PayPal</li>
-              </ul>
-            </div>
-
-            <div className={`${styles.featureCategory} ${!addonEnabled ? styles.disabledCategory : ''}`}>
-              <div className={styles.featureCategoryTitle}>
-                <NotetakerIcon disabled={!addonEnabled} /> Notetaker {!addonEnabled && <span className={styles.tag}>Not included</span>}
-              </div>
-              <ul className={styles.featureList}>
-                <li><CheckIconSmall disabled={!addonEnabled} /> Recordings & transcripts</li>
-                <li><CheckIconSmall disabled={!addonEnabled} /> Shareable meeting recaps</li>
-                <li><CheckIconSmall disabled={!addonEnabled} /> Joins Zoom, Google Meet, Microsoft Teams</li>
-              </ul>
-            </div>
-            
-            <div className={`${styles.featureCategory} ${!addonEnabled ? styles.disabledCategory : ''}`}>
-              <div className={styles.featureCategoryTitle}>
-                <CallieIcon disabled={!addonEnabled} /> Callie {!addonEnabled && <span className={styles.tag}>Beta</span>}
-              </div>
-              <ul className={styles.featureList}>
-                <li><CheckIconSmall disabled={!addonEnabled} /> An AI assistant that schedules over email</li>
-                <li><CheckIconSmall disabled={!addonEnabled} /> Ask Callie interactive chat</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-
-        {/* TEAMS */}
-        <div className={styles.cardPopularWrapper}>
-          <div className={styles.popularBadge}>POPULAR PLAN</div>
-          <div className={styles.cardInner}>
-            <div className={styles.priceCardWrapper}>
-              <h2 className={styles.cardPlanName}>Teams{addonEnabled && '+'}</h2>
-              <div className={styles.cardToggleWrapper} onClick={() => setAddonEnabled(!addonEnabled)}>
-                <div className={`${styles.miniToggle} ${addonEnabled ? styles.active : ''}`}><div className={styles.miniToggleKnob}></div></div> 
-                <span style={{ color: addonEnabled ? 'var(--color-1)' : 'var(--color-3)' }}>Add Notetaker & Callie</span>
-              </div>
-              <div className={styles.cardPriceWrapper}>
-                <div className={styles.cardPriceValue}><AnimatedPrice targetPrice={addonEnabled ? 21 : 16} /></div>
-                <div className={styles.cardPriceSub}>
-                  <span className={styles.cardPriceSeat}>/seat/mo</span>
-                  <span className={styles.badgeSmall}>Save 20%</span>
-                </div>
-              </div>
-              <button className={styles.cardButtonSolid}>Get started <ArrowRight white /></button>
-            </div>
-            
-            <div className={styles.featuresContainer}>
-              <div className={styles.cardFeaturesHeader}>Everything in Standard, and:</div>
-              <div className={styles.featureCategory}>
-                <div className={styles.featureCategoryTitle}>
-                  <HourglassIcon /> Scheduling
-                </div>
-                <ul className={styles.featureList}>
-                  <li><CheckIconSmall /> Round-robin & team scheduling</li>
-                  <li><CheckIconSmall /> Qualify, route, & schedule leads</li>
-                  <li><CheckIconSmall /> Centrally managed event types</li>
-                  <li><CheckIconSmall /> Connect Marketo, Pardot</li>
-                  <li><CheckIconSmall /> Send meetings to Salesforce</li>
-                  <li><CheckIconSmall /> SSO security add-on (optional)</li>
-                </ul>
-              </div>
-
-              <div className={`${styles.featureCategory} ${!addonEnabled ? styles.disabledCategory : ''}`}>
-                <div className={styles.featureCategoryTitle}>
-                  <NotetakerIcon disabled={!addonEnabled} /> Notetaker {!addonEnabled && <span className={styles.tag}>Not included</span>}
-                </div>
-                <ul className={styles.featureList}>
-                  <li><CheckIconSmall disabled={!addonEnabled} /> Advanced admin controls</li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* ENTERPRISE */}
-        <div className={styles.card}>
-          <div className={styles.priceCardWrapper}>
-            <h2 className={styles.cardPlanName}>Enterprise</h2>
-            <div className={styles.cardPriceWrapper} style={{ marginTop: '2.5rem' }}>
-              <div className={styles.cardPriceSeat}>Starts at</div>
-              <div className={styles.cardPriceValue}>$15k</div>
-              <div className={styles.cardPriceSeat}>/yr</div>
-            </div>
-            <button className={styles.cardButtonOutline}>Talk to sales <ArrowRight /></button>
-          </div>
-          
-          <div className={styles.featuresContainer}>
-            <div className={styles.cardFeaturesHeader}>Teams plan scheduling features, and:</div>
-            <div className={styles.featureCategory}>
-              <div className={styles.featureCategoryTitle}>
-                <HourglassIcon /> Scheduling
-              </div>
-              <ul className={styles.featureList}>
-                <li><CheckIconSmall /> Route with Salesforce lookup</li>
-                <li><CheckIconSmall /> Connect Microsoft Dynamics</li>
-                <li><CheckIconSmall /> Enable SSO & SAML</li>
-                <li><CheckIconSmall /> Domain control</li>
-                <li><CheckIconSmall /> Audit log compliance</li>
-                <li><CheckIconSmall /> Data deletion API</li>
-                <li><CheckIconSmall /> Onboarding & implementation</li>
-                <li><CheckIconSmall /> Dedicated account support</li>
-              </ul>
-            </div>
-
-            <div className={styles.featureCategory}>
-              <div className={styles.featureCategoryTitle}>
-                <NotetakerIcon /> Notetaker <span className={styles.tag}>Optional</span>
-              </div>
-              <ul className={styles.featureList}>
-                <li><CheckIconSmall /> Inquire about Notetaker access</li>
-              </ul>
-            </div>
-
-            <div className={styles.featureCategory}>
-              <div className={styles.featureCategoryTitle}>
-                <CallieIcon /> Callie <span className={styles.tag}>Beta</span>
-              </div>
-              <ul className={styles.featureList}>
-                <li><CheckIconSmall /> Inquire about Callie access</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-
-      </div>
-      
-      <div className={styles.cardsFooterText}>
-        <NotetakerIcon /> <CallieIcon /> <strong>Notetaker</strong> and <strong>Callie</strong> are only available in English at this time.
-      </div>
-    </section>
-  );
-}
+const CallieIcon = () => (
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+  </svg>
+);

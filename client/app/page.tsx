@@ -1,8 +1,8 @@
 import Image from "next/image";
 import styles from "./page.module.css";
 import Link from "next/link";
-
-import Navbar from '../components/Navbar';
+import Navbar from "../components/navBar/Navbar";
+import Footer from "../components/footer";
 
 export default function Home() {
   return (
@@ -12,7 +12,7 @@ export default function Home() {
       <main>
         {/* Hero Section */}
         <section className={styles.hero}>
-          <h2 className={styles.heroSubtitle}>PamperMe Software</h2>
+          <h2 className={styles.heroSubtitle}>pamperMe Software</h2>
           <h1 className={styles.heroTitle}>
             An All-In-One Booking App.<br />
             Built for you, built for your business.
@@ -125,6 +125,8 @@ export default function Home() {
           </div>
         </section>
       </main>
+
+      <Footer />
     </div>
   );
 }

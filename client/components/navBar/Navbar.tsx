@@ -1,5 +1,9 @@
+"use client";
 import Link from 'next/link';
-import styles from '../app/page.module.css';
+import { usePathname } from 'next/navigation';
+import styles from '../../app/page.module.css';
+import { useState, useEffect, useRef } from 'react';
+
 const MenuIcon = () => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <circle cx="12" cy="12" r="10"></circle>
@@ -8,71 +12,138 @@ const MenuIcon = () => (
   </svg>
 );
 
-export default function Navbar({ showBanner = true }: { showBanner?: boolean }) {
+const MarketplaceIcon = () => (
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.1" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M3 9l2.5-5h13L21 9" />
+    <path d="M3 9a3 3 0 0 0 6 0 3 3 0 0 0 6 0 3 3 0 0 0 6 0" />
+    <path d="M4 12v8a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-8" />
+  </svg>
+);
+
+export default function Navbar() {
+  const pathname = usePathname();
+  const [activeMenu, setActiveMenu] = useState<string | null>(null);
+  const [isScrolled, setIsScrolled] = useState(false);
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  const handleMouseEnter = (menu: string) => {
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
+    timeoutRef.current = setTimeout(() => {
+      setActiveMenu(menu);
+    }, 500);
+  };
+
+  const handleMouseLeave = () => {
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+      timeoutRef.current = null;
+    }
+    setActiveMenu(null);
+  };
+
+  useEffect(() => {
+    const handleScroll = () => {
+      handleMouseLeave();
+      // The top banner is only on the home page.
+      const threshold = pathname === '/' ? 36 : 0;
+      if (window.scrollY > threshold) {
+        setIsScrolled(true);
+      } else {
+        setIsScrolled(false);
+      }
+    };
+    
+    // Check initial scroll position
+    handleScroll();
+    
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+    };
+  }, [pathname]);
+
   return (
     <>
-      {/* Top Banner */}
-      {showBanner && (
+      {/* Background Overlay */}
+      <div 
+        className={`${styles.navOverlay} ${activeMenu ? styles.navOverlayShow : ''}`} 
+        onClick={handleMouseLeave}
+      />
+
+      {/* Top Banner (Only on Home Page) */}
+      {pathname === '/' && (
         <div className={styles.topBanner}>
           Get 2 months free with code FALL2023.
           <Link href="/pricing" className={styles.topBannerLink}>Get Started →</Link>
         </div>
       )}
 
-      {/* Navigation */}
-      <nav className={styles.nav}>
-        <div className={styles.logo}>
-          pamperMe
-        </div>
+      <div className={`${styles.stickyHeader} ${isScrolled ? styles.scrolled : ''}`}>
+        {/* Navigation */}
+        <nav className={styles.nav}>
+          <Link href="/" className={styles.logo} style={{ textDecoration: 'none' }}>
+            pamperMe
+          </Link>
 
-        <div className={styles.navLinks}>
-          <Link href="/login" className={styles.navLink}>Log In</Link>
-          <button className="btn-primary">Start free trial</button>
-        </div>
-      </nav>
+          <div className={styles.navLinks}>
+            <Link href="#marketplace" className={styles.marketplaceBtn}>
+              <MarketplaceIcon />
+              <span>Marketplace</span>
+            </Link>
+            <button className={styles.marketplaceBtn}>Start free trial</button>
+            <Link href="/login" className={styles.marketplaceBtn}>Log In</Link>
+          </div>
+        </nav>
 
-      <nav className={styles.subNav}>
-        <div className={styles.navLinks}>
-          <Link href="#book" className={styles.navLink} style={{ color: 'var(--primary-color)' }}>Book a Service ↗</Link>
+        <nav className={styles.subNav}>
+          <div className={styles.navLinks}>
+            <div 
+              className={styles.navItem}
+              onMouseEnter={() => handleMouseEnter('business')}
+              onMouseLeave={handleMouseLeave}
+            >
+              <div className={`${styles.navLink} ${activeMenu === 'business' ? styles.activeNavLink : ''}`}>Business Types</div>
+              <div className={`${styles.megaMenu} ${activeMenu === 'business' ? styles.megaMenuShow : ''}`}>
 
-          <div className={styles.navItem}>
-            <div className={`${styles.navLink} ${styles.activeNavLink}`}>Business Types</div>
-            <div className={styles.megaMenu}>
-
-              {/* BEAUTY COLUMN */}
-              <div className={styles.megaColumn}>
-                <div className={styles.megaTitle}>Beauty <span>›</span></div>
-                <div className={styles.megaList}>
-                  <Link href="#" className={styles.megaLink}><div className={styles.megaIcon}><MenuIcon /></div> Booth Renter</Link>
-                  <Link href="#" className={styles.megaLink}><div className={styles.megaIcon}><MenuIcon /></div> Salon</Link>
-                  <Link href="#" className={styles.megaLink}><div className={styles.megaIcon}><MenuIcon /></div> Brow & Lash</Link>
-                  <Link href="#" className={styles.megaLink}><div className={styles.megaIcon}><MenuIcon /></div> Barber</Link>
-                  <Link href="#" className={styles.megaLink}><div className={styles.megaIcon}><MenuIcon /></div> Nail</Link>
-                  <Link href="#" className={styles.megaLink}><div className={styles.megaIcon}><MenuIcon /></div> Hair Removal</Link>
-                  <Link href="#" className={styles.megaLink}><div className={styles.megaIcon}><MenuIcon /></div> Makeup</Link>
-                  <Link href="#" className={styles.megaLink}><div className={styles.megaIcon}><MenuIcon /></div> Tanning</Link>
-                  <Link href="#" className={styles.megaLink}><div className={styles.megaIcon}><MenuIcon /></div> Tattoo</Link>
-                  <Link href="#" className={styles.megaLink}><div className={styles.megaIcon}><MenuIcon /></div> Pet Grooming</Link>
+                {/* BEAUTY COLUMN */}
+                <div className={styles.megaColumn}>
+                  <div className={styles.megaTitle}>Beauty <span>›</span></div>
+                  <div className={styles.megaList}>
+                    <Link href="#" className={styles.megaLink}><div className={styles.megaIcon}><MenuIcon /></div> Booth Renter</Link>
+                    <Link href="#" className={styles.megaLink}><div className={styles.megaIcon}><MenuIcon /></div> Salon</Link>
+                    <Link href="#" className={styles.megaLink}><div className={styles.megaIcon}><MenuIcon /></div> Brow & Lash</Link>
+                    <Link href="#" className={styles.megaLink}><div className={styles.megaIcon}><MenuIcon /></div> Barber</Link>
+                    <Link href="#" className={styles.megaLink}><div className={styles.megaIcon}><MenuIcon /></div> Nail</Link>
+                    <Link href="#" className={styles.megaLink}><div className={styles.megaIcon}><MenuIcon /></div> Hair Removal</Link>
+                    <Link href="#" className={styles.megaLink}><div className={styles.megaIcon}><MenuIcon /></div> Makeup</Link>
+                    <Link href="#" className={styles.megaLink}><div className={styles.megaIcon}><MenuIcon /></div> Tanning</Link>
+                    <Link href="#" className={styles.megaLink}><div className={styles.megaIcon}><MenuIcon /></div> Tattoo</Link>
+                    <Link href="#" className={styles.megaLink}><div className={styles.megaIcon}><MenuIcon /></div> Pet Grooming</Link>
+                  </div>
                 </div>
-              </div>
 
-              {/* WELLNESS COLUMN */}
-              <div className={styles.megaColumn}>
-                <div className={styles.megaTitle}>Wellness <span>›</span></div>
-                <div className={styles.megaList}>
-                  <Link href="#" className={styles.megaLink}><div className={styles.megaIcon}><MenuIcon /></div> Spa</Link>
-                  <Link href="#" className={styles.megaLink}><div className={styles.megaIcon}><MenuIcon /></div> Aesthetic Clinic</Link>
-                  <Link href="#" className={styles.megaLink}><div className={styles.megaIcon}><MenuIcon /></div> Med Spa</Link>
-                  <Link href="#" className={styles.megaLink}><div className={styles.megaIcon}><MenuIcon /></div> Weight Loss Clinic</Link>
-                  <Link href="#" className={styles.megaLink}><div className={styles.megaIcon}><MenuIcon /></div> Massage</Link>
-                  <Link href="#" className={styles.megaLink}><div className={styles.megaIcon}><MenuIcon /></div> Acupuncture</Link>
-                  <Link href="#" className={styles.megaLink}><div className={styles.megaIcon}><MenuIcon /></div> Chiropractor</Link>
-                  <Link href="#" className={styles.megaLink}><div className={styles.megaIcon}><MenuIcon /></div> Mental Health</Link>
-                  <Link href="#" className={styles.megaLink}><div className={styles.megaIcon}><MenuIcon /></div> Nutritionist</Link>
-                  <Link href="#" className={styles.megaLink}><div className={styles.megaIcon}><MenuIcon /></div> Coaching</Link>
-                  <Link href="#" className={styles.megaLink}><div className={styles.megaIcon}><MenuIcon /></div> Physical Therapy</Link>
+                {/* WELLNESS COLUMN */}
+                <div className={styles.megaColumn}>
+                  <div className={styles.megaTitle}>Wellness <span>›</span></div>
+                  <div className={styles.megaList}>
+                    <Link href="#" className={styles.megaLink}><div className={styles.megaIcon}><MenuIcon /></div> Spa</Link>
+                    <Link href="#" className={styles.megaLink}><div className={styles.megaIcon}><MenuIcon /></div> Aesthetic Clinic</Link>
+                    <Link href="#" className={styles.megaLink}><div className={styles.megaIcon}><MenuIcon /></div> Med Spa</Link>
+                    <Link href="#" className={styles.megaLink}><div className={styles.megaIcon}><MenuIcon /></div> Weight Loss Clinic</Link>
+                    <Link href="#" className={styles.megaLink}><div className={styles.megaIcon}><MenuIcon /></div> Massage</Link>
+                    <Link href="#" className={styles.megaLink}><div className={styles.megaIcon}><MenuIcon /></div> Acupuncture</Link>
+                    <Link href="#" className={styles.megaLink}><div className={styles.megaIcon}><MenuIcon /></div> Chiropractor</Link>
+                    <Link href="#" className={styles.megaLink}><div className={styles.megaIcon}><MenuIcon /></div> Mental Health</Link>
+                    <Link href="#" className={styles.megaLink}><div className={styles.megaIcon}><MenuIcon /></div> Nutritionist</Link>
+                    <Link href="#" className={styles.megaLink}><div className={styles.megaIcon}><MenuIcon /></div> Coaching</Link>
+                    <Link href="#" className={styles.megaLink}><div className={styles.megaIcon}><MenuIcon /></div> Physical Therapy</Link>
+                  </div>
                 </div>
-              </div>
 
               {/* FITNESS COLUMN */}
               <div className={styles.megaColumn}>
@@ -94,9 +165,13 @@ export default function Navbar({ showBanner = true }: { showBanner?: boolean }) 
           </div>
 
 
-          <div className={styles.navItem}>
-            <div className={styles.navLink}>Features</div>
-            <div className={`${styles.megaMenu} ${styles.megaMenuWide}`}>
+          <div 
+            className={styles.navItem}
+            onMouseEnter={() => handleMouseEnter('features')}
+            onMouseLeave={handleMouseLeave}
+          >
+            <div className={`${styles.navLink} ${activeMenu === 'features' ? styles.activeNavLink : ''}`}>Features</div>
+            <div className={`${styles.megaMenu} ${styles.megaMenuWide} ${activeMenu === 'features' ? styles.megaMenuShow : ''}`}>
 
               {/* RUN YOUR BUSINESS */}
               <div className={styles.megaColumn}>
@@ -173,6 +248,7 @@ export default function Navbar({ showBanner = true }: { showBanner?: boolean }) 
           <Link href="#Resources" className={styles.navLink}>Resources</Link>
         </div>
       </nav>
+      </div>
     </>
   );
 }

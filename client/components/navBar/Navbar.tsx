@@ -1,8 +1,8 @@
 "use client";
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import styles from '../app/page.module.css';
-import { useState, useEffect } from 'react';
+import styles from '../../app/page.module.css';
+import { useState, useEffect, useRef } from 'react';
 
 const MenuIcon = () => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -24,10 +24,28 @@ export default function Navbar() {
   const pathname = usePathname();
   const [activeMenu, setActiveMenu] = useState<string | null>(null);
   const [isScrolled, setIsScrolled] = useState(false);
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  const handleMouseEnter = (menu: string) => {
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
+    timeoutRef.current = setTimeout(() => {
+      setActiveMenu(menu);
+    }, 500);
+  };
+
+  const handleMouseLeave = () => {
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+      timeoutRef.current = null;
+    }
+    setActiveMenu(null);
+  };
 
   useEffect(() => {
     const handleScroll = () => {
-      setActiveMenu(null);
+      handleMouseLeave();
       // The top banner is only on the home page.
       const threshold = pathname === '/' ? 36 : 0;
       if (window.scrollY > threshold) {
@@ -41,15 +59,20 @@ export default function Navbar() {
     handleScroll();
     
     window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+    };
+  }, [pathname]);
 
   return (
     <>
       {/* Background Overlay */}
       <div 
         className={`${styles.navOverlay} ${activeMenu ? styles.navOverlayShow : ''}`} 
-        onClick={() => setActiveMenu(null)}
+        onClick={handleMouseLeave}
       />
 
       {/* Top Banner (Only on Home Page) */}
@@ -72,8 +95,8 @@ export default function Navbar() {
               <MarketplaceIcon />
               <span>Marketplace</span>
             </Link>
-            <Link href="/login" className={styles.navLink}>Log In</Link>
-            <button className="btn-primary">Start free trial</button>
+            <button className={styles.marketplaceBtn}>Start free trial</button>
+            <Link href="/login" className={styles.marketplaceBtn}>Log In</Link>
           </div>
         </nav>
 
@@ -81,8 +104,8 @@ export default function Navbar() {
           <div className={styles.navLinks}>
             <div 
               className={styles.navItem}
-              onMouseEnter={() => setActiveMenu('business')}
-              onMouseLeave={() => setActiveMenu(null)}
+              onMouseEnter={() => handleMouseEnter('business')}
+              onMouseLeave={handleMouseLeave}
             >
               <div className={`${styles.navLink} ${activeMenu === 'business' ? styles.activeNavLink : ''}`}>Business Types</div>
               <div className={`${styles.megaMenu} ${activeMenu === 'business' ? styles.megaMenuShow : ''}`}>
@@ -144,8 +167,8 @@ export default function Navbar() {
 
           <div 
             className={styles.navItem}
-            onMouseEnter={() => setActiveMenu('features')}
-            onMouseLeave={() => setActiveMenu(null)}
+            onMouseEnter={() => handleMouseEnter('features')}
+            onMouseLeave={handleMouseLeave}
           >
             <div className={`${styles.navLink} ${activeMenu === 'features' ? styles.activeNavLink : ''}`}>Features</div>
             <div className={`${styles.megaMenu} ${styles.megaMenuWide} ${activeMenu === 'features' ? styles.megaMenuShow : ''}`}>

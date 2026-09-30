@@ -1,11 +1,12 @@
 "use client";
 
 import React, { useState } from 'react';
-import Navbar from '../../components/Navbar';
+import Navbar from '../../components/navBar/Navbar';
 import styles from './page.module.css';
 import pageStyles from '../page.module.css';
 import Cards from './Cards';
 import CompareFeatures from './CompareFeatures';
+import Footer from '../../components/footer';
 
 export default function Pricing() {
   const [addonEnabled, setAddonEnabled] = useState(false);
@@ -38,6 +39,8 @@ export default function Pricing() {
         <Cards addonEnabled={addonEnabled} setAddonEnabled={setAddonEnabled} />
         <CompareFeatures addonEnabled={addonEnabled} />
       </main>
+
+      <Footer />
     </div>
   );
 }

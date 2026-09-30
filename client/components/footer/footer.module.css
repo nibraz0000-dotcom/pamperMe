@@ -1,0 +1,324 @@
+.footerWrapper {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  box-sizing: border-box;
+  background-color: transparent;
+  /* Margins: left, right, bottom (half of compare plans/cards margins) */
+  padding: 0 0.875rem 2.5rem 0.875rem;
+  margin-top: 2rem;
+}
+
+.footerContainer {
+  width: 100%;
+  max-width: 1380px;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  font-family: var(--font-geist-sans), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+/* Dark Card Box */
+.darkCard {
+  width: 100%;
+  background-color: #000000;
+  border-radius: 28px;
+  padding: 2.75rem 2.5rem 2.5rem 2.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
+  box-sizing: border-box;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+}
+
+/* Top Header Bar */
+.topHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 0.25rem 0.5rem 0.25rem;
+}
+
+.brandLogo {
+  font-size: 1.85rem;
+  font-weight: 800;
+  color: #ffffff;
+  letter-spacing: -0.05em;
+  text-decoration: none;
+  line-height: 1;
+}
+
+.topSocialRow {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.socialBtn {
+  width: 36px;
+  height: 36px;
+  background-color: #ffffff;
+  color: #000000;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  transition: transform 0.2s ease, opacity 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+.socialBtn:hover {
+  transform: translateY(-2px scale(1.05));
+  opacity: 0.9;
+  box-shadow: 0 4px 12px rgba(255, 255, 255, 0.15);
+}
+
+.socialBtn svg {
+  width: 17px;
+  height: 17px;
+}
+
+/* Grid Layout */
+.gridContainer {
+  display: grid;
+  grid-template-columns: 1.15fr 1.15fr 1.1fr 1.15fr 1.15fr;
+  gap: 1.25rem;
+  align-items: stretch;
+}
+
+/* Common Card Styling inside Dark Card */
+.card {
+  background-color: #0e0e11;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 18px;
+  padding: 1.5rem 1.35rem;
+  display: flex;
+  flex-direction: column;
+  transition: border-color 0.2s ease, transform 0.2s ease;
+}
+
+.card:hover {
+  border-color: rgba(255, 255, 255, 0.16);
+}
+
+.cardHeader {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #63636e;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 1.4rem;
+}
+
+.itemList {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+.itemLink {
+  text-decoration: none;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.itemTitle {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #f4f4f5;
+  transition: color 0.15s ease;
+}
+
+.itemLink:hover .itemTitle {
+  color: #ffffff;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.itemSubtitle {
+  font-size: 0.75rem;
+  color: #71717a;
+  line-height: 1.35;
+  transition: color 0.15s ease;
+}
+
+.itemLink:hover .itemSubtitle {
+  color: #a1a1aa;
+}
+
+/* Right Section containing Stacked Cards */
+.rightSection {
+  grid-column: 4 / span 2;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.topRightRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+}
+
+/* App Download Grid (2 Cards: For businesses, For customers) */
+.appDownloadGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+}
+
+.appDownloadCard {
+  background-color: #242428;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 18px;
+  padding: 1.25rem 1rem 1.4rem 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.85rem;
+  transition: border-color 0.2s ease, transform 0.2s ease;
+}
+
+.appDownloadCard:hover {
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+.appDownloadTitle {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #ffffff;
+  text-align: center;
+  letter-spacing: -0.01em;
+}
+
+.storeBadgesRow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.65rem;
+  flex-wrap: wrap;
+}
+
+.storeBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: #000000;
+  border: 1px solid rgba(255, 255, 255, 0.32);
+  border-radius: 8px;
+  padding: 6px 12px;
+  text-decoration: none;
+  color: #ffffff;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+}
+
+.storeBadge:hover {
+  border-color: #ffffff;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6);
+}
+
+.storeBadgeText {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  line-height: 1;
+}
+
+.storeBadgeSubtitle {
+  font-size: 0.52rem;
+  font-weight: 500;
+  color: #d1d5db;
+  text-transform: uppercase;
+  margin-bottom: 2px;
+  letter-spacing: 0.02em;
+}
+
+.storeBadgeTitle {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: -0.02em;
+}
+
+/* Bottom Bar (Outside Dark Card, located in the bottom margin space) */
+.bottomBar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.25rem 0.5rem 0 0.5rem;
+  font-size: 0.85rem;
+  color: #475569;
+}
+
+.copyrightText {
+  color: #475569;
+}
+
+.copyrightText strong {
+  color: #0f172a;
+  font-weight: 600;
+}
+
+.legalLinks {
+  display: flex;
+  gap: 1.75rem;
+  flex-wrap: wrap;
+}
+
+.legalLink {
+  color: #0f172a;
+  text-decoration: none;
+  font-size: 0.85rem;
+  font-weight: 500;
+  transition: color 0.15s ease;
+}
+
+.legalLink:hover {
+  color: #0066ff;
+  text-decoration: underline;
+}
+
+/* Responsive Styles */
+@media (max-width: 1200px) {
+  .gridContainer {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+  .rightSection {
+    grid-column: 1 / span 3;
+  }
+}
+
+@media (max-width: 768px) {
+  .footerWrapper {
+    padding: 0 0.5rem 2rem 0.5rem;
+  }
+  .darkCard {
+    padding: 1.75rem 1.25rem;
+  }
+  .topHeader {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+  .gridContainer {
+    grid-template-columns: 1fr;
+  }
+  .rightSection {
+    grid-column: 1 / span 1;
+  }
+  .topRightRow {
+    grid-template-columns: 1fr;
+  }
+  .appDownloadGrid {
+    grid-template-columns: 1fr;
+  }
+  .bottomBar {
+    flex-direction: column;
+    gap: 0.75rem;
+    align-items: flex-start;
+  }
+}

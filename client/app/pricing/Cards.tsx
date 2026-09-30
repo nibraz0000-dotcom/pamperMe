@@ -4,22 +4,35 @@ import React, { useState, useEffect } from 'react';
 import styles from './cards.module.css';
 
 function useCountdownPrice(
-  defaultPrice: number, 
-  targetPrice: number, 
-  peakPrice: number, 
-  offPeakPrice: number, 
+  defaultPrice: number,
+  targetPrice: number,
+  peakPrice: number,
+  offPeakPrice: number,
   isEnabled: boolean
 ) {
-  const [currentPrice, setCurrentPrice] = useState(defaultPrice);
+  const [currentPrice, setCurrentPrice] = useState(isEnabled ? targetPrice : defaultPrice);
   const [isPopping, setIsPopping] = useState(false);
   const prevEnabledRef = React.useRef(isEnabled);
+  const prevDefaultPriceRef = React.useRef(defaultPrice);
+  const prevTargetPriceRef = React.useRef(targetPrice);
 
   useEffect(() => {
-    // Only run animations when isEnabled changes (not on initial mount or re-renders)
+    // If billing cycle changed (prices changed) but toggle didn't
+    if (prevEnabledRef.current === isEnabled &&
+      (prevDefaultPriceRef.current !== defaultPrice || prevTargetPriceRef.current !== targetPrice)) {
+      setCurrentPrice(isEnabled ? targetPrice : defaultPrice);
+      prevDefaultPriceRef.current = defaultPrice;
+      prevTargetPriceRef.current = targetPrice;
+      return;
+    }
+
+    // Only run animations when isEnabled changes
     if (prevEnabledRef.current === isEnabled) {
       return;
     }
     prevEnabledRef.current = isEnabled;
+    prevDefaultPriceRef.current = defaultPrice;
+    prevTargetPriceRef.current = targetPrice;
 
     setIsPopping(false);
     let interval: NodeJS.Timeout | null = null;
@@ -103,21 +116,85 @@ function useCountdownPrice(
   return { price: currentPrice, isPopping };
 }
 
-export default function Cards() {
-  const [addonEnabled, setAddonEnabled] = useState(false);
+interface CardsProps {
+  addonEnabled?: boolean;
+  setAddonEnabled?: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+export default function Cards({
+  addonEnabled: externalAddonEnabled,
+  setAddonEnabled: externalSetAddonEnabled
+}: CardsProps = {}) {
+  const [internalAddonEnabled, setInternalAddonEnabled] = useState(false);
+  const addonEnabled = externalAddonEnabled !== undefined ? externalAddonEnabled : internalAddonEnabled;
+  const setAddonEnabled = externalSetAddonEnabled || setInternalAddonEnabled;
+  const [isYearly, setIsYearly] = useState(false);
 
   const toggleAddon = () => setAddonEnabled(prev => !prev);
 
-  const { price: standardPrice, isPopping: isStandardPopping } = useCountdownPrice(10, 20, 30, 15, addonEnabled);
-  const { price: teamsPrice, isPopping: isTeamsPopping } = useCountdownPrice(16, 26, 35, 22, addonEnabled);
+  const standardBase = isYearly ? 10 : 12;
+  const standardPlus = isYearly ? 18 : 24;
+  const standardPeak = 30;
+  const standardOffPeak = isYearly ? 15 : 16;
+
+  const teamsBase = isYearly ? 16 : 20;
+  const teamsPlus = isYearly ? 24 : 32;
+  const teamsPeak = isYearly ? 35 : 36;
+  const teamsOffPeak = isYearly ? 22 : 25;
+
+  const { price: standardPrice, isPopping: isStandardPopping } = useCountdownPrice(
+    standardBase, standardPlus, standardPeak, standardOffPeak, addonEnabled
+  );
+
+  const { price: teamsPrice, isPopping: isTeamsPopping } = useCountdownPrice(
+    teamsBase, teamsPlus, teamsPeak, teamsOffPeak, addonEnabled
+  );
 
   return (
     <div className={styles.container} id="plans">
-      <div className={styles.grid}>
-        
+      <div className={styles.headerSection}>
+        <div className={styles.headerLeft}>
+          <h1 className={styles.headerTitle}>
+            Add AI & automation to<br />
+            Standard or Teams plan
+          </h1>
+        </div>
+        <div className={styles.headerRight}>
+          <p className={styles.headerSubtitle}>
+            Save hours every week with intelligent scheduling and <br />
+            AI-powered assistant.
+          </p>
+          <div className={styles.billingToggle}>
+            <label className={styles.radioLabel}>
+              <input
+                type="radio"
+                name="billing"
+                checked={!isYearly}
+                onChange={() => setIsYearly(false)}
+                className={styles.radioInput}
+              />
+              <span className={styles.radioText}>Billed monthly</span>
+            </label>
+            <span className={styles.divider}>|</span>
+            <label className={styles.radioLabel}>
+              <input
+                type="radio"
+                name="billing"
+                checked={isYearly}
+                onChange={() => setIsYearly(true)}
+                className={styles.radioInput}
+              />
+              <span className={styles.radioText}>Billed yearly</span>
+            </label>
+            <span className={styles.saveBadgeHeader}>Save up to 20%</span>
+          </div>
+        </div>
+      </div>
+      <div className={styles.grid} id="cards-grid">
+
         {/* FREE PLAN */}
         <div className={styles.card}>
-          <div className={styles.topCard}>
+          <div className={styles.topCard} id="top-card-sample">
             <h2 className={styles.planName}>Free</h2>
             <div className={styles.toggleSpacer}></div>
             <div className={styles.priceContainer}>
@@ -127,10 +204,10 @@ export default function Cards() {
               Get started <ArrowIcon />
             </button>
           </div>
-          
+
           <div className={styles.cardBody}>
             <div className={styles.includesLabel}>Includes:</div>
-            
+
             <div className={styles.category}>
               <div className={styles.categoryHeader}>
                 <div className={`${styles.iconWrapper} ${styles.iconBlue}`}><HourglassIcon /></div>
@@ -154,9 +231,9 @@ export default function Cards() {
               Standard
               {addonEnabled && <span className={styles.plusBadge}>Plus</span>}
             </h2>
-            
+
             <div className={styles.toggleWrapper}>
-              <button 
+              <button
                 className={`${styles.toggle} ${addonEnabled ? styles.toggleOn : ''}`}
                 onClick={toggleAddon}
               >
@@ -177,15 +254,15 @@ export default function Cards() {
                 <span className={styles.saveBadge}>Save 17%</span>
               </div>
             </div>
-            
+
             <button className={`${styles.btn} ${styles.btnOutline}`}>
               Get started <ArrowIcon />
             </button>
           </div>
-          
+
           <div className={styles.cardBody}>
             <div className={styles.includesLabel}>Everything in Free, and:</div>
-            
+
             <div className={styles.category}>
               <div className={styles.categoryHeader}>
                 <div className={`${styles.iconWrapper} ${styles.iconBlue}`}><HourglassIcon /></div>
@@ -247,9 +324,9 @@ export default function Cards() {
                 Teams
                 {addonEnabled && <span className={styles.plusBadge}>Plus</span>}
               </h2>
-              
+
               <div className={styles.toggleWrapper}>
-                <button 
+                <button
                   className={`${styles.toggle} ${addonEnabled ? styles.toggleOn : ''}`}
                   onClick={toggleAddon}
                 >
@@ -270,15 +347,15 @@ export default function Cards() {
                   <span className={styles.saveBadge}>Save 20%</span>
                 </div>
               </div>
-              
+
               <button className={`${styles.btn} ${styles.btnDark}`}>
                 Get started <ArrowIcon />
               </button>
             </div>
-            
+
             <div className={styles.cardBody}>
               <div className={styles.includesLabel}>Everything in Standard, and:</div>
-              
+
               <div className={styles.category}>
                 <div className={styles.categoryHeader}>
                   <div className={`${styles.iconWrapper} ${styles.iconBlue}`}><HourglassIcon /></div>
@@ -321,15 +398,15 @@ export default function Cards() {
               <span className={styles.priceAmount}>15k</span>
               <span className={styles.perUnit}>/yr</span>
             </div>
-            
+
             <button className={`${styles.btn} ${styles.btnOutline}`}>
               Talk to sales <ArrowIcon />
             </button>
           </div>
-          
+
           <div className={styles.cardBody}>
             <div className={styles.includesLabel}>Teams plan scheduling features, and:</div>
-            
+
             <div className={styles.category}>
               <div className={styles.categoryHeader}>
                 <div className={`${styles.iconWrapper} ${styles.iconBlue}`}><HourglassIcon /></div>
@@ -372,14 +449,6 @@ export default function Cards() {
         </div>
 
       </div>
-      
-      <div className={styles.disclaimer}>
-        <div className={styles.disclaimerIcons}>
-          <div className={`${styles.iconWrapperSmall} ${styles.iconPurple}`}><NotetakerIcon /></div>
-          <div className={`${styles.iconWrapperSmall} ${styles.iconLime}`}><CallieIcon /></div>
-        </div>
-        <span><strong>Notetaker</strong> and <strong>Callie</strong> are only available in English at this time.</span>
-      </div>
     </div>
   );
 }
@@ -387,7 +456,7 @@ export default function Cards() {
 // SVG Components
 const ArrowIcon = () => (
   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M5 12h14M12 5l7 7-7 7"/>
+    <path d="M5 12h14M12 5l7 7-7 7" />
   </svg>
 );
 
@@ -399,25 +468,25 @@ const CheckIcon = () => (
 
 const HourglassIcon = () => (
   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M4 4h16v4L15 13l5 5v4H4v-4l5-5-5-5z"/>
+    <path d="M4 4h16v4L15 13l5 5v4H4v-4l5-5-5-5z" />
   </svg>
 );
 
 const CardIcon = () => (
   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <rect x="2" y="5" width="20" height="14" rx="2"/>
-    <line x1="2" y1="10" x2="22" y2="10"/>
+    <rect x="2" y="5" width="20" height="14" rx="2" />
+    <line x1="2" y1="10" x2="22" y2="10" />
   </svg>
 );
 
 const NotetakerIcon = () => (
   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M12 20h9M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>
+    <path d="M12 20h9M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
   </svg>
 );
 
 const CallieIcon = () => (
   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
   </svg>
 );

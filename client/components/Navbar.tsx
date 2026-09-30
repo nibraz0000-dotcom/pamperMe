@@ -12,14 +12,34 @@ const MenuIcon = () => (
   </svg>
 );
 
+const MarketplaceIcon = () => (
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.1" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M3 9l2.5-5h13L21 9" />
+    <path d="M3 9a3 3 0 0 0 6 0 3 3 0 0 0 6 0 3 3 0 0 0 6 0" />
+    <path d="M4 12v8a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-8" />
+  </svg>
+);
+
 export default function Navbar() {
   const pathname = usePathname();
   const [activeMenu, setActiveMenu] = useState<string | null>(null);
+  const [isScrolled, setIsScrolled] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
       setActiveMenu(null);
+      // The top banner is only on the home page.
+      const threshold = pathname === '/' ? 36 : 0;
+      if (window.scrollY > threshold) {
+        setIsScrolled(true);
+      } else {
+        setIsScrolled(false);
+      }
     };
+    
+    // Check initial scroll position
+    handleScroll();
+    
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
@@ -40,7 +60,7 @@ export default function Navbar() {
         </div>
       )}
 
-      <div className={styles.stickyHeader}>
+      <div className={`${styles.stickyHeader} ${isScrolled ? styles.scrolled : ''}`}>
         {/* Navigation */}
         <nav className={styles.nav}>
           <Link href="/" className={styles.logo} style={{ textDecoration: 'none' }}>
@@ -48,6 +68,10 @@ export default function Navbar() {
           </Link>
 
           <div className={styles.navLinks}>
+            <Link href="#marketplace" className={styles.marketplaceBtn}>
+              <MarketplaceIcon />
+              <span>Marketplace</span>
+            </Link>
             <Link href="/login" className={styles.navLink}>Log In</Link>
             <button className="btn-primary">Start free trial</button>
           </div>
@@ -55,14 +79,12 @@ export default function Navbar() {
 
         <nav className={styles.subNav}>
           <div className={styles.navLinks}>
-            <Link href="#book" className={styles.navLink} style={{ color: 'var(--primary-color)' }}>Book a Service ↗</Link>
-
             <div 
               className={styles.navItem}
               onMouseEnter={() => setActiveMenu('business')}
               onMouseLeave={() => setActiveMenu(null)}
             >
-              <div className={`${styles.navLink} ${styles.activeNavLink}`}>Business Types</div>
+              <div className={`${styles.navLink} ${activeMenu === 'business' ? styles.activeNavLink : ''}`}>Business Types</div>
               <div className={`${styles.megaMenu} ${activeMenu === 'business' ? styles.megaMenuShow : ''}`}>
 
                 {/* BEAUTY COLUMN */}
@@ -125,7 +147,7 @@ export default function Navbar() {
             onMouseEnter={() => setActiveMenu('features')}
             onMouseLeave={() => setActiveMenu(null)}
           >
-            <div className={styles.navLink}>Features</div>
+            <div className={`${styles.navLink} ${activeMenu === 'features' ? styles.activeNavLink : ''}`}>Features</div>
             <div className={`${styles.megaMenu} ${styles.megaMenuWide} ${activeMenu === 'features' ? styles.megaMenuShow : ''}`}>
 
               {/* RUN YOUR BUSINESS */}

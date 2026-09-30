@@ -11,7 +11,7 @@ export default function Home() {
       <main>
         {/* Hero Section */}
         <section className={styles.hero}>
-          <h2 className={styles.heroSubtitle}>PamperMe Software</h2>
+          <h2 className={styles.heroSubtitle}>pamperMe Software</h2>
           <h1 className={styles.heroTitle}>
             An All-In-One Booking App.<br />
             Built for you, built for your business.

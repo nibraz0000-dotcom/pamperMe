@@ -1,0 +1,309 @@
+.container {
+  max-width: 1240px;
+  width: 100%;
+  margin: 4rem auto 2rem;
+  color: #1a1a1a;
+  font-family: var(--font-geist-sans), sans-serif;
+}
+
+.title {
+  text-align: center;
+  font-size: 2.25rem;
+  font-weight: 600;
+  margin-bottom: 3.5rem;
+  color: #111;
+  letter-spacing: -0.03em;
+}
+
+.tableContainer {
+  overflow-x: clip;
+  padding-bottom: 2rem;
+}
+
+.table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 10px 0;
+  min-width: 900px;
+  table-layout: fixed;
+}
+
+.colFeature {
+  width: 24%;
+}
+
+.colPlan {
+  width: 19%;
+}
+
+.headerRow th {
+  padding: 1.75rem 0.65rem 1.75rem;
+  text-align: center;
+  position: sticky;
+  top: 96px;
+  z-index: 50;
+  vertical-align: bottom;
+  background-color: #ffffff;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: 0 4px 12px -4px rgba(0, 0, 0, 0.04);
+}
+
+.headerRow th:first-child {
+  text-align: left;
+  padding-left: 0.5rem;
+  background-color: #ffffff;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.headerCategory {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #111;
+  padding-bottom: 0.5rem;
+  animation: fadeInCategory 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes fadeInCategory {
+  0% {
+    opacity: 0;
+    transform: translateY(3px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.planName {
+  font-size: 1.05rem;
+  font-weight: 700;
+  margin: 0 0 0.80rem 0;
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 0.35rem;
+  color: #111;
+}
+
+.plusBadge {
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: #64748b;
+  letter-spacing: -0.01em;
+  display: inline-block;
+  animation: fadeInPlus 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes fadeInPlus {
+  0% {
+    opacity: 0;
+    transform: translateY(2px) scale(0.92);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.btn {
+  padding: 0.75rem 1rem;
+  border-radius: 10px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: all 0.2s;
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.btnOutline {
+  background: white;
+  border: 1px solid #dcd7cd;
+  color: #111;
+}
+
+.btnOutline:hover {
+  background: #111;
+  color: #ffffff;
+  border-color: #111;
+}
+
+.btnDark {
+  background: #0f172a;
+  border: 1px solid #0f172a;
+  color: white;
+}
+
+.btnDark:hover {
+  background: #334155;
+  color: #ffffff;
+  border-color: #334155;
+}
+
+.categoryRow {
+  transition: opacity 0.25s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.25s ease;
+}
+
+.categoryRowVanished {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.categoryRow th {
+  text-align: left;
+  padding: 3.5rem 1rem 1.25rem 0.5rem;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #111;
+  background-color: transparent !important;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.categoryHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.featureRow td {
+  padding: 1.15rem 1rem;
+  text-align: center;
+  font-size: 0.85rem;
+  color: #333;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.featureRow td.featureNameCell,
+.featureNameCell {
+  text-align: left !important;
+  padding-left: 0.5rem;
+  background-color: transparent;
+  line-height: 1.35;
+  position: relative;
+}
+
+.featureLabelContainer {
+  position: relative;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+  cursor: pointer;
+}
+
+.featureNameText {
+  font-weight: 500;
+  font-size: 0.9rem;
+  color: #0b1a30;
+  border-bottom: 2px dotted #8fa2b7;
+  padding-bottom: 2px;
+  text-align: left;
+  transition: all 0.2s ease;
+}
+
+.featureLabelContainer:hover .featureNameText {
+  color: #000;
+  border-bottom-color: #475569;
+}
+
+.tooltipPopover {
+  position: absolute;
+  bottom: calc(100% + 9px);
+  left: 0;
+  width: 290px;
+  background-color: #08162b;
+  color: #ffffff;
+  padding: 12px 16px;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px -3px rgba(0, 15, 35, 0.3), 0 4px 8px -2px rgba(0, 15, 35, 0.15);
+  z-index: 100;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translateY(4px);
+  text-align: left;
+  transition: opacity 0.2s cubic-bezier(0.16, 1, 0.3, 1), transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.2s;
+}
+
+.tooltipPopover::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 22px;
+  border-width: 7px 7px 0 7px;
+  border-style: solid;
+  border-color: #08162b transparent transparent transparent;
+}
+
+.featureLabelContainer:hover .tooltipPopover {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.tooltipText {
+  margin: 0;
+  font-size: 0.84rem;
+  line-height: 1.45;
+  font-weight: 500;
+  color: #ffffff;
+  letter-spacing: -0.01em;
+  text-align: left;
+}
+
+.featureRow td:nth-child(n+2) {
+  background-color: #f7f6f2;
+}
+
+.featureValue {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+
+.checkCircle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  background-color: #111;
+  color: white;
+  border-radius: 50%;
+  margin: 0 auto;
+}
+
+.hyphen {
+  color: #a8a29e;
+  font-weight: 600;
+  font-size: 1.1rem;
+}
+
+.textValue {
+  font-weight: 600;
+  color: #111;
+}
+
+@media (max-width: 900px) {
+  .title {
+    font-size: 1.75rem;
+  }
+
+  .tableContainer {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .table {
+    border-spacing: 6px 0;
+  }
+}

@@ -29,7 +29,7 @@ const FAQ_ITEMS = [
       "Stylist shift scheduling & commissions",
     ],
     conclusion:
-      "Salon software is an all-in-one cloud platform engineered to automate appointment scheduling, process contactless payments, manage stylist commissions, and elevate client satisfaction with seamless digital touchpoints.",
+      "Beyond automated booking and point of sale, salon software gives your team complete peace of mind to focus on creative craft and elevating client loyalty.",
   },
   {
     question: "How much should I expect to pay for salon software?",
@@ -40,7 +40,7 @@ const FAQ_ITEMS = [
       "Free 14-day full feature trial",
     ],
     conclusion:
-      "Pricing scales transparently based on your team size, ranging from affordable solo-stylist plans to full multi-station salon packages with no hidden contracts, cancellation fees, or unexpected setup charges.",
+      "With transparent subscription tiers and low card rates, modern platforms eliminate surprise overhead so salon owners can invest more into growing their business.",
   },
   {
     question: "How can I use salon software to help me grow my business?",
@@ -51,7 +51,7 @@ const FAQ_ITEMS = [
       "Real-time revenue & chair utilization analytics",
     ],
     conclusion:
-      "By automating client rebooking reminders, launching targeted promotional campaigns, and capturing verified 5-star Google reviews, you can maximize chair occupancy and consistently increase recurring revenue.",
+      "Combining automated marketing with intelligent rebooking keeps appointment books filled consistently, driving higher customer lifetime value with minimal daily effort.",
   },
   {
     question: "Does most salon software include an integrated payment system?",
@@ -62,7 +62,7 @@ const FAQ_ITEMS = [
       "Instant next-day payout deposits to your bank",
     ],
     conclusion:
-      "pamperMe comes with fully built-in payment processing that automatically pairs every checkout with client history, enables flexible chairside tipping, and enforces card-on-file deposit rules to prevent revenue loss.",
+      "Built-in processing unifies appointment checkouts with card protection policies, giving salon clients a frictionless visit while safeguarding your daily revenue.",
   },
   {
     question: "Is customer support typically included with salon software?",
@@ -73,7 +73,7 @@ const FAQ_ITEMS = [
       "Extensive knowledge base & video tutorials",
     ],
     conclusion:
-      "All plans include complimentary 24/7 priority live support, 1-on-1 staff onboarding sessions, and a full client data migration service to make switching over completely frictionless for your entire team.",
+      "Dedicated onboarding and complimentary data transfer guarantee that your staff transitions seamlessly without any disruption to your regular salon schedule.",
   },
   {
     question: "How can I integrate salon software into my business operations?",
@@ -84,7 +84,7 @@ const FAQ_ITEMS = [
       "Sync seamlessly with Google Reserve & Instagram",
     ],
     conclusion:
-      "Getting started takes less than an hour with our guided setup wizard, allowing you to import client lists, configure service menus, and embed booking widgets directly into your website and social profiles.",
+      "With intuitive setup wizards and seamless social booking links, your salon can start accepting appointments and managing team schedules in less than an hour.",
   },
   {
     question: "What should I consider when purchasing salon software?",
@@ -95,7 +95,7 @@ const FAQ_ITEMS = [
       "Dedicated hardware reliability and POS speed",
     ],
     conclusion:
-      "Focus on finding a specialized beauty platform that balances easy front-desk scheduling with automated no-show policies, flexible booth renter splits, and mobile app convenience for both stylists and clients.",
+      "Prioritize an intuitive mobile experience with strong deposit policies that saves front-desk hours while protecting stylist earnings and chair turnover.",
   },
   {
     question: "What devices work with pamperMe?",
@@ -106,7 +106,7 @@ const FAQ_ITEMS = [
       "Pocket Bluetooth contactless card readers",
     ],
     conclusion:
-      "pamperMe runs natively across Apple iOS, Android, macOS, and Windows devices, syncing in real-time with our sleek countertop registers and pocket-sized Bluetooth card readers wherever you do business.",
+      "Cloud synchronization across all smartphones, tablets, and dedicated POS terminals ensures you can monitor operations and take payments from any chair, anytime.",
   },
 ];
 

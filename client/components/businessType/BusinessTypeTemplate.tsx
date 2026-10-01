@@ -29,7 +29,7 @@ const FAQ_ITEMS = [
       "Stylist shift scheduling & commissions",
     ],
     conclusion:
-      "Salon software is an all-in-one digital platform designed to automate daily reception tasks, streamline chair booking, and deliver a polished client experience.",
+      "Salon software is an all-in-one cloud platform engineered to automate appointment scheduling, process contactless payments, manage stylist commissions, and elevate client satisfaction with seamless digital touchpoints.",
   },
   {
     question: "How much should I expect to pay for salon software?",
@@ -40,7 +40,7 @@ const FAQ_ITEMS = [
       "Free 14-day full feature trial",
     ],
     conclusion:
-      "Pricing scales transparently with your business size, offering affordable tiers for solo stylists up to high-volume multi-location salons.",
+      "Pricing scales transparently based on your team size, ranging from affordable solo-stylist plans to full multi-station salon packages with no hidden contracts, cancellation fees, or unexpected setup charges.",
   },
   {
     question: "How can I use salon software to help me grow my business?",
@@ -51,7 +51,7 @@ const FAQ_ITEMS = [
       "Real-time revenue & chair utilization analytics",
     ],
     conclusion:
-      "By eliminating tedious manual admin and automating marketing, you can boost client retention, fill empty chairs, and maximize your average ticket size.",
+      "By automating client rebooking reminders, launching targeted promotional campaigns, and capturing verified 5-star Google reviews, you can maximize chair occupancy and consistently increase recurring revenue.",
   },
   {
     question: "Does most salon software include an integrated payment system?",
@@ -62,7 +62,7 @@ const FAQ_ITEMS = [
       "Instant next-day payout deposits to your bank",
     ],
     conclusion:
-      "Yes, pamperMe includes a fully integrated salon POS that connects checkout directly with client history, inventory, and stylist commission reports.",
+      "pamperMe comes with fully built-in payment processing that automatically pairs every checkout with client history, enables flexible chairside tipping, and enforces card-on-file deposit rules to prevent revenue loss.",
   },
   {
     question: "Is customer support typically included with salon software?",
@@ -73,7 +73,7 @@ const FAQ_ITEMS = [
       "Extensive knowledge base & video tutorials",
     ],
     conclusion:
-      "Comprehensive 24/7 customer support and free data migration are included with every plan to ensure your transition is smooth and stress-free.",
+      "All plans include complimentary 24/7 priority live support, 1-on-1 staff onboarding sessions, and a full client data migration service to make switching over completely frictionless for your entire team.",
   },
   {
     question: "How can I integrate salon software into my business operations?",
@@ -84,7 +84,7 @@ const FAQ_ITEMS = [
       "Sync seamlessly with Google Reserve & Instagram",
     ],
     conclusion:
-      "Getting started takes under an hour with intuitive setup guides, enabling your salon to accept appointments and process payments immediately.",
+      "Getting started takes less than an hour with our guided setup wizard, allowing you to import client lists, configure service menus, and embed booking widgets directly into your website and social profiles.",
   },
   {
     question: "What should I consider when purchasing salon software?",
@@ -95,7 +95,7 @@ const FAQ_ITEMS = [
       "Dedicated hardware reliability and POS speed",
     ],
     conclusion:
-      "Look for an intuitive, salon-specific platform that reduces administrative workload while protecting your revenue with automated policies.",
+      "Focus on finding a specialized beauty platform that balances easy front-desk scheduling with automated no-show policies, flexible booth renter splits, and mobile app convenience for both stylists and clients.",
   },
   {
     question: "What devices work with pamperMe?",
@@ -106,7 +106,7 @@ const FAQ_ITEMS = [
       "Pocket Bluetooth contactless card readers",
     ],
     conclusion:
-      "pamperMe is 100% cloud-based, allowing you and your stylists to manage appointments and accept payments seamlessly from any device, anywhere.",
+      "pamperMe runs natively across Apple iOS, Android, macOS, and Windows devices, syncing in real-time with our sleek countertop registers and pocket-sized Bluetooth card readers wherever you do business.",
   },
 ];
 

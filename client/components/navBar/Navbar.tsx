@@ -1,7 +1,7 @@
 "use client";
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import styles from '../../app/page.module.css';
+import styles from './navbar.module.css';
 import { useState, useEffect, useRef } from 'react';
 
 const MenuIcon = () => (
@@ -24,18 +24,12 @@ export default function Navbar() {
   const pathname = usePathname();
   const [activeMenu, setActiveMenu] = useState<string | null>(null);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isFooterHidden, setIsFooterHidden] = useState(false);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const lastScrollYRef = useRef(0);
+  const headerRef = useRef<HTMLDivElement | null>(null);
 
-  const handleMouseEnter = (menu: string) => {
-    if (timeoutRef.current) {
-      clearTimeout(timeoutRef.current);
-    }
-    timeoutRef.current = setTimeout(() => {
-      setActiveMenu(menu);
-    }, 500);
-  };
-
-  const handleMouseLeave = () => {
+  const closeMenuImmediately = () => {
     if (timeoutRef.current) {
       clearTimeout(timeoutRef.current);
       timeoutRef.current = null;
@@ -43,24 +37,72 @@ export default function Navbar() {
     setActiveMenu(null);
   };
 
+  const handleMouseEnter = (menu: string) => {
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+      timeoutRef.current = null;
+    }
+
+    if (activeMenu) {
+      // Instant transition between menu items when already open
+      setActiveMenu(menu);
+    } else {
+      // Initial entry delay (~400ms) to prevent accidental hover popups on long mouse movement
+      timeoutRef.current = setTimeout(() => {
+        setActiveMenu(menu);
+      }, 400);
+    }
+  };
+
+  const handleMouseLeave = () => {
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+      timeoutRef.current = null;
+    }
+    timeoutRef.current = setTimeout(() => {
+      setActiveMenu(null);
+    }, 150);
+  };
+
   useEffect(() => {
     const handleScroll = () => {
-      handleMouseLeave();
-      // The top banner is only on the home page.
+      closeMenuImmediately();
+      const currentScrollY = window.scrollY;
+      const isScrollingUp = currentScrollY < lastScrollYRef.current;
       const threshold = pathname === '/' ? 36 : 0;
-      if (window.scrollY > threshold) {
-        setIsScrolled(true);
+      setIsScrolled(currentScrollY > threshold);
+
+      const footerEl = document.querySelector('footer');
+      if (footerEl) {
+        const footerRect = footerEl.getBoundingClientRect();
+        const headerHeight = headerRef.current?.offsetHeight || 80;
+
+        // When scrolling up, always show the navigation bar
+        if (isScrollingUp) {
+          setIsFooterHidden(false);
+        } else if (footerRect.top <= headerHeight) {
+          // Only hide when scrolling down AND the footer wrapper actually touches/reaches the navbar at top
+          setIsFooterHidden(true);
+        } else {
+          // Above the footer (e.g. over the cards/content), keep navbar visible
+          setIsFooterHidden(false);
+        }
       } else {
-        setIsScrolled(false);
+        setIsFooterHidden(false);
       }
+
+      lastScrollYRef.current = currentScrollY;
     };
-    
-    // Check initial scroll position
+
+    // Set initial scroll position
+    lastScrollYRef.current = window.scrollY;
     handleScroll();
-    
+
     window.addEventListener('scroll', handleScroll, { passive: true });
+    window.addEventListener('resize', handleScroll, { passive: true });
     return () => {
       window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('resize', handleScroll);
       if (timeoutRef.current) {
         clearTimeout(timeoutRef.current);
       }
@@ -70,8 +112,8 @@ export default function Navbar() {
   return (
     <>
       {/* Background Overlay */}
-      <div 
-        className={`${styles.navOverlay} ${activeMenu ? styles.navOverlayShow : ''}`} 
+      <div
+        className={`${styles.navOverlay} ${activeMenu ? styles.navOverlayShow : ''}`}
         onClick={handleMouseLeave}
       />
 
@@ -83,7 +125,10 @@ export default function Navbar() {
         </div>
       )}
 
-      <div className={`${styles.stickyHeader} ${isScrolled ? styles.scrolled : ''}`}>
+      <div
+        ref={headerRef}
+        className={`${styles.stickyHeader} ${isScrolled ? styles.scrolled : ''} ${isFooterHidden ? styles.navbarHidden : ''}`}
+      >
         {/* Navigation */}
         <nav className={styles.nav}>
           <Link href="/" className={styles.logo} style={{ textDecoration: 'none' }}>
@@ -101,8 +146,8 @@ export default function Navbar() {
         </nav>
 
         <nav className={styles.subNav}>
-          <div className={styles.navLinks}>
-            <div 
+          <div className={styles.subNavLinks}>
+            <div
               className={styles.navItem}
               onMouseEnter={() => handleMouseEnter('business')}
               onMouseLeave={handleMouseLeave}
@@ -145,109 +190,110 @@ export default function Navbar() {
                   </div>
                 </div>
 
-              {/* FITNESS COLUMN */}
-              <div className={styles.megaColumn}>
-                <div className={styles.megaTitle}>Fitness <span>›</span></div>
-                <div className={styles.megaList}>
-                  <Link href="#" className={styles.megaLink}><div className={styles.megaIcon}><MenuIcon /></div> Yoga</Link>
-                  <Link href="#" className={styles.megaLink}><div className={styles.megaIcon}><MenuIcon /></div> Gym</Link>
-                  <Link href="#" className={styles.megaLink}><div className={styles.megaIcon}><MenuIcon /></div> Personal Trainer</Link>
-                  <Link href="#" className={styles.megaLink}><div className={styles.megaIcon}><MenuIcon /></div> Martial Arts</Link>
-                  <Link href="#" className={styles.megaLink}><div className={styles.megaIcon}><MenuIcon /></div> Pilates</Link>
-                  <Link href="#" className={styles.megaLink}><div className={styles.megaIcon}><MenuIcon /></div> Barre Studio</Link>
-                  <Link href="#" className={styles.megaLink}><div className={styles.megaIcon}><MenuIcon /></div> Cross Training</Link>
-                  <Link href="#" className={styles.megaLink}><div className={styles.megaIcon}><MenuIcon /></div> Cycling</Link>
-                  <Link href="#" className={styles.megaLink}><div className={styles.megaIcon}><MenuIcon /></div> Dance Studio</Link>
+                {/* FITNESS COLUMN */}
+                <div className={styles.megaColumn}>
+                  <div className={styles.megaTitle}>Fitness <span>›</span></div>
+                  <div className={styles.megaList}>
+                    <Link href="#" className={styles.megaLink}><div className={styles.megaIcon}><MenuIcon /></div> Yoga</Link>
+                    <Link href="#" className={styles.megaLink}><div className={styles.megaIcon}><MenuIcon /></div> Gym</Link>
+                    <Link href="#" className={styles.megaLink}><div className={styles.megaIcon}><MenuIcon /></div> Personal Trainer</Link>
+                    <Link href="#" className={styles.megaLink}><div className={styles.megaIcon}><MenuIcon /></div> Martial Arts</Link>
+                    <Link href="#" className={styles.megaLink}><div className={styles.megaIcon}><MenuIcon /></div> Pilates</Link>
+                    <Link href="#" className={styles.megaLink}><div className={styles.megaIcon}><MenuIcon /></div> Barre Studio</Link>
+                    <Link href="#" className={styles.megaLink}><div className={styles.megaIcon}><MenuIcon /></div> Cross Training</Link>
+                    <Link href="#" className={styles.megaLink}><div className={styles.megaIcon}><MenuIcon /></div> Cycling</Link>
+                    <Link href="#" className={styles.megaLink}><div className={styles.megaIcon}><MenuIcon /></div> Dance Studio</Link>
+                    <Link href="#" className={styles.megaLink}><div className={styles.megaIcon}><MenuIcon /></div> Sports facility</Link>
+                  </div>
                 </div>
-              </div>
 
+              </div>
             </div>
-          </div>
 
 
-          <div 
-            className={styles.navItem}
-            onMouseEnter={() => handleMouseEnter('features')}
-            onMouseLeave={handleMouseLeave}
-          >
-            <div className={`${styles.navLink} ${activeMenu === 'features' ? styles.activeNavLink : ''}`}>Features</div>
-            <div className={`${styles.megaMenu} ${styles.megaMenuWide} ${activeMenu === 'features' ? styles.megaMenuShow : ''}`}>
+            <div
+              className={styles.navItem}
+              onMouseEnter={() => handleMouseEnter('features')}
+              onMouseLeave={handleMouseLeave}
+            >
+              <div className={`${styles.navLink} ${activeMenu === 'features' ? styles.activeNavLink : ''}`}>Features</div>
+              <div className={`${styles.megaMenu} ${styles.megaMenuWide} ${activeMenu === 'features' ? styles.megaMenuShow : ''}`}>
 
-              {/* RUN YOUR BUSINESS */}
-              <div className={styles.megaColumn}>
-                <div className={styles.megaTitle}>Run Your Business</div>
-                <div className={styles.megaListSingle}>
-                  <Link href="#" className={styles.megaLink}><div className={styles.megaIconPlain}><MenuIcon /></div> Calendar</Link>
-                  <Link href="#" className={styles.megaLink}><div className={styles.megaIconPlain}><MenuIcon /></div> E-Prescribe <span className={styles.badgeNew}>NEW</span></Link>
-                  <Link href="#" className={styles.megaLink}><div className={styles.megaIconPlain}><MenuIcon /></div> Reports</Link>
-                  <Link href="#" className={styles.megaLink}><div className={styles.megaIconPlain}><MenuIcon /></div> SOAP Notes</Link>
-                  <Link href="#" className={styles.megaLink}><div className={styles.megaIconPlain}><MenuIcon /></div> Vera AI <span className={styles.badgeNew}>NEW</span></Link>
-                  <Link href="#" className={styles.megaLink}><div className={styles.megaIconPlain}><MenuIcon /></div> Forms</Link>
-                  <Link href="#" className={styles.megaLink}><div className={styles.megaIconPlain}><MenuIcon /></div> Payroll</Link>
-                  <Link href="#" className={styles.megaLink}><div className={styles.megaIconPlain}><MenuIcon /></div> Employee Management</Link>
-                  <Link href="#" className={styles.megaLink}><div className={styles.megaIconPlain}><MenuIcon /></div> Free Data Transfer</Link>
+                {/* RUN YOUR BUSINESS */}
+                <div className={styles.megaColumn}>
+                  <div className={styles.megaTitle}>Run Your Business</div>
+                  <div className={styles.megaListSingle}>
+                    <Link href="#" className={styles.megaLink}><div className={styles.megaIconPlain}><MenuIcon /></div> Calendar</Link>
+                    <Link href="#" className={styles.megaLink}><div className={styles.megaIconPlain}><MenuIcon /></div> E-Prescribe <span className={styles.badgeNew}>NEW</span></Link>
+                    <Link href="#" className={styles.megaLink}><div className={styles.megaIconPlain}><MenuIcon /></div> Reports</Link>
+                    <Link href="#" className={styles.megaLink}><div className={styles.megaIconPlain}><MenuIcon /></div> SOAP Notes</Link>
+                    <Link href="#" className={styles.megaLink}><div className={styles.megaIconPlain}><MenuIcon /></div> Vera AI <span className={styles.badgeNew}>NEW</span></Link>
+                    <Link href="#" className={styles.megaLink}><div className={styles.megaIconPlain}><MenuIcon /></div> Forms</Link>
+                    <Link href="#" className={styles.megaLink}><div className={styles.megaIconPlain}><MenuIcon /></div> Payroll</Link>
+                    <Link href="#" className={styles.megaLink}><div className={styles.megaIconPlain}><MenuIcon /></div> Employee Management</Link>
+                    <Link href="#" className={styles.megaLink}><div className={styles.megaIconPlain}><MenuIcon /></div> Free Data Transfer</Link>
+                  </div>
                 </div>
-              </div>
 
-              {/* GROW YOUR BUSINESS */}
-              <div className={styles.megaColumn}>
-                <div className={styles.megaTitle}>Grow Your Business</div>
-                <div className={styles.megaListSingle}>
-                  <Link href="#" className={styles.megaLink}><div className={styles.megaIconPlain}><MenuIcon /></div> Marketplace</Link>
-                  <Link href="#" className={styles.megaLink}><div className={styles.megaIconPlain}><MenuIcon /></div> Online Store</Link>
-                  <Link href="#" className={styles.megaLink}><div className={styles.megaIconPlain}><MenuIcon /></div> Memberships</Link>
-                  <Link href="#" className={styles.megaLink}><div className={styles.megaIconPlain}><MenuIcon /></div> Inventory</Link>
-                  <Link href="#" className={styles.megaLink}><div className={styles.megaIconPlain}><MenuIcon /></div> PamperMe Capital</Link>
+                {/* GROW YOUR BUSINESS */}
+                <div className={styles.megaColumn}>
+                  <div className={styles.megaTitle}>Grow Your Business</div>
+                  <div className={styles.megaListSingle}>
+                    <Link href="#" className={styles.megaLink}><div className={styles.megaIconPlain}><MenuIcon /></div> Marketplace</Link>
+                    <Link href="#" className={styles.megaLink}><div className={styles.megaIconPlain}><MenuIcon /></div> Online Store</Link>
+                    <Link href="#" className={styles.megaLink}><div className={styles.megaIconPlain}><MenuIcon /></div> Memberships</Link>
+                    <Link href="#" className={styles.megaLink}><div className={styles.megaIconPlain}><MenuIcon /></div> Inventory</Link>
+                    <Link href="#" className={styles.megaLink}><div className={styles.megaIconPlain}><MenuIcon /></div> PamperMe Capital</Link>
+                  </div>
                 </div>
-              </div>
 
-              {/* SIMPLIFY PAYMENTS */}
-              <div className={styles.megaColumn}>
-                <div className={styles.megaTitle}>Simplify Payments</div>
-                <div className={styles.megaListSingle}>
-                  <Link href="#" className={styles.megaLink}><div className={styles.megaIconPlain}><MenuIcon /></div> PayPro (POS) <span className={styles.badgeNew}>NEW</span></Link>
-                  <Link href="#" className={styles.megaLink}><div className={styles.megaIconPlain}><MenuIcon /></div> Buy Now, Pay Later</Link>
-                  <Link href="#" className={styles.megaLink}><div className={styles.megaIconPlain}><MenuIcon /></div> Invoices</Link>
-                  <Link href="#" className={styles.megaLink}><div className={styles.megaIconPlain}><MenuIcon /></div> Payments</Link>
+                {/* SIMPLIFY PAYMENTS */}
+                <div className={styles.megaColumn}>
+                  <div className={styles.megaTitle}>Simplify Payments</div>
+                  <div className={styles.megaListSingle}>
+                    <Link href="#" className={styles.megaLink}><div className={styles.megaIconPlain}><MenuIcon /></div> PayPro (POS) <span className={styles.badgeNew}>NEW</span></Link>
+                    <Link href="#" className={styles.megaLink}><div className={styles.megaIconPlain}><MenuIcon /></div> Buy Now, Pay Later</Link>
+                    <Link href="#" className={styles.megaLink}><div className={styles.megaIconPlain}><MenuIcon /></div> Invoices</Link>
+                    <Link href="#" className={styles.megaLink}><div className={styles.megaIconPlain}><MenuIcon /></div> Payments</Link>
+                  </div>
                 </div>
-              </div>
 
-              {/* ELEVATE CLIENT EXPERIENCE */}
-              <div className={styles.megaColumn}>
-                <div className={styles.megaTitle}>Elevate Client Experience</div>
-                <div className={styles.megaListSingle}>
-                  <Link href="#" className={styles.megaLink}><div className={styles.megaIconPlain}><MenuIcon /></div> Online Booking</Link>
-                  <Link href="#" className={styles.megaLink}><div className={styles.megaIconPlain}><MenuIcon /></div> Customer Tracking</Link>
-                  <Link href="#" className={styles.megaLink}><div className={styles.megaIconPlain}><MenuIcon /></div> PamperMe Connect</Link>
-                  <Link href="#" className={styles.megaLink}><div className={styles.megaIconPlain}><MenuIcon /></div> Notifications</Link>
-                  <Link href="#" className={styles.megaLink}><div className={styles.megaIconPlain}><MenuIcon /></div> Live Stream</Link>
-                  <Link href="#" className={styles.megaLink}><div className={styles.megaIconPlain}><MenuIcon /></div> Mobile Apps</Link>
+                {/* ELEVATE CLIENT EXPERIENCE */}
+                <div className={styles.megaColumn}>
+                  <div className={styles.megaTitle}>Elevate Client Experience</div>
+                  <div className={styles.megaListSingle}>
+                    <Link href="#" className={styles.megaLink}><div className={styles.megaIconPlain}><MenuIcon /></div> Online Booking</Link>
+                    <Link href="#" className={styles.megaLink}><div className={styles.megaIconPlain}><MenuIcon /></div> Customer Tracking</Link>
+                    <Link href="#" className={styles.megaLink}><div className={styles.megaIconPlain}><MenuIcon /></div> PamperMe Connect</Link>
+                    <Link href="#" className={styles.megaLink}><div className={styles.megaIconPlain}><MenuIcon /></div> Notifications</Link>
+                    <Link href="#" className={styles.megaLink}><div className={styles.megaIconPlain}><MenuIcon /></div> Live Stream</Link>
+                    <Link href="#" className={styles.megaLink}><div className={styles.megaIconPlain}><MenuIcon /></div> Mobile Apps</Link>
+                  </div>
                 </div>
-              </div>
 
-              {/* BUILD YOUR BRAND */}
-              <div className={styles.megaColumn}>
-                <div className={styles.megaTitle}>Build Your Brand</div>
-                <div className={styles.megaListSingle}>
-                  <Link href="#" className={styles.megaLink}><div className={styles.megaIconPlain}><MenuIcon /></div> MySite</Link>
-                  <Link href="#" className={styles.megaLink}><div className={styles.megaIconPlain}><MenuIcon /></div> Marketing</Link>
-                  <Link href="#" className={styles.megaLink}><div className={styles.megaIconPlain}><MenuIcon /></div> Email Marketing</Link>
-                  <Link href="#" className={styles.megaLink}><div className={styles.megaIconPlain}><MenuIcon /></div> Text Marketing</Link>
-                  <Link href="#" className={styles.megaLink}><div className={styles.megaIconPlain}><MenuIcon /></div> Design Services</Link>
-                  <Link href="#" className={styles.megaLink}><div className={styles.megaIconPlain}><MenuIcon /></div> Branded App</Link>
+                {/* BUILD YOUR BRAND */}
+                <div className={styles.megaColumn}>
+                  <div className={styles.megaTitle}>Build Your Brand</div>
+                  <div className={styles.megaListSingle}>
+                    <Link href="#" className={styles.megaLink}><div className={styles.megaIconPlain}><MenuIcon /></div> MySite</Link>
+                    <Link href="#" className={styles.megaLink}><div className={styles.megaIconPlain}><MenuIcon /></div> Marketing</Link>
+                    <Link href="#" className={styles.megaLink}><div className={styles.megaIconPlain}><MenuIcon /></div> Email Marketing</Link>
+                    <Link href="#" className={styles.megaLink}><div className={styles.megaIconPlain}><MenuIcon /></div> Text Marketing</Link>
+                    <Link href="#" className={styles.megaLink}><div className={styles.megaIconPlain}><MenuIcon /></div> Design Services</Link>
+                    <Link href="#" className={styles.megaLink}><div className={styles.megaIconPlain}><MenuIcon /></div> Branded App</Link>
+                  </div>
                 </div>
-              </div>
 
+              </div>
             </div>
+            <Link href="#products" className={styles.navLink} onMouseEnter={closeMenuImmediately}>Products</Link>
+            <Link href="#multi-location" className={styles.navLink} onMouseEnter={closeMenuImmediately}>Multi-location</Link>
+            <Link href="/pricing" className={styles.navLink} onMouseEnter={closeMenuImmediately}>Pricing</Link>
+            <Link href="#Contact Sales" className={styles.navLink} onMouseEnter={closeMenuImmediately}>Contact Sales</Link>
+            <Link href="#Support" className={styles.navLink} onMouseEnter={closeMenuImmediately}>Support</Link>
+            <Link href="#Resources" className={styles.navLink} onMouseEnter={closeMenuImmediately}>Resources</Link>
           </div>
-          <Link href="#products" className={styles.navLink}>Products</Link>
-          <Link href="#multi-location" className={styles.navLink}>Multi-location</Link>
-          <Link href="/pricing" className={styles.navLink}>Pricing</Link>
-          <Link href="#Contact Sales" className={styles.navLink}>Contact Sales</Link>
-          <Link href="#Support" className={styles.navLink}>Support</Link>
-          <Link href="#Resources" className={styles.navLink}>Resources</Link>
-        </div>
-      </nav>
+        </nav>
       </div>
     </>
   );

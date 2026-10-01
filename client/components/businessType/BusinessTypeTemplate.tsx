@@ -533,7 +533,7 @@ export default function BusinessTypeTemplate({
             8. "A PLATFORM SUITABLE FOR ALL" - CONTINUOUS DUAL MARQUEE SHOWCASE
             ========================================================================== */}
         <section className={styles.platformSection}>
-          <h2 className={styles.platformTitle}>A platform suitable for all</h2>
+          <h2 className={styles.platformTitle}>The right fit for all</h2>
 
           <div className={styles.marqueeWrapper}>
             {/* Top Row: Right to Left Marquee */}
@@ -573,15 +573,15 @@ export default function BusinessTypeTemplate({
               <div className={`${styles.marqueeTrack} ${styles.marqueeRight}`}>
                 {[
                   { title: "Personal Trainer", image: "/fitness.jpg", href: "#" },
-                  { title: "Fitness", image: "/fitness.jpg", href: "#" },
                   { title: "Spa", image: "/spa-hero.jpg", href: "#" },
                   { title: "Massage Salon", image: "/wellness.jpg", href: "#" },
+                  { title: "Fitness", image: "/fitness.jpg", href: "#" },
                   { title: "Tanning Studios", image: "/salon_interior_modern.jpg", href: "#" },
                   // Duplicated for seamless infinite loop
                   { title: "Personal Trainer", image: "/fitness.jpg", href: "#" },
-                  { title: "Fitness", image: "/fitness.jpg", href: "#" },
                   { title: "Spa", image: "/spa-hero.jpg", href: "#" },
                   { title: "Massage Salon", image: "/wellness.jpg", href: "#" },
+                  { title: "Fitness", image: "/fitness.jpg", href: "#" },
                   { title: "Tanning Studios", image: "/salon_interior_modern.jpg", href: "#" },
                 ].map((item, idx) => (
                   <Link key={`row2-${idx}`} href={item.href} className={styles.platformCard}>
@@ -606,7 +606,7 @@ export default function BusinessTypeTemplate({
             9. FAQ ACCORDION SECTION (Reference-matched Design)
             ========================================================================== */}
         <section className={styles.faqSection}>
-          <h2 className={styles.faqTitle}>{categoryName || "Salon"} Software & App FAQ</h2>
+          <h2 className={styles.faqTitle}>FAQ</h2>
 
           <div className={styles.faqList}>
             {FAQ_ITEMS.map((item, index) => {

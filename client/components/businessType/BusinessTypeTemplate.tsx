@@ -530,57 +530,75 @@ export default function BusinessTypeTemplate({
         </section>
 
         {/* ==========================================================================
-            8. INDUSTRY SWITCHER
+            8. "A PLATFORM SUITABLE FOR ALL" - CONTINUOUS DUAL MARQUEE SHOWCASE
             ========================================================================== */}
-        <section className={styles.industrySwitcherSection}>
-          <div className={styles.sectionHeader}>
-            <div className={styles.sectionEyebrow}>EXPLORE PAMPERME</div>
-            <h2 className={styles.sectionHeading}>Built for all beauty and wellness businesses</h2>
-            <p className={styles.sectionDesc}>
-              Discover how pamperMe provides specialized features tailored to your industry.
-            </p>
-          </div>
+        <section className={styles.platformSection}>
+          <h2 className={styles.platformTitle}>A platform suitable for all</h2>
 
-          <div className={styles.industryGrid}>
-            <Link href="/salon" className={styles.industryBox}>
-              <div className={styles.industryBoxTitle}>
-                <span>Hair Salons</span>
-                <span>›</span>
+          <div className={styles.marqueeWrapper}>
+            {/* Top Row: Right to Left Marquee */}
+            <div className={styles.marqueeRow}>
+              <div className={`${styles.marqueeTrack} ${styles.marqueeLeft}`}>
+                {[
+                  { title: "Barbers", image: "/cat_barbers.jpg", href: "#" },
+                  { title: "Waxing Salon", image: "/beauty.jpg", href: "#" },
+                  { title: "Medspa", image: "/cat_medspa.jpg", href: "#" },
+                  { title: "Eyebrow Bar", image: "/cat_eyebrow.jpg", href: "#" },
+                  { title: "Hair Salon", image: "/salon_hero_stylist.jpg", href: "/salon" },
+                  // Duplicated for seamless infinite loop
+                  { title: "Barbers", image: "/cat_barbers.jpg", href: "#" },
+                  { title: "Waxing Salon", image: "/beauty.jpg", href: "#" },
+                  { title: "Medspa", image: "/cat_medspa.jpg", href: "#" },
+                  { title: "Eyebrow Bar", image: "/cat_eyebrow.jpg", href: "#" },
+                  { title: "Hair Salon", image: "/salon_hero_stylist.jpg", href: "/salon" },
+                ].map((item, idx) => (
+                  <Link key={`row1-${idx}`} href={item.href} className={styles.platformCard}>
+                    <Image
+                      src={item.image}
+                      alt={item.title}
+                      fill
+                      sizes="300px"
+                      className={styles.platformCardImage}
+                    />
+                    <div className={styles.platformCardOverlay}>
+                      <span className={styles.platformCardTitle}>{item.title}</span>
+                    </div>
+                  </Link>
+                ))}
               </div>
-              <div className={styles.industryBoxSubtitle}>
-                Booth rentals, formulas, and stylist commission tracking.
-              </div>
-            </Link>
+            </div>
 
-            <Link href="#" className={styles.industryBox}>
-              <div className={styles.industryBoxTitle}>
-                <span>Barbershops</span>
-                <span>›</span>
+            {/* Bottom Row: Left to Right Marquee */}
+            <div className={styles.marqueeRow}>
+              <div className={`${styles.marqueeTrack} ${styles.marqueeRight}`}>
+                {[
+                  { title: "Personal Trainer", image: "/fitness.jpg", href: "#" },
+                  { title: "Fitness", image: "/fitness.jpg", href: "#" },
+                  { title: "Spa", image: "/spa-hero.jpg", href: "#" },
+                  { title: "Massage Salon", image: "/wellness.jpg", href: "#" },
+                  { title: "Tanning Studios", image: "/salon_interior_modern.jpg", href: "#" },
+                  // Duplicated for seamless infinite loop
+                  { title: "Personal Trainer", image: "/fitness.jpg", href: "#" },
+                  { title: "Fitness", image: "/fitness.jpg", href: "#" },
+                  { title: "Spa", image: "/spa-hero.jpg", href: "#" },
+                  { title: "Massage Salon", image: "/wellness.jpg", href: "#" },
+                  { title: "Tanning Studios", image: "/salon_interior_modern.jpg", href: "#" },
+                ].map((item, idx) => (
+                  <Link key={`row2-${idx}`} href={item.href} className={styles.platformCard}>
+                    <Image
+                      src={item.image}
+                      alt={item.title}
+                      fill
+                      sizes="300px"
+                      className={styles.platformCardImage}
+                    />
+                    <div className={styles.platformCardOverlay}>
+                      <span className={styles.platformCardTitle}>{item.title}</span>
+                    </div>
+                  </Link>
+                ))}
               </div>
-              <div className={styles.industryBoxSubtitle}>
-                Fast chair turnover, walk-in queues, and contactless tips.
-              </div>
-            </Link>
-
-            <Link href="#" className={styles.industryBox}>
-              <div className={styles.industryBoxTitle}>
-                <span>Nail Salons</span>
-                <span>›</span>
-              </div>
-              <div className={styles.industryBoxSubtitle}>
-                Group bookings, multi-tech services, and package deals.
-              </div>
-            </Link>
-
-            <Link href="#" className={styles.industryBox}>
-              <div className={styles.industryBoxTitle}>
-                <span>Spa & Med Spas</span>
-                <span>›</span>
-              </div>
-              <div className={styles.industryBoxSubtitle}>
-                HIPAA compliant SOAP notes, packages, and memberships.
-              </div>
-            </Link>
+            </div>
           </div>
         </section>
 

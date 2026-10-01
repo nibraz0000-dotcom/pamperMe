@@ -626,51 +626,127 @@
 }
 
 /* ==========================================================================
-   Industry Switcher Cards
+   Platform Suitable for All (Dual-Direction Continuous Marquee)
    ========================================================================== */
-.industrySwitcherSection {
-  background: #f8fafc;
-  padding: 5.5rem 5%;
+.platformSection {
+  background: #ffffff;
+  padding: 5.5rem 0 6rem 0;
   width: 100%;
-  border-top: 1px solid #e2e8f0;
+  overflow: hidden;
   box-sizing: border-box;
 }
 
-.industryGrid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 1.5rem;
-  max-width: 1280px;
-  margin: 0 auto;
+.platformTitle {
+  font-size: clamp(2.2rem, 4vw, 3.2rem);
+  font-weight: 800;
+  text-align: center;
+  color: #0f172a;
+  letter-spacing: -0.03em;
+  margin-bottom: 3.5rem;
+  padding: 0 5%;
 }
 
-.industryBox {
-  background: #ffffff;
-  border: 1px solid #e2e8f0;
-  border-radius: 18px;
-  padding: 1.75rem 1.5rem;
-  text-decoration: none;
-  color: #0f172a;
-  transition: all 0.25s ease;
+.marqueeWrapper {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
+  gap: 1.5rem;
+  width: 100%;
+  overflow: hidden;
+  position: relative;
+  mask-image: linear-gradient(to right, transparent, black 4%, black 96%, transparent);
+  -webkit-mask-image: linear-gradient(to right, transparent, black 4%, black 96%, transparent);
 }
 
-.industryBox:hover {
-  transform: translateY(-4px);
-  border-color: #c62c3f;
-  box-shadow: 0 8px 24px rgba(198, 44, 63, 0.08);
+.marqueeRow {
+  display: flex;
+  overflow: hidden;
+  width: 100%;
+  user-select: none;
 }
 
-.industryBoxTitle {
+.marqueeTrack {
+  display: flex;
+  gap: 1.5rem;
+  flex-shrink: 0;
+  will-change: transform;
+}
+
+.marqueeLeft {
+  animation: scrollLeft 38s linear infinite;
+}
+
+.marqueeRight {
+  animation: scrollRight 38s linear infinite;
+}
+
+.marqueeRow:hover .marqueeTrack {
+  animation-play-state: paused;
+}
+
+@keyframes scrollLeft {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes scrollRight {
+  0% {
+    transform: translateX(-50%);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+.platformCard {
+  position: relative;
+  width: 300px;
+  height: 180px;
+  border-radius: 18px;
+  overflow: hidden;
+  flex-shrink: 0;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
+  text-decoration: none;
+  display: block;
+  background: #0f172a;
+}
+
+.platformCard:hover {
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: 0 14px 32px rgba(0, 0, 0, 0.18);
+}
+
+.platformCardImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+
+.platformCard:hover .platformCardImage {
+  transform: scale(1.06);
+}
+
+.platformCardOverlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.85) 0%, rgba(0, 0, 0, 0.3) 45%, transparent 80%);
+  display: flex;
+  align-items: flex-end;
+  padding: 1.25rem 1.5rem;
+  z-index: 2;
+}
+
+.platformCardTitle {
   font-size: 1.15rem;
   font-weight: 700;
-  color: #0f172a;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+  color: #ffffff;
+  letter-spacing: -0.01em;
 }
 
 /* ==========================================================================

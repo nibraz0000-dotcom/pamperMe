@@ -160,7 +160,7 @@ export default function Navbar() {
                   <div className={styles.megaTitle}>Beauty <span>›</span></div>
                   <div className={styles.megaList}>
                     <Link href="#" className={styles.megaLink}><div className={styles.megaIcon}><MenuIcon /></div> Booth Renter</Link>
-                    <Link href="#" className={styles.megaLink}><div className={styles.megaIcon}><MenuIcon /></div> Salon</Link>
+                    <Link href="/salon" className={styles.megaLink}><div className={styles.megaIcon}><MenuIcon /></div> Salon</Link>
                     <Link href="#" className={styles.megaLink}><div className={styles.megaIcon}><MenuIcon /></div> Brow & Lash</Link>
                     <Link href="#" className={styles.megaLink}><div className={styles.megaIcon}><MenuIcon /></div> Barber</Link>
                     <Link href="#" className={styles.megaLink}><div className={styles.megaIcon}><MenuIcon /></div> Nail</Link>

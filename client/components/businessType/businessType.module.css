@@ -5,7 +5,7 @@
   flex-direction: column;
   background-color: #ffffff;
   color: #0f172a;
-  overflow-x: hidden;
+  overflow-x: clip;
   box-sizing: border-box;
 }
 
@@ -14,61 +14,58 @@
    ========================================================================== */
 .heroSection {
   width: 100%;
-  background: linear-gradient(135deg, #37184e 0%, #6e1c4e 40%, #c62c3f 85%, #d94254 100%);
+  min-height: calc(100vh - 80px);
+  min-height: calc(100dvh - 80px);
+  background: linear-gradient(120deg, #c79284 0%, #b87b6e 45%, #a66a5e 100%);
   color: #ffffff;
-  padding: 4.5rem 5% 4rem 5%;
+  padding: 3.5rem 5%;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  text-align: center;
+  justify-content: center;
+  align-items: flex-start;
+  text-align: left;
   position: relative;
   overflow: hidden;
   box-sizing: border-box;
 }
 
-.heroBadge {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  background: rgba(255, 255, 255, 0.15);
-  border: 1px solid rgba(255, 255, 255, 0.25);
-  backdrop-filter: blur(10px);
-  padding: 6px 16px;
-  border-radius: 9999px;
-  font-size: 0.82rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  margin-bottom: 1.5rem;
-  color: #ffffff;
+.heroContentLeft {
+  width: 100%;
+  max-width: 780px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
 }
 
 .heroTitle {
-  font-size: clamp(2.4rem, 5vw, 4rem);
-  font-weight: 800;
-  line-height: 1.12;
-  letter-spacing: -0.03em;
-  max-width: 920px;
-  margin: 0 auto 1.5rem auto;
+  font-family: var(--font-serif, "Playfair Display"), Georgia, serif;
+  font-size: clamp(2.5rem, 4.8vw, 4.1rem);
+  font-weight: 500;
+  line-height: 1.14;
+  letter-spacing: -0.015em;
+  margin: 0 0 1.35rem 0;
   color: #ffffff;
+  text-align: left;
 }
 
 .heroSubtitle {
-  font-size: clamp(1.05rem, 2vw, 1.25rem);
-  line-height: 1.6;
-  max-width: 720px;
-  margin: 0 auto 2.5rem auto;
-  color: rgba(255, 255, 255, 0.9);
+  font-family: var(--font-primary), sans-serif;
+  font-size: clamp(1rem, 1.5vw, 1.15rem);
+  line-height: 1.65;
+  max-width: 580px;
+  margin: 0 0 2rem 0;
+  color: rgba(255, 255, 255, 0.92);
   font-weight: 400;
+  text-align: left;
 }
 
 .heroActions {
   display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 1rem;
-  flex-wrap: wrap;
-  margin-bottom: 3.5rem;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.65rem;
+  margin-bottom: 0;
 }
 
 .primaryBtn {
@@ -77,22 +74,29 @@
   justify-content: center;
   gap: 8px;
   background: #ffffff;
-  color: #0f172a;
-  font-weight: 700;
-  font-size: 1rem;
-  padding: 14px 28px;
+  color: #1c1917;
+  font-weight: 600;
+  font-size: 0.95rem;
+  padding: 13px 30px;
   border-radius: 9999px;
   text-decoration: none;
   border: none;
   cursor: pointer;
   transition: all 0.25s ease;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
 }
 
 .primaryBtn:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 22px rgba(0, 0, 0, 0.3);
-  background: #f8fafc;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.18);
+  background: #fdfaf9;
+}
+
+.heroMicrocopy {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.85);
+  font-weight: 400;
+  letter-spacing: 0.01em;
 }
 
 .secondaryBtn {
@@ -168,43 +172,165 @@
   border: 1px solid rgba(255, 255, 255, 0.15);
 }
 
-/* Social Proof Bar */
+/* ==========================================================================
+   Brand Partners / Social Proof Marquee with 3D Flip Cards
+   ========================================================================== */
 .pressBar {
   width: 100%;
-  background: #f8fafc;
-  border-bottom: 1px solid #e2e8f0;
-  padding: 2.25rem 5%;
+  background: #f6f3ec;
+  border-bottom: 1px solid #e8e3d8;
+  padding: 3.25rem 0 3.75rem 0;
   text-align: center;
   box-sizing: border-box;
+  overflow: hidden;
+  position: relative;
 }
 
 .pressTitle {
   font-size: 0.82rem;
   font-weight: 700;
-  color: #64748b;
-  letter-spacing: 0.06em;
+  color: #7c685b;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
-  margin-bottom: 1.5rem;
+  margin-bottom: 2rem;
+  padding: 0 5%;
 }
 
-.pressLogos {
+.brandMarqueeWrapper {
+  width: 100%;
+  overflow: hidden;
   display: flex;
-  justify-content: center;
+  position: relative;
+  mask-image: linear-gradient(to right, transparent, black 4%, black 96%, transparent);
+  -webkit-mask-image: linear-gradient(to right, transparent, black 4%, black 96%, transparent);
+}
+
+.brandMarqueeTrack {
+  display: flex;
+  width: max-content;
+  animation: brandScroll 42s linear infinite;
+  padding: 8px 0;
+}
+
+.brandMarqueeGroup {
+  display: flex;
+  gap: 0.4rem;
+  padding-right: 0.4rem;
+  flex-shrink: 0;
+}
+
+.brandMarqueeWrapper:hover .brandMarqueeTrack {
+  animation-play-state: paused;
+}
+
+@keyframes brandScroll {
+  0% {
+    transform: translateX(0);
+  }
+
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.brandCardContainer {
+  perspective: 1000px;
+  width: 220px;
+  height: 290px;
+  flex-shrink: 0;
+  cursor: pointer;
+}
+
+.brandCardInner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  transition: transform 0.65s cubic-bezier(0.34, 1.56, 0.64, 1);
+  border-radius: 0;
+}
+
+.brandCardContainer:hover .brandCardInner {
+  transform: rotateY(180deg);
+}
+
+.brandCardFront,
+.brandCardBack {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  border-radius: 0;
+}
+
+/* Front Face */
+.brandCardFront {
+  background: #ffffff;
+  border: 1px solid #e7e2d7;
+  display: flex;
   align-items: center;
-  gap: 3.5rem;
-  flex-wrap: wrap;
+  justify-content: center;
+  padding: 1.5rem 1.25rem;
+  box-shadow: none;
+  box-sizing: border-box;
 }
 
-.pressLogo {
-  font-size: 1.35rem;
-  font-weight: 800;
-  color: #94a3b8;
+.brandHeaderInline {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+}
+
+.brandIconInline {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: #3d1a14;
+}
+
+.brandNameInline {
+  font-family: var(--font-geist-mono), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #3d1a14;
+  line-height: 1.25;
+  text-align: left;
+  white-space: nowrap;
   letter-spacing: -0.02em;
-  transition: color 0.2s ease;
 }
 
-.pressLogo:hover {
-  color: #334155;
+/* Back Face (Flipped) - Inverted Color Scheme */
+.brandCardBack {
+  transform: rotateY(180deg);
+  overflow: hidden;
+  background: #3d1a14;
+  border: 1px solid #3d1a14;
+  box-shadow: none;
+  padding: 1.5rem 1.25rem;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.brandBackDescText {
+  font-family: var(--font-primary), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 0.84rem;
+  font-weight: 500;
+  color: #ffffff;
+  line-height: 1.45;
+  letter-spacing: -0.01em;
+  text-align: center;
+  text-wrap: balance;
+  margin: 0;
+  padding: 0 0.25rem;
+  max-width: 100%;
 }
 
 /* ==========================================================================
@@ -222,6 +348,16 @@
   text-align: center;
   max-width: 800px;
   margin: 0 auto 3.5rem auto;
+}
+
+.overviewHeading {
+  font-size: clamp(2.2rem, 4vw, 3.2rem);
+  font-weight: 800;
+  line-height: 1.15;
+  letter-spacing: -0.03em;
+  color: #0f172a;
+  margin: 0;
+  text-align: center;
 }
 
 .sectionEyebrow {
@@ -306,118 +442,220 @@
 }
 
 /* ==========================================================================
-   Video Story & Social Proof Section
+   No Extra Charge Feature Matrix Section (Canva/Figma Card Replica)
    ========================================================================== */
-.storiesSection {
-  background: #f8fafc;
-  border-top: 1px solid #e2e8f0;
-  border-bottom: 1px solid #e2e8f0;
-  padding: 5rem 5%;
+.noExtraChargeSection {
+  max-width: 1240px;
   width: 100%;
+  margin: 4.5rem auto;
+  border-radius: 28px;
+  min-height: calc(100vh - 80px);
+  min-height: calc(100dvh - 80px);
+  background: linear-gradient(180deg, #23272e 0%, #1b2026 35%, #13262c 68%, #0d464f 88%, #095960 100%);
+  color: #ffffff;
+  padding: 4.5rem 4rem 5rem 4rem;
+  box-sizing: border-box;
+  overflow: hidden;
+  box-shadow: 0 24px 60px rgba(9, 89, 96, 0.2), 0 12px 32px rgba(0, 0, 0, 0.28);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: max-width 0.45s cubic-bezier(0.16, 1, 0.3, 1),
+    border-radius 0.45s cubic-bezier(0.16, 1, 0.3, 1),
+    margin 0.45s cubic-bezier(0.16, 1, 0.3, 1),
+    padding 0.45s cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 0.45s ease;
+}
+
+.noExtraChargeSection.expanded {
+  max-width: 100%;
+  margin: 0 auto;
+  border-radius: 0;
+  border-left: none;
+  border-right: none;
+  box-shadow: none;
+  padding: 4rem 6% 4.5rem 6%;
+}
+
+.noExtraChargeBlockHeader {
+  max-width: 800px;
+  margin: 0 auto 2.5rem auto;
+  display: flex;
+  justify-content: center;
+  text-align: center;
   box-sizing: border-box;
 }
 
-.storiesContainer {
-  max-width: 1280px;
-  margin: 0 auto;
-}
-
-.videoBannerCard {
-  width: 100%;
-  background: #000000;
-  border-radius: 24px;
-  overflow: hidden;
-  position: relative;
-  aspect-ratio: 16/7;
-  margin-bottom: 2.5rem;
-  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.15);
+.noExtraChargeHeaderCol {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
-}
-
-.videoBannerOverlay {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(to right, rgba(0, 0, 0, 0.75) 0%, rgba(0, 0, 0, 0.3) 100%);
-  z-index: 1;
-}
-
-.videoBannerContent {
-  position: relative;
-  z-index: 2;
   text-align: center;
-  color: #ffffff;
-  padding: 2rem;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1rem;
 }
 
-.playCircleBtn {
-  width: 64px;
-  height: 64px;
-  background: #ffffff;
-  color: #c62c3f;
-  border-radius: 50%;
+.noExtraChargeHeading {
+  font-family: var(--font-serif, "Playfair Display"), Georgia, serif;
+  font-style: italic;
+  font-weight: 800;
+  font-size: clamp(2.2rem, 4vw, 3.5rem);
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  color: #ffffff;
+  text-transform: uppercase;
+  text-align: center;
+}
+
+/* Block 2: 4-Row Feature Matrix with Edge-to-Edge Divider Lines */
+.noExtraChargeBlockMatrix {
+  width: calc(100% + 8rem);
+  margin: 0 -4rem 3rem -4rem;
+  padding: 0 4rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.16);
+  box-sizing: border-box;
+}
+
+.noExtraChargeSection.expanded .noExtraChargeBlockMatrix {
+  width: calc(100% + 12vw);
+  margin: 0 -6vw 3rem -6vw;
+  padding: 0 6vw;
+}
+
+.noExtraChargeRow {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.16);
+  padding: 1.75rem 0;
+  gap: 2rem;
+  align-items: center;
+}
+
+.noExtraChargeCol {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.scissorsIconWrap {
+  color: #ffffff;
   display: flex;
   align-items: center;
   justify-content: center;
-  cursor: pointer;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
-  transition: transform 0.25s ease, box-shadow 0.25s ease;
-  border: none;
+  flex-shrink: 0;
+  opacity: 0.95;
 }
 
-.playCircleBtn:hover {
-  transform: scale(1.1);
-  box-shadow: 0 12px 30px rgba(198, 44, 63, 0.4);
+.noExtraChargeText {
+  color: #ffffff;
+  font-size: 0.96rem;
+  font-weight: 700;
+  line-height: 1.35;
+  letter-spacing: -0.01em;
 }
 
-.videoStoryGrid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 2rem;
-}
-
-.storyCard {
-  background: #ffffff;
-  border: 1px solid #e2e8f0;
-  border-radius: 20px;
-  overflow: hidden;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.04);
+/* Block 3: CTA & Disclaimers Footer */
+.noExtraChargeBlockFooter {
+  max-width: 100%;
+  margin: 0 auto;
+  text-align: center;
   display: flex;
   flex-direction: column;
+  align-items: center;
+  box-sizing: border-box;
 }
 
-.storyImageWrap {
-  position: relative;
-  aspect-ratio: 16/9;
-  width: 100%;
-}
-
-.storyCardBody {
-  padding: 1.75rem;
-}
-
-.storyQuote {
-  font-size: 1.05rem;
-  font-weight: 600;
-  color: #1e293b;
-  line-height: 1.5;
-  margin-bottom: 1rem;
-}
-
-.storyAuthor {
-  font-size: 0.88rem;
-  font-weight: 700;
+.seeFeaturesBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #e2fc7a;
   color: #0f172a;
+  font-weight: 700;
+  font-size: 1.05rem;
+  padding: 15px 36px;
+  border-radius: 9999px;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
 }
 
-.storySalon {
-  font-size: 0.8rem;
-  color: #64748b;
+.seeFeaturesBtn:hover {
+  background: #d7f95d;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 28px rgba(226, 252, 122, 0.4);
+}
+
+.noExtraChargeHint {
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 0.92rem;
+  font-weight: 500;
+  margin-top: 12px;
+}
+
+.noExtraChargeDisclaimer {
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 0.76rem;
+  line-height: 1.6;
+  margin-top: 16px;
+  max-width: 780px;
+  text-align: center;
+}
+
+@media (max-width: 1320px) {
+  .noExtraChargeSection {
+    margin: 3.5rem 4%;
+    padding: 4rem 2.5rem;
+  }
+
+  .noExtraChargeBlockMatrix {
+    width: calc(100% + 5rem);
+    margin: 0 -2.5rem 3rem -2.5rem;
+    padding: 0 2.5rem;
+  }
+
+  .noExtraChargeSection.expanded .noExtraChargeBlockMatrix {
+    width: calc(100% + 5rem);
+    margin: 0 -2.5rem 3rem -2.5rem;
+    padding: 0 2.5rem;
+  }
+}
+
+@media (max-width: 900px) {
+  .noExtraChargeSection {
+    margin: 2.5rem 1.25rem;
+    padding: 3rem 1.5rem;
+    border-radius: 20px;
+    min-height: auto;
+  }
+
+  .noExtraChargeSection.expanded {
+    padding: 3rem 1.5rem;
+    margin: 0;
+    border-radius: 0;
+  }
+
+  .noExtraChargeBlockHeader {
+    text-align: center;
+  }
+
+  .noExtraChargeBlockMatrix {
+    width: calc(100% + 3rem);
+    margin: 0 -1.5rem 2.5rem -1.5rem;
+    padding: 0 1.5rem;
+  }
+
+  .noExtraChargeSection.expanded .noExtraChargeBlockMatrix {
+    width: calc(100% + 3rem);
+    margin: 0 -1.5rem 2.5rem -1.5rem;
+    padding: 0 1.5rem;
+  }
+
+  .noExtraChargeRow {
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+    padding: 1.25rem 0;
+  }
 }
 
 /* ==========================================================================
@@ -526,7 +764,7 @@
   direction: rtl;
 }
 
-.featureRowReverse > * {
+.featureRowReverse>* {
   direction: ltr;
 }
 
@@ -687,6 +925,7 @@
   0% {
     transform: translateX(0);
   }
+
   100% {
     transform: translateX(-50%);
   }
@@ -696,6 +935,7 @@
   0% {
     transform: translateX(-50%);
   }
+
   100% {
     transform: translateX(0);
   }
@@ -825,6 +1065,7 @@
     opacity: 0;
     transform: translateY(-6px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -869,29 +1110,161 @@
 }
 
 /* ==========================================================================
+   "Professionalism in Every Move" - Community CTA Banner
+   ========================================================================== */
+.makeTimeSection {
+  width: 100%;
+  max-width: 1380px;
+  margin: 3.2rem auto 4.5rem auto;
+  padding: 0 0.875rem;
+  min-height: calc(100vh - 80px);
+  min-height: calc(100dvh - 80px);
+  background: transparent;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  box-sizing: border-box;
+}
+
+.makeTimeCrowdWrapper {
+  width: 100%;
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 0;
+  flex: 1;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  position: relative;
+  z-index: 2;
+  margin-bottom: -1px;
+  box-sizing: border-box;
+}
+
+.makeTimeCrowdImg {
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+  max-height: 58vh;
+  display: block;
+  object-fit: contain;
+  object-position: center bottom;
+}
+
+.makeTimeBanner {
+  width: 100%;
+  max-width: 100%;
+  margin: 0 auto;
+  background: linear-gradient(135deg, #6cb4ee 0%, #5ea4dd 100%);
+  color: #ffffff;
+  padding: 2.25rem 3rem 2.5rem 3rem;
+  border-radius: 28px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.25rem;
+  position: relative;
+  z-index: 1;
+  box-sizing: border-box;
+  flex-shrink: 0;
+}
+
+.makeTimeHeading {
+  font-family: var(--font-primary), sans-serif;
+  font-size: clamp(1.8rem, 3.2vw, 2.6rem);
+  font-weight: 800;
+  color: #ffffff;
+  letter-spacing: -0.02em;
+  margin: 0;
+  text-align: center;
+  line-height: 1.18;
+}
+
+.makeTimeStoreBadgesRow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.makeTimeStoreBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
+  background-color: #0f172a;
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  border-radius: 9px;
+  padding: 7px 18px;
+  text-decoration: none;
+  color: #ffffff;
+  transition: all 0.25s ease;
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.35);
+}
+
+.makeTimeStoreBadge:hover {
+  background-color: #000000;
+  border-color: #ffffff;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(15, 23, 42, 0.5);
+}
+
+.makeTimeStoreBadgeText {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  line-height: 1.05;
+}
+
+.makeTimeStoreBadgeSubtitle {
+  font-size: 0.58rem;
+  font-weight: 600;
+  color: #d1d5db;
+  text-transform: uppercase;
+  margin-bottom: 3px;
+  letter-spacing: 0.03em;
+}
+
+.makeTimeStoreBadgeTitle {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: -0.01em;
+}
+
+/* ==========================================================================
    Responsive Breakpoints
    ========================================================================== */
 @media (max-width: 1024px) {
   .heroCardsRow {
     grid-template-columns: 1fr 1fr;
   }
+
   .suiteGrid {
     grid-template-columns: 1fr;
     gap: 2.5rem;
   }
+
   .featureRow,
   .featureRowReverse {
     grid-template-columns: 1fr;
     direction: ltr;
     gap: 2.5rem;
   }
+
   .gradientCard {
     grid-template-columns: 1fr;
     padding: 3rem 2rem;
   }
+
   .hardwareGrid {
     grid-template-columns: 1fr;
   }
+
   .industryGrid {
     grid-template-columns: 1fr 1fr;
   }
@@ -901,19 +1274,31 @@
   .heroCardsRow {
     grid-template-columns: 1fr;
   }
+
   .videoStoryGrid {
     grid-template-columns: 1fr;
   }
+
   .industryGrid {
     grid-template-columns: 1fr;
   }
+
   .pressLogos {
     gap: 2rem;
   }
+
   .hardwarePromoBanner {
     padding: 2rem 1.5rem;
     flex-direction: column;
     align-items: flex-start;
+  }
+
+  .makeTimeSection {
+    padding: 0 0.5rem;
+  }
+
+  .makeTimeBanner {
+    padding: 2rem 1.25rem;
   }
 }
 
@@ -921,20 +1306,21 @@
   .faqSection {
     padding: 4.5rem 5%;
   }
+
   .faqQuestion {
     font-size: 1.02rem;
     padding: 1.25rem 0.25rem;
   }
+
   .faqGrid {
     grid-template-columns: 1fr;
     gap: 0.75rem;
     padding: 0.25rem 0.25rem;
   }
+
   .faqConclusion {
     margin: 1rem auto 0 auto;
     max-width: 100%;
     padding: 0 0.75rem;
   }
 }
-
-

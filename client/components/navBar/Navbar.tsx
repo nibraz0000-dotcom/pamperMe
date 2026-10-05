@@ -4,13 +4,66 @@ import { usePathname } from 'next/navigation';
 import styles from './navbar.module.css';
 import { useState, useEffect, useRef } from 'react';
 
-const MenuIcon = () => (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <circle cx="12" cy="12" r="10"></circle>
-    <path d="M12 16v-4"></path>
-    <path d="M12 8h.01"></path>
-  </svg>
-);
+import {
+  Store,
+  Scissors,
+  SprayCan,
+  Eye,
+  Sparkles,
+  Zap,
+  Brush,
+  Sun,
+  PenTool,
+  PawPrint,
+  Flower2,
+  HeartPulse,
+  Scale,
+  Hand,
+  Pin,
+  Bone,
+  Brain,
+  Apple,
+  Target,
+  Accessibility,
+  Flower,
+  Dumbbell,
+  UserCheck,
+  Swords,
+  Activity,
+  Footprints,
+  Flame,
+  Bike,
+  Music,
+  Trophy,
+  Calendar,
+  FileText,
+  BarChart3,
+  ClipboardList,
+  Bot,
+  FileCheck,
+  DollarSign,
+  Users,
+  ArrowRightLeft,
+  ShoppingBag,
+  CreditCard,
+  Boxes,
+  Coins,
+  Clock,
+  Receipt,
+  Wallet,
+  CalendarCheck,
+  UserSearch,
+  MessageSquare,
+  Bell,
+  Video,
+  Smartphone,
+  Globe,
+  Megaphone,
+  Mail,
+  MessageCircle,
+  Palette,
+  AppWindow
+} from 'lucide-react';
 
 const MarketplaceIcon = () => (
   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.1" strokeLinecap="round" strokeLinejoin="round">
@@ -88,8 +141,8 @@ export default function Navbar() {
           setIsFooterHidden(false);
         }
       } else {
-        setIsFooterHidden(false);
-      }
+      setIsFooterHidden(false);
+    }
 
       lastScrollYRef.current = currentScrollY;
     };
@@ -159,16 +212,16 @@ export default function Navbar() {
                 <div className={styles.megaColumn}>
                   <div className={styles.megaTitle}>Beauty <span>›</span></div>
                   <div className={styles.megaList}>
-                    <Link href="#" className={styles.megaLink}><div className={styles.megaIcon}><MenuIcon /></div> Booth Renter</Link>
-                    <Link href="/salon" className={styles.megaLink}><div className={styles.megaIcon}><MenuIcon /></div> Salon</Link>
-                    <Link href="#" className={styles.megaLink}><div className={styles.megaIcon}><MenuIcon /></div> Brow & Lash</Link>
-                    <Link href="#" className={styles.megaLink}><div className={styles.megaIcon}><MenuIcon /></div> Barber</Link>
-                    <Link href="#" className={styles.megaLink}><div className={styles.megaIcon}><MenuIcon /></div> Nail</Link>
-                    <Link href="#" className={styles.megaLink}><div className={styles.megaIcon}><MenuIcon /></div> Hair Removal</Link>
-                    <Link href="#" className={styles.megaLink}><div className={styles.megaIcon}><MenuIcon /></div> Makeup</Link>
-                    <Link href="#" className={styles.megaLink}><div className={styles.megaIcon}><MenuIcon /></div> Tanning</Link>
-                    <Link href="#" className={styles.megaLink}><div className={styles.megaIcon}><MenuIcon /></div> Tattoo</Link>
-                    <Link href="#" className={styles.megaLink}><div className={styles.megaIcon}><MenuIcon /></div> Pet Grooming</Link>
+                    <Link href="#" className={styles.megaLink} style={{ '--accent-color': '#6cb4ee' } as React.CSSProperties}><div className={styles.megaIcon}><Store size={14} /></div><span className={styles.megaText}>Booth Renter</span></Link>
+                    <Link href="/salon" className={styles.megaLink} style={{ '--accent-color': '#b19cd9' } as React.CSSProperties}><div className={styles.megaIcon}><Scissors size={14} /></div><span className={styles.megaText}>Salon</span></Link>
+                    <Link href="#" className={styles.megaLink} style={{ '--accent-color': '#d0f0c0' } as React.CSSProperties}><div className={styles.megaIcon}><Eye size={14} /></div><span className={styles.megaText}>Brow & Lash</span></Link>
+                    <Link href="#" className={styles.megaLink} style={{ '--accent-color': '#ffb347' } as React.CSSProperties}><div className={styles.megaIcon}><SprayCan size={14} /></div><span className={styles.megaText}>Barber</span></Link>
+                    <Link href="#" className={styles.megaLink} style={{ '--accent-color': '#40e0d0' } as React.CSSProperties}><div className={styles.megaIcon}><Sparkles size={14} /></div><span className={styles.megaText}>Nail</span></Link>
+                    <Link href="#" className={styles.megaLink} style={{ '--accent-color': '#d0f0c0' } as React.CSSProperties}><div className={styles.megaIcon}><Zap size={14} /></div><span className={styles.megaText}>Hair Removal</span></Link>
+                    <Link href="#" className={styles.megaLink} style={{ '--accent-color': '#ffb347' } as React.CSSProperties}><div className={styles.megaIcon}><Brush size={14} /></div><span className={styles.megaText}>Makeup</span></Link>
+                    <Link href="#" className={styles.megaLink} style={{ '--accent-color': '#6cb4ee' } as React.CSSProperties}><div className={styles.megaIcon}><Sun size={14} /></div><span className={styles.megaText}>Tanning</span></Link>
+                    <Link href="#" className={styles.megaLink} style={{ '--accent-color': '#b19cd9' } as React.CSSProperties}><div className={styles.megaIcon}><PenTool size={14} /></div><span className={styles.megaText}>Tattoo</span></Link>
+                    <Link href="#" className={styles.megaLink} style={{ '--accent-color': '#40e0d0' } as React.CSSProperties}><div className={styles.megaIcon}><PawPrint size={14} /></div><span className={styles.megaText}>Pet Grooming</span></Link>
                   </div>
                 </div>
 
@@ -176,17 +229,17 @@ export default function Navbar() {
                 <div className={styles.megaColumn}>
                   <div className={styles.megaTitle}>Wellness <span>›</span></div>
                   <div className={styles.megaList}>
-                    <Link href="#" className={styles.megaLink}><div className={styles.megaIcon}><MenuIcon /></div> Spa</Link>
-                    <Link href="#" className={styles.megaLink}><div className={styles.megaIcon}><MenuIcon /></div> Aesthetic Clinic</Link>
-                    <Link href="#" className={styles.megaLink}><div className={styles.megaIcon}><MenuIcon /></div> Med Spa</Link>
-                    <Link href="#" className={styles.megaLink}><div className={styles.megaIcon}><MenuIcon /></div> Weight Loss Clinic</Link>
-                    <Link href="#" className={styles.megaLink}><div className={styles.megaIcon}><MenuIcon /></div> Massage</Link>
-                    <Link href="#" className={styles.megaLink}><div className={styles.megaIcon}><MenuIcon /></div> Acupuncture</Link>
-                    <Link href="#" className={styles.megaLink}><div className={styles.megaIcon}><MenuIcon /></div> Chiropractor</Link>
-                    <Link href="#" className={styles.megaLink}><div className={styles.megaIcon}><MenuIcon /></div> Mental Health</Link>
-                    <Link href="#" className={styles.megaLink}><div className={styles.megaIcon}><MenuIcon /></div> Nutritionist</Link>
-                    <Link href="#" className={styles.megaLink}><div className={styles.megaIcon}><MenuIcon /></div> Coaching</Link>
-                    <Link href="#" className={styles.megaLink}><div className={styles.megaIcon}><MenuIcon /></div> Physical Therapy</Link>
+                    <Link href="#" className={styles.megaLink} style={{ '--accent-color': '#40e0d0' } as React.CSSProperties}><div className={styles.megaIcon}><Flower2 size={14} /></div><span className={styles.megaText}>Spa</span></Link>
+                    <Link href="#" className={styles.megaLink} style={{ '--accent-color': '#b19cd9' } as React.CSSProperties}><div className={styles.megaIcon}><Sparkles size={14} /></div><span className={styles.megaText}>Aesthetic Clinic</span></Link>
+                    <Link href="#" className={styles.megaLink} style={{ '--accent-color': '#6cb4ee' } as React.CSSProperties}><div className={styles.megaIcon}><HeartPulse size={14} /></div><span className={styles.megaText}>Med Spa</span></Link>
+                    <Link href="#" className={styles.megaLink} style={{ '--accent-color': '#d0f0c0' } as React.CSSProperties}><div className={styles.megaIcon}><Scale size={14} /></div><span className={styles.megaText}>Weight Loss Clinic</span></Link>
+                    <Link href="#" className={styles.megaLink} style={{ '--accent-color': '#ffb347' } as React.CSSProperties}><div className={styles.megaIcon}><Hand size={14} /></div><span className={styles.megaText}>Massage</span></Link>
+                    <Link href="#" className={styles.megaLink} style={{ '--accent-color': '#b19cd9' } as React.CSSProperties}><div className={styles.megaIcon}><Pin size={14} /></div><span className={styles.megaText}>Acupuncture</span></Link>
+                    <Link href="#" className={styles.megaLink} style={{ '--accent-color': '#40e0d0' } as React.CSSProperties}><div className={styles.megaIcon}><Bone size={14} /></div><span className={styles.megaText}>Chiropractor</span></Link>
+                    <Link href="#" className={styles.megaLink} style={{ '--accent-color': '#6cb4ee' } as React.CSSProperties}><div className={styles.megaIcon}><Brain size={14} /></div><span className={styles.megaText}>Mental Health</span></Link>
+                    <Link href="#" className={styles.megaLink} style={{ '--accent-color': '#d0f0c0' } as React.CSSProperties}><div className={styles.megaIcon}><Apple size={14} /></div><span className={styles.megaText}>Nutritionist</span></Link>
+                    <Link href="#" className={styles.megaLink} style={{ '--accent-color': '#ffb347' } as React.CSSProperties}><div className={styles.megaIcon}><Target size={14} /></div><span className={styles.megaText}>Coaching</span></Link>
+                    <Link href="#" className={styles.megaLink} style={{ '--accent-color': '#b19cd9' } as React.CSSProperties}><div className={styles.megaIcon}><Accessibility size={14} /></div><span className={styles.megaText}>Physical Therapy</span></Link>
                   </div>
                 </div>
 
@@ -194,16 +247,16 @@ export default function Navbar() {
                 <div className={styles.megaColumn}>
                   <div className={styles.megaTitle}>Fitness <span>›</span></div>
                   <div className={styles.megaList}>
-                    <Link href="#" className={styles.megaLink}><div className={styles.megaIcon}><MenuIcon /></div> Yoga</Link>
-                    <Link href="#" className={styles.megaLink}><div className={styles.megaIcon}><MenuIcon /></div> Gym</Link>
-                    <Link href="#" className={styles.megaLink}><div className={styles.megaIcon}><MenuIcon /></div> Personal Trainer</Link>
-                    <Link href="#" className={styles.megaLink}><div className={styles.megaIcon}><MenuIcon /></div> Martial Arts</Link>
-                    <Link href="#" className={styles.megaLink}><div className={styles.megaIcon}><MenuIcon /></div> Pilates</Link>
-                    <Link href="#" className={styles.megaLink}><div className={styles.megaIcon}><MenuIcon /></div> Barre Studio</Link>
-                    <Link href="#" className={styles.megaLink}><div className={styles.megaIcon}><MenuIcon /></div> Cross Training</Link>
-                    <Link href="#" className={styles.megaLink}><div className={styles.megaIcon}><MenuIcon /></div> Cycling</Link>
-                    <Link href="#" className={styles.megaLink}><div className={styles.megaIcon}><MenuIcon /></div> Dance Studio</Link>
-                    <Link href="#" className={styles.megaLink}><div className={styles.megaIcon}><MenuIcon /></div> Sports facility</Link>
+                    <Link href="#" className={styles.megaLink} style={{ '--accent-color': '#d0f0c0' } as React.CSSProperties}><div className={styles.megaIcon}><Flower size={14} /></div><span className={styles.megaText}>Yoga</span></Link>
+                    <Link href="#" className={styles.megaLink} style={{ '--accent-color': '#ffb347' } as React.CSSProperties}><div className={styles.megaIcon}><Dumbbell size={14} /></div><span className={styles.megaText}>Gym</span></Link>
+                    <Link href="#" className={styles.megaLink} style={{ '--accent-color': '#6cb4ee' } as React.CSSProperties}><div className={styles.megaIcon}><UserCheck size={14} /></div><span className={styles.megaText}>Personal Trainer</span></Link>
+                    <Link href="#" className={styles.megaLink} style={{ '--accent-color': '#40e0d0' } as React.CSSProperties}><div className={styles.megaIcon}><Swords size={14} /></div><span className={styles.megaText}>Martial Arts</span></Link>
+                    <Link href="#" className={styles.megaLink} style={{ '--accent-color': '#b19cd9' } as React.CSSProperties}><div className={styles.megaIcon}><Activity size={14} /></div><span className={styles.megaText}>Pilates</span></Link>
+                    <Link href="#" className={styles.megaLink} style={{ '--accent-color': '#ffb347' } as React.CSSProperties}><div className={styles.megaIcon}><Footprints size={14} /></div><span className={styles.megaText}>Barre Studio</span></Link>
+                    <Link href="#" className={styles.megaLink} style={{ '--accent-color': '#6cb4ee' } as React.CSSProperties}><div className={styles.megaIcon}><Flame size={14} /></div><span className={styles.megaText}>Cross Training</span></Link>
+                    <Link href="#" className={styles.megaLink} style={{ '--accent-color': '#d0f0c0' } as React.CSSProperties}><div className={styles.megaIcon}><Bike size={14} /></div><span className={styles.megaText}>Cycling</span></Link>
+                    <Link href="#" className={styles.megaLink} style={{ '--accent-color': '#b19cd9' } as React.CSSProperties}><div className={styles.megaIcon}><Music size={14} /></div><span className={styles.megaText}>Dance Studio</span></Link>
+                    <Link href="#" className={styles.megaLink} style={{ '--accent-color': '#40e0d0' } as React.CSSProperties}><div className={styles.megaIcon}><Trophy size={14} /></div><span className={styles.megaText}>Sports facility</span></Link>
                   </div>
                 </div>
 
@@ -223,15 +276,15 @@ export default function Navbar() {
                 <div className={styles.megaColumn}>
                   <div className={styles.megaTitle}>Run Your Business</div>
                   <div className={styles.megaListSingle}>
-                    <Link href="#" className={styles.megaLink}><div className={styles.megaIconPlain}><MenuIcon /></div> Calendar</Link>
-                    <Link href="#" className={styles.megaLink}><div className={styles.megaIconPlain}><MenuIcon /></div> E-Prescribe <span className={styles.badgeNew}>NEW</span></Link>
-                    <Link href="#" className={styles.megaLink}><div className={styles.megaIconPlain}><MenuIcon /></div> Reports</Link>
-                    <Link href="#" className={styles.megaLink}><div className={styles.megaIconPlain}><MenuIcon /></div> SOAP Notes</Link>
-                    <Link href="#" className={styles.megaLink}><div className={styles.megaIconPlain}><MenuIcon /></div> Vera AI <span className={styles.badgeNew}>NEW</span></Link>
-                    <Link href="#" className={styles.megaLink}><div className={styles.megaIconPlain}><MenuIcon /></div> Forms</Link>
-                    <Link href="#" className={styles.megaLink}><div className={styles.megaIconPlain}><MenuIcon /></div> Payroll</Link>
-                    <Link href="#" className={styles.megaLink}><div className={styles.megaIconPlain}><MenuIcon /></div> Employee Management</Link>
-                    <Link href="#" className={styles.megaLink}><div className={styles.megaIconPlain}><MenuIcon /></div> Free Data Transfer</Link>
+                    <Link href="#" className={styles.megaLink} style={{ '--accent-color': '#6cb4ee' } as React.CSSProperties}><div className={styles.megaIcon}><Calendar size={14} /></div><span className={styles.megaText}>Calendar</span></Link>
+                    <Link href="#" className={styles.megaLink} style={{ '--accent-color': '#b19cd9' } as React.CSSProperties}><div className={styles.megaIcon}><FileText size={14} /></div><span className={styles.megaText}>E-Prescribe <span className={styles.badgeNew}>NEW</span></span></Link>
+                    <Link href="#" className={styles.megaLink} style={{ '--accent-color': '#d0f0c0' } as React.CSSProperties}><div className={styles.megaIcon}><BarChart3 size={14} /></div><span className={styles.megaText}>Reports</span></Link>
+                    <Link href="#" className={styles.megaLink} style={{ '--accent-color': '#ffb347' } as React.CSSProperties}><div className={styles.megaIcon}><ClipboardList size={14} /></div><span className={styles.megaText}>SOAP Notes</span></Link>
+                    <Link href="#" className={styles.megaLink} style={{ '--accent-color': '#40e0d0' } as React.CSSProperties}><div className={styles.megaIcon}><Bot size={14} /></div><span className={styles.megaText}>Vera AI <span className={styles.badgeNew}>NEW</span></span></Link>
+                    <Link href="#" className={styles.megaLink} style={{ '--accent-color': '#6cb4ee' } as React.CSSProperties}><div className={styles.megaIcon}><FileCheck size={14} /></div><span className={styles.megaText}>Forms</span></Link>
+                    <Link href="#" className={styles.megaLink} style={{ '--accent-color': '#d0f0c0' } as React.CSSProperties}><div className={styles.megaIcon}><DollarSign size={14} /></div><span className={styles.megaText}>Payroll</span></Link>
+                    <Link href="#" className={styles.megaLink} style={{ '--accent-color': '#b19cd9' } as React.CSSProperties}><div className={styles.megaIcon}><Users size={14} /></div><span className={styles.megaText}>Employee Management</span></Link>
+                    <Link href="#" className={styles.megaLink} style={{ '--accent-color': '#ffb347' } as React.CSSProperties}><div className={styles.megaIcon}><ArrowRightLeft size={14} /></div><span className={styles.megaText}>Free Data Transfer</span></Link>
                   </div>
                 </div>
 
@@ -239,11 +292,11 @@ export default function Navbar() {
                 <div className={styles.megaColumn}>
                   <div className={styles.megaTitle}>Grow Your Business</div>
                   <div className={styles.megaListSingle}>
-                    <Link href="#" className={styles.megaLink}><div className={styles.megaIconPlain}><MenuIcon /></div> Marketplace</Link>
-                    <Link href="#" className={styles.megaLink}><div className={styles.megaIconPlain}><MenuIcon /></div> Online Store</Link>
-                    <Link href="#" className={styles.megaLink}><div className={styles.megaIconPlain}><MenuIcon /></div> Memberships</Link>
-                    <Link href="#" className={styles.megaLink}><div className={styles.megaIconPlain}><MenuIcon /></div> Inventory</Link>
-                    <Link href="#" className={styles.megaLink}><div className={styles.megaIconPlain}><MenuIcon /></div> PamperMe Capital</Link>
+                    <Link href="#" className={styles.megaLink} style={{ '--accent-color': '#40e0d0' } as React.CSSProperties}><div className={styles.megaIcon}><Store size={14} /></div><span className={styles.megaText}>Marketplace</span></Link>
+                    <Link href="#" className={styles.megaLink} style={{ '--accent-color': '#ffb347' } as React.CSSProperties}><div className={styles.megaIcon}><ShoppingBag size={14} /></div><span className={styles.megaText}>Online Store</span></Link>
+                    <Link href="#" className={styles.megaLink} style={{ '--accent-color': '#6cb4ee' } as React.CSSProperties}><div className={styles.megaIcon}><CreditCard size={14} /></div><span className={styles.megaText}>Memberships</span></Link>
+                    <Link href="#" className={styles.megaLink} style={{ '--accent-color': '#d0f0c0' } as React.CSSProperties}><div className={styles.megaIcon}><Boxes size={14} /></div><span className={styles.megaText}>Inventory</span></Link>
+                    <Link href="#" className={styles.megaLink} style={{ '--accent-color': '#b19cd9' } as React.CSSProperties}><div className={styles.megaIcon}><Coins size={14} /></div><span className={styles.megaText}>PamperMe Capital</span></Link>
                   </div>
                 </div>
 
@@ -251,10 +304,10 @@ export default function Navbar() {
                 <div className={styles.megaColumn}>
                   <div className={styles.megaTitle}>Simplify Payments</div>
                   <div className={styles.megaListSingle}>
-                    <Link href="#" className={styles.megaLink}><div className={styles.megaIconPlain}><MenuIcon /></div> PayPro (POS) <span className={styles.badgeNew}>NEW</span></Link>
-                    <Link href="#" className={styles.megaLink}><div className={styles.megaIconPlain}><MenuIcon /></div> Buy Now, Pay Later</Link>
-                    <Link href="#" className={styles.megaLink}><div className={styles.megaIconPlain}><MenuIcon /></div> Invoices</Link>
-                    <Link href="#" className={styles.megaLink}><div className={styles.megaIconPlain}><MenuIcon /></div> Payments</Link>
+                    <Link href="#" className={styles.megaLink} style={{ '--accent-color': '#ffb347' } as React.CSSProperties}><div className={styles.megaIcon}><CreditCard size={14} /></div><span className={styles.megaText}>PayPro (POS) <span className={styles.badgeNew}>NEW</span></span></Link>
+                    <Link href="#" className={styles.megaLink} style={{ '--accent-color': '#6cb4ee' } as React.CSSProperties}><div className={styles.megaIcon}><Clock size={14} /></div><span className={styles.megaText}>Buy Now, Pay Later</span></Link>
+                    <Link href="#" className={styles.megaLink} style={{ '--accent-color': '#40e0d0' } as React.CSSProperties}><div className={styles.megaIcon}><Receipt size={14} /></div><span className={styles.megaText}>Invoices</span></Link>
+                    <Link href="#" className={styles.megaLink} style={{ '--accent-color': '#d0f0c0' } as React.CSSProperties}><div className={styles.megaIcon}><Wallet size={14} /></div><span className={styles.megaText}>Payments</span></Link>
                   </div>
                 </div>
 
@@ -262,12 +315,12 @@ export default function Navbar() {
                 <div className={styles.megaColumn}>
                   <div className={styles.megaTitle}>Elevate Client Experience</div>
                   <div className={styles.megaListSingle}>
-                    <Link href="#" className={styles.megaLink}><div className={styles.megaIconPlain}><MenuIcon /></div> Online Booking</Link>
-                    <Link href="#" className={styles.megaLink}><div className={styles.megaIconPlain}><MenuIcon /></div> Customer Tracking</Link>
-                    <Link href="#" className={styles.megaLink}><div className={styles.megaIconPlain}><MenuIcon /></div> PamperMe Connect</Link>
-                    <Link href="#" className={styles.megaLink}><div className={styles.megaIconPlain}><MenuIcon /></div> Notifications</Link>
-                    <Link href="#" className={styles.megaLink}><div className={styles.megaIconPlain}><MenuIcon /></div> Live Stream</Link>
-                    <Link href="#" className={styles.megaLink}><div className={styles.megaIconPlain}><MenuIcon /></div> Mobile Apps</Link>
+                    <Link href="#" className={styles.megaLink} style={{ '--accent-color': '#b19cd9' } as React.CSSProperties}><div className={styles.megaIcon}><CalendarCheck size={14} /></div><span className={styles.megaText}>Online Booking</span></Link>
+                    <Link href="#" className={styles.megaLink} style={{ '--accent-color': '#40e0d0' } as React.CSSProperties}><div className={styles.megaIcon}><UserSearch size={14} /></div><span className={styles.megaText}>Customer Tracking</span></Link>
+                    <Link href="#" className={styles.megaLink} style={{ '--accent-color': '#6cb4ee' } as React.CSSProperties}><div className={styles.megaIcon}><MessageSquare size={14} /></div><span className={styles.megaText}>PamperMe Connect</span></Link>
+                    <Link href="#" className={styles.megaLink} style={{ '--accent-color': '#ffb347' } as React.CSSProperties}><div className={styles.megaIcon}><Bell size={14} /></div><span className={styles.megaText}>Notifications</span></Link>
+                    <Link href="#" className={styles.megaLink} style={{ '--accent-color': '#d0f0c0' } as React.CSSProperties}><div className={styles.megaIcon}><Video size={14} /></div><span className={styles.megaText}>Live Stream</span></Link>
+                    <Link href="#" className={styles.megaLink} style={{ '--accent-color': '#b19cd9' } as React.CSSProperties}><div className={styles.megaIcon}><Smartphone size={14} /></div><span className={styles.megaText}>Mobile Apps</span></Link>
                   </div>
                 </div>
 
@@ -275,12 +328,12 @@ export default function Navbar() {
                 <div className={styles.megaColumn}>
                   <div className={styles.megaTitle}>Build Your Brand</div>
                   <div className={styles.megaListSingle}>
-                    <Link href="#" className={styles.megaLink}><div className={styles.megaIconPlain}><MenuIcon /></div> MySite</Link>
-                    <Link href="#" className={styles.megaLink}><div className={styles.megaIconPlain}><MenuIcon /></div> Marketing</Link>
-                    <Link href="#" className={styles.megaLink}><div className={styles.megaIconPlain}><MenuIcon /></div> Email Marketing</Link>
-                    <Link href="#" className={styles.megaLink}><div className={styles.megaIconPlain}><MenuIcon /></div> Text Marketing</Link>
-                    <Link href="#" className={styles.megaLink}><div className={styles.megaIconPlain}><MenuIcon /></div> Design Services</Link>
-                    <Link href="#" className={styles.megaLink}><div className={styles.megaIconPlain}><MenuIcon /></div> Branded App</Link>
+                    <Link href="#" className={styles.megaLink} style={{ '--accent-color': '#40e0d0' } as React.CSSProperties}><div className={styles.megaIcon}><Globe size={14} /></div><span className={styles.megaText}>MySite</span></Link>
+                    <Link href="#" className={styles.megaLink} style={{ '--accent-color': '#ffb347' } as React.CSSProperties}><div className={styles.megaIcon}><Megaphone size={14} /></div><span className={styles.megaText}>Marketing</span></Link>
+                    <Link href="#" className={styles.megaLink} style={{ '--accent-color': '#6cb4ee' } as React.CSSProperties}><div className={styles.megaIcon}><Mail size={14} /></div><span className={styles.megaText}>Email Marketing</span></Link>
+                    <Link href="#" className={styles.megaLink} style={{ '--accent-color': '#d0f0c0' } as React.CSSProperties}><div className={styles.megaIcon}><MessageCircle size={14} /></div><span className={styles.megaText}>Text Marketing</span></Link>
+                    <Link href="#" className={styles.megaLink} style={{ '--accent-color': '#b19cd9' } as React.CSSProperties}><div className={styles.megaIcon}><Palette size={14} /></div><span className={styles.megaText}>Design Services</span></Link>
+                    <Link href="#" className={styles.megaLink} style={{ '--accent-color': '#40e0d0' } as React.CSSProperties}><div className={styles.megaIcon}><AppWindow size={14} /></div><span className={styles.megaText}>Branded App</span></Link>
                   </div>
                 </div>
 

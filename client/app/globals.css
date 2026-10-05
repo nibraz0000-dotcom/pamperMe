@@ -6,6 +6,7 @@
   --text-muted: #555555;
   --border-color: #eaeaea;
   --font-primary: var(--font-geist-sans), sans-serif;
+  --font-serif: var(--font-playfair), "Playfair Display", Georgia, serif;
 }
 
 * {

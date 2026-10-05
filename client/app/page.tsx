@@ -1,6 +1,5 @@
 import Image from "next/image";
 import styles from "./page.module.css";
-import Link from "next/link";
 import Navbar from "../components/navBar/Navbar";
 import Footer from "../components/footer";
 
@@ -60,7 +59,7 @@ export default function Home() {
 
         {/* Industries Section */}
         <section className={styles.industriesSection}>
-          <h2 className={styles.industriesTitle}>What's your industry?</h2>
+          <h2 className={styles.industriesTitle}>What&apos;s your industry?</h2>
 
           <div className={styles.industriesGrid}>
             {/* Beauty */}

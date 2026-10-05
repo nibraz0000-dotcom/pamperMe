@@ -433,7 +433,7 @@ export default function CompareFeatures({ addonEnabled = false }: CompareFeature
   };
 
   return (
-    <div className={styles.container}>
+    <div id="compare-plans" className={styles.container}>
       <h2 className={styles.title}>Compare features</h2>
 
       <div className={styles.tableContainer}>

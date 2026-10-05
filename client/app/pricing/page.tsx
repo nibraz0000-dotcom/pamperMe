@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Navbar from '../../components/navBar/Navbar';
 import styles from './page.module.css';
 import pageStyles from '../page.module.css';
@@ -10,6 +10,18 @@ import Footer from '../../components/footer';
 
 export default function Pricing() {
   const [addonEnabled, setAddonEnabled] = useState(false);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined' && window.location.hash) {
+      const hash = window.location.hash.substring(1);
+      const targetEl = document.getElementById(hash);
+      if (targetEl) {
+        setTimeout(() => {
+          targetEl.scrollIntoView({ behavior: 'smooth' });
+        }, 150);
+      }
+    }
+  }, []);
 
   const scrollToPlans = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();

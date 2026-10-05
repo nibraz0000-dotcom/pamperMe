@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import Navbar from '../navBar/Navbar';
@@ -8,15 +8,8 @@ import Footer from '../footer/Footer';
 import styles from './businessType.module.css';
 
 export interface BusinessTypeProps {
-  categoryName?: string;
-  heroBadge?: string;
   heroTitle?: string;
   heroSubtitle?: string;
-  heroPhotos?: {
-    imageSrc: string;
-    title: string;
-    badge: string;
-  }[];
 }
 
 const FAQ_ITEMS = [
@@ -110,34 +103,243 @@ const FAQ_ITEMS = [
   },
 ];
 
-export default function BusinessTypeTemplate({
-  categoryName = "Salon",
-  heroBadge = "SALON SOFTWARE",
-  heroTitle = "The salon software that keeps your chairs full.",
-  heroSubtitle = "Effortless 24/7 online booking, automated marketing, contactless salon POS, and team management built specifically for salon owners and independent stylists.",
-  heroPhotos = [
-    {
-      imageSrc: "/salon_hero_stylist.jpg",
-      title: "Hairstyling & Cuts",
-      badge: "Booked 24/7",
-    },
-    {
-      imageSrc: "/salon_stylist_tablet.jpg",
-      title: "Smart Calendar",
-      badge: "Real-time Schedule",
-    },
-    {
-      imageSrc: "/salon_interior_modern.jpg",
-      title: "Salon Floor",
-      badge: "Team Management",
-    },
+const BRAND_PARTNERS = [
+  {
+    id: "toni-and-guy",
+    name: "Toni & Guy",
+    origin: "United Kingdom",
+    knownFor: "High-fashion runway styling, modern precision cuts, and global academies.",
+    logo: (
+      <svg width="20" height="20" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M6 10H16M11 10V24" stroke="#3d1a14" strokeWidth="2.5" strokeLinecap="round" />
+        <path d="M19 14L25 20M25 14L19 20" stroke="#3d1a14" strokeWidth="2.2" strokeLinecap="round" />
+      </svg>
+    ),
+  },
+  {
+    id: "great-clips",
+    name: "Great Clips",
+    origin: "United States",
+    knownFor: "World's largest salon brand by salon count (over 4,400 locations).",
+    logo: (
+      <svg width="20" height="20" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M22 11C20.5 8.5 17.5 7 14 7C8.5 7 4 11.5 4 17C4 22.5 8.5 27 14 27C19.5 27 23.5 23 24 17H14" stroke="#3d1a14" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+    ),
+  },
+  {
+    id: "supercuts",
+    name: "Supercuts",
+    origin: "United States",
+    knownFor: "Fast, affordable haircuts with over 2,000 franchise locations.",
+    logo: (
+      <svg width="20" height="20" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M22 9C20 7 16 6 13 7.5C10 9 9 12 11 14.5L20 18.5C22 19.5 23 22.5 21 24.5C18 27.5 12 26.5 9 24" stroke="#3d1a14" strokeWidth="2.5" strokeLinecap="round" />
+      </svg>
+    ),
+  },
+  {
+    id: "vidal-sassoon",
+    name: "Vidal Sassoon",
+    origin: "United Kingdom",
+    knownFor: "Pioneering the bob cut and architectural geometric hair styling.",
+    logo: (
+      <svg width="20" height="20" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <polygon points="16,5 27,25 5,25" stroke="#3d1a14" strokeWidth="2.2" strokeLinejoin="round" />
+        <line x1="16" y1="5" x2="16" y2="25" stroke="#3d1a14" strokeWidth="2" />
+      </svg>
+    ),
+  },
+  {
+    id: "dessange-paris",
+    name: "Dessange Paris",
+    origin: "France",
+    knownFor: "Luxury hair spa treatments and official stylist for Cannes Film Festival.",
+    logo: (
+      <svg width="20" height="20" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M6 14L10 24H22L26 14L19 18L16 8L13 18L6 14Z" stroke="#3d1a14" strokeWidth="2" strokeLinejoin="round" />
+      </svg>
+    ),
+  },
+  {
+    id: "jean-louis-david",
+    name: "Jean Louis David",
+    origin: "France",
+    knownFor: "Pioneering layered cuts and contemporary urban hair trends.",
+    logo: (
+      <svg width="20" height="20" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <line x1="6" y1="9" x2="26" y2="9" stroke="#3d1a14" strokeWidth="2.5" strokeLinecap="round" />
+        <line x1="6" y1="16" x2="20" y2="16" stroke="#3d1a14" strokeWidth="2.5" strokeLinecap="round" />
+        <line x1="6" y1="23" x2="14" y2="23" stroke="#3d1a14" strokeWidth="2.5" strokeLinecap="round" />
+      </svg>
+    ),
+  },
+  {
+    id: "franck-provost",
+    name: "Franck Provost",
+    origin: "France",
+    knownFor: "High-end French styling, bespoke balayage, and international presence.",
+    logo: (
+      <svg width="20" height="20" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M8 8V24M8 8H20M8 16H17" stroke="#3d1a14" strokeWidth="2.5" strokeLinecap="round" />
+        <polygon points="24,18 26,20 24,22 22,20" fill="#3d1a14" />
+      </svg>
+    ),
+  },
+  {
+    id: "regis-salons",
+    name: "Regis Salons",
+    origin: "United States",
+    knownFor: "Full-service mall and lifestyle-center beauty salons.",
+    logo: (
+      <svg width="20" height="20" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M8 24V8H18C21 8 23 10 23 13C23 16 21 18 18 18H8M17 18L24 24" stroke="#3d1a14" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+    ),
+  },
+  {
+    id: "drybar",
+    name: "Drybar",
+    origin: "United States",
+    knownFor: "Pioneered the specialized blowout-only salon concept.",
+    logo: (
+      <svg width="20" height="20" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M7 16C7 11 11 7 16 7C21 7 25 11 25 16C25 21 21 25 16 25" stroke="#3d1a14" strokeWidth="2.4" strokeLinecap="round" />
+        <path d="M16 12C14 12 12 14 12 16C12 18 14 20 16 20C18 20 20 18 20 16" stroke="#3d1a14" strokeWidth="2" strokeLinecap="round" />
+      </svg>
+    ),
+  },
+  {
+    id: "aveda-salons",
+    name: "Aveda Salons",
+    origin: "United States",
+    knownFor: "Plant-based, eco-friendly hair treatments and organic care.",
+    logo: (
+      <svg width="20" height="20" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M6 26C6 16 11 6 26 6C26 16 21 26 6 26Z" stroke="#3d1a14" strokeWidth="2.2" strokeLinejoin="round" />
+        <path d="M6 26C13 22 18 17 26 6" stroke="#3d1a14" strokeWidth="2" strokeLinecap="round" />
+      </svg>
+    ),
+  },
+  {
+    id: "rush-hair-and-beauty",
+    name: "Rush Hair & Beauty",
+    origin: "United Kingdom",
+    knownFor: "Award-winning British salon chain known for creative color and cut.",
+    logo: (
+      <svg width="20" height="20" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M7 8H17C21 8 23 10.5 23 13.5C23 16.5 21 19 17 19H7V8ZM7 19V25M16 19L23 25" stroke="#3d1a14" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+    ),
+  },
+  {
+    id: "saks-hair-and-beauty",
+    name: "Saks Hair & Beauty",
+    origin: "United Kingdom",
+    knownFor: "Premium nationwide franchise network in the UK.",
+    logo: (
+      <svg width="20" height="20" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M22 10C20 7.5 16.5 6.5 13.5 8C10.5 9.5 9.5 12.5 11.5 15L20.5 18C22.5 19.5 23 22.5 21 24.5C18 27 12.5 26.5 9.5 24" stroke="#3d1a14" strokeWidth="2.4" strokeLinecap="round" />
+      </svg>
+    ),
+  },
+  {
+    id: "cost-cutters",
+    name: "Cost Cutters",
+    origin: "United States",
+    knownFor: "Family-focused, convenient walk-in salon services.",
+    logo: (
+      <svg width="20" height="20" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="10" cy="22" r="4" stroke="#3d1a14" strokeWidth="2.2" />
+        <circle cx="22" cy="22" r="4" stroke="#3d1a14" strokeWidth="2.2" />
+        <path d="M12.8 19.2L24 6" stroke="#3d1a14" strokeWidth="2.2" strokeLinecap="round" />
+        <path d="M19.2 19.2L8 6" stroke="#3d1a14" strokeWidth="2.2" strokeLinecap="round" />
+      </svg>
+    ),
+  },
+  {
+    id: "blo-blow-dry-bar",
+    name: "Blo Blow Dry Bar",
+    origin: "Canada",
+    knownFor: "North America's original and largest blowout bar franchise.",
+    logo: (
+      <svg width="20" height="20" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M8 8H16C19 8 21 10 21 12.5C21 15 19 16.5 16 16.5H8V8Z" stroke="#3d1a14" strokeWidth="2.4" strokeLinejoin="round" />
+        <path d="M8 16.5H17C20 16.5 22 18.5 22 21C22 23.5 20 25.5 17 25.5H8V16.5Z" stroke="#3d1a14" strokeWidth="2.4" strokeLinejoin="round" />
+      </svg>
+    ),
+  },
+  {
+    id: "paul-mitchell",
+    name: "Paul Mitchell",
+    origin: "United States",
+    knownFor: "Signature styling network powered by John Paul Mitchell Systems.",
+    logo: (
+      <svg width="20" height="20" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="16" cy="16" r="10" stroke="#3d1a14" strokeWidth="2.4" />
+        <circle cx="16" cy="16" r="4" fill="#3d1a14" />
+      </svg>
+    ),
+  },
+];
+
+const NO_EXTRA_CHARGE_ROWS = [
+  [
+    { text: "Unlimited bookings" },
+    { text: "Client Appointment Confirmations & Reminders" },
+    { text: "Email Marketing" },
   ],
+  [
+    { text: "Text Message Marketing*" },
+    { text: "Custom Forms & Liability Waivers" },
+    { text: "Reserve with Google" },
+  ],
+  [
+    { text: "Reporting and insights" },
+    { text: "Waitlists" },
+    { text: "No-Show Protection features**" },
+  ],
+  [
+    { text: "Online Gift Cards**" },
+    { text: "Memberships and Packages" },
+    { text: "and more!" },
+  ],
+];
+
+export default function BusinessTypeTemplate({
+  heroTitle = "The salon software that keeps your chairs full.",
+  heroSubtitle = "Smart 24/7 online booking, contactless payments, and effortless salon management built for modern stylists and owners.",
 }: BusinessTypeProps) {
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(null);
+  const [isExpanded, setIsExpanded] = useState(false);
+  const sectionRef = useRef<HTMLElement>(null);
 
   const toggleFaq = (index: number) => {
     setOpenFaqIndex((prev) => (prev === index ? null : index));
   };
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (!sectionRef.current) return;
+      const rect = sectionRef.current.getBoundingClientRect();
+
+      // Smoothly expand to full width when approaching its active viewport position
+      if (rect.top <= 160 && rect.bottom >= 180) {
+        setIsExpanded(true);
+      } else if (rect.top > 280 || rect.bottom < 100) {
+        setIsExpanded(false);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    window.addEventListener('resize', handleScroll, { passive: true });
+    handleScroll();
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('resize', handleScroll);
+    };
+  }, []);
 
   return (
     <div className={styles.pageWrapper}>
@@ -149,52 +351,52 @@ export default function BusinessTypeTemplate({
             1. HERO SECTION
             ========================================================================== */}
         <section className={styles.heroSection}>
-          <div className={styles.heroBadge}>{heroBadge}</div>
-          <h1 className={styles.heroTitle}>{heroTitle}</h1>
-          <p className={styles.heroSubtitle}>{heroSubtitle}</p>
+          <div className={styles.heroContentLeft}>
+            <h1 className={styles.heroTitle}>{heroTitle}</h1>
+            <p className={styles.heroSubtitle}>{heroSubtitle}</p>
 
-          <div className={styles.heroActions}>
-            <Link href="/pricing" className={styles.primaryBtn}>
-              Start free trial →
-            </Link>
-            <button className={styles.secondaryBtn}>
-              Book a demo
-            </button>
-          </div>
-
-          {/* 3-Photo Showcase Cards */}
-          <div className={styles.heroCardsRow}>
-            {heroPhotos.map((photo, index) => (
-              <div key={index} className={styles.heroPhotoCard}>
-                <Image
-                  src={photo.imageSrc}
-                  alt={photo.title}
-                  fill
-                  sizes="(max-width: 768px) 100vw, 33vw"
-                  className={styles.cardImage}
-                  priority={index === 0}
-                />
-                <div className={styles.cardFloatingBadge}>
-                  <span>{photo.title}</span>
-                  <span style={{ color: '#00f076' }}>● {photo.badge}</span>
-                </div>
-              </div>
-            ))}
+            <div className={styles.heroActions}>
+              <Link href="/pricing" className={styles.primaryBtn}>
+                Start Free Trial
+              </Link>
+              <span className={styles.heroMicrocopy}>No credit card required</span>
+            </div>
           </div>
         </section>
 
         {/* ==========================================================================
-            2. PRESS / SOCIAL PROOF BAR
+            2. BRAND PARTNERS / SOCIAL PROOF FLIP CARDS
             ========================================================================== */}
         <section className={styles.pressBar}>
-          <div className={styles.pressTitle}>Trusted by over 300,000 beauty & salon professionals</div>
-          <div className={styles.pressLogos}>
-            <span className={styles.pressLogo}>VOGUE</span>
-            <span className={styles.pressLogo}>Forbes</span>
-            <span className={styles.pressLogo}>allure</span>
-            <span className={styles.pressLogo}>GLAMOUR</span>
-            <span className={styles.pressLogo}>Salon Today</span>
-            <span className={styles.pressLogo}>TechCrunch</span>
+          <div className={styles.pressTitle}>
+            Trusted by the world&apos;s leading salon & beauty brands
+          </div>
+
+          <div className={styles.brandMarqueeWrapper}>
+            <div className={styles.brandMarqueeTrack}>
+              {[0, 1].map((groupIndex) => (
+                <div key={`group-${groupIndex}`} className={styles.brandMarqueeGroup} aria-hidden={groupIndex > 0 ? "true" : undefined}>
+                  {BRAND_PARTNERS.map((brand, idx) => (
+                    <div key={`${brand.id}-${groupIndex}-${idx}`} className={styles.brandCardContainer}>
+                      <div className={styles.brandCardInner}>
+                        {/* Front Face: Single Line Logo & Brand Name */}
+                        <div className={styles.brandCardFront}>
+                          <div className={styles.brandHeaderInline}>
+                            <span className={styles.brandIconInline}>{brand.logo}</span>
+                            <span className={styles.brandNameInline}>{brand.name}</span>
+                          </div>
+                        </div>
+
+                        {/* Back Face: Clean Centered Description Text */}
+                        <div className={styles.brandCardBack}>
+                          <p className={styles.brandBackDescText}>{brand.knownFor}</p>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ))}
+            </div>
           </div>
         </section>
 
@@ -203,11 +405,7 @@ export default function BusinessTypeTemplate({
             ========================================================================== */}
         <section className={styles.overviewSection}>
           <div className={styles.sectionHeader}>
-            <div className={styles.sectionEyebrow}>ALL-IN-ONE PLATFORM</div>
-            <h2 className={styles.sectionHeading}>Everything you need to grow your salon in one place</h2>
-            <p className={styles.sectionDesc}>
-              Say goodbye to juggling multiple apps. pamperMe connects your bookings, payments, client records, and marketing seamlessly.
-            </p>
+            <h2 className={styles.overviewHeading}>Cut the busywork to Smooth</h2>
           </div>
 
           <div className={styles.suiteGrid}>
@@ -276,138 +474,52 @@ export default function BusinessTypeTemplate({
         </section>
 
         {/* ==========================================================================
-            4. VIDEO TESTIMONIAL FEATURE BANNER
+            4. NO EXTRA CHARGE FOR: FEATURE MATRIX SECTION (3-BLOCK WRAPPER)
             ========================================================================== */}
-        <section className={styles.storiesSection}>
-          <div className={styles.storiesContainer}>
-            <div className={styles.videoBannerCard}>
-              <Image
-                src="/salon_hero_stylist.jpg"
-                alt="Salon Testimonial Video"
-                fill
-                sizes="100vw"
-                style={{ objectFit: 'cover' }}
-              />
-              <div className={styles.videoBannerOverlay}></div>
-              <div className={styles.videoBannerContent}>
-                <button className={styles.playCircleBtn} aria-label="Play Story Video">
-                  ▶
-                </button>
-                <h3 style={{ fontSize: 'clamp(1.5rem, 3vw, 2.2rem)', fontWeight: 800 }}>
-                  "pamperMe transformed how we book clients and run checkout."
-                </h3>
-                <p style={{ color: 'rgba(255, 255, 255, 0.85)', fontSize: '0.95rem' }}>
-                  Watch how The Mane Studio cut admin time by 15 hours every week.
-                </p>
-              </div>
+        <section
+          ref={sectionRef}
+          className={`${styles.noExtraChargeSection} ${isExpanded ? styles.expanded : ''}`}
+        >
+          {/* Block 1: Top Header with Centered Headline */}
+          <div className={styles.noExtraChargeBlockHeader}>
+            <div className={styles.noExtraChargeHeaderCol}>
+              <h2 className={styles.noExtraChargeHeading}>
+                Professionalism <br /> in Every Move
+              </h2>
             </div>
+          </div>
 
-            <div className={styles.videoStoryGrid}>
-              <div className={styles.storyCard}>
-                <div className={styles.storyImageWrap}>
-                  <Image
-                    src="/salon_stylist_tablet.jpg"
-                    alt="Salon Owner Story"
-                    fill
-                    sizes="(max-width: 768px) 100vw, 50vw"
-                    style={{ objectFit: 'cover' }}
-                  />
-                </div>
-                <div className={styles.storyCardBody}>
-                  <div className={styles.storyQuote}>
-                    "Our rebooking rate jumped by 35% within the first two months of switching to pamperMe."
+          {/* Block 2: 4-Row Feature Matrix Table */}
+          <div className={styles.noExtraChargeBlockMatrix}>
+            {NO_EXTRA_CHARGE_ROWS.map((row, rowIdx) => (
+              <div key={`no-extra-row-${rowIdx}`} className={styles.noExtraChargeRow}>
+                {row.map((item, colIdx) => (
+                  <div key={`no-extra-col-${rowIdx}-${colIdx}`} className={styles.noExtraChargeCol}>
+                    <div className={styles.scissorsIconWrap}>
+                      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                        <circle cx="6" cy="6" r="3" />
+                        <circle cx="6" cy="18" r="3" />
+                        <line x1="20" y1="4" x2="8.12" y2="15.88" />
+                        <line x1="14.47" y1="14.48" x2="20" y2="20" />
+                        <line x1="8.12" y1="8.12" x2="12" y2="12" />
+                      </svg>
+                    </div>
+                    <span className={styles.noExtraChargeText}>{item.text}</span>
                   </div>
-                  <div className={styles.storyAuthor}>Elena Rostova</div>
-                  <div className={styles.storySalon}>Owner, Aurora Hair & Co.</div>
-                </div>
+                ))}
               </div>
-
-              <div className={styles.storyCard}>
-                <div className={styles.storyImageWrap}>
-                  <Image
-                    src="/salon_interior_modern.jpg"
-                    alt="Stylist Team Story"
-                    fill
-                    sizes="(max-width: 768px) 100vw, 50vw"
-                    style={{ objectFit: 'cover' }}
-                  />
-                </div>
-                <div className={styles.storyCardBody}>
-                  <div className={styles.storyQuote}>
-                    "My stylists love having their schedules and commission stats updated live in the mobile app."
-                  </div>
-                  <div className={styles.storyAuthor}>Marcus Vance</div>
-                  <div className={styles.storySalon}>Director, Atelier Salon Lounge</div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* ==========================================================================
-            5. HARDWARE / POS SHOWCASE
-            ========================================================================== */}
-        <section className={styles.hardwareSection}>
-          <div className={styles.sectionHeader}>
-            <div className={styles.sectionEyebrow}>SALON HARDWARE</div>
-            <h2 className={styles.sectionHeading}>Purpose-built salon POS hardware</h2>
-            <p className={styles.sectionDesc}>
-              Modern, reliable payment terminals that look beautiful on your reception counter or styling station.
-            </p>
+            ))}
           </div>
 
-          <div className={styles.hardwareGrid}>
-            <div className={styles.hardwareCard}>
-              <div className={styles.hardwareImageWrap}>
-                <Image
-                  src="/salon_pos_terminal.jpg"
-                  alt="pamperMe Salon Register"
-                  fill
-                  sizes="(max-width: 1024px) 100vw, 50vw"
-                  style={{ objectFit: 'cover' }}
-                />
-              </div>
-              <div>
-                <h3 className={styles.hardwareTitle}>pamperMe Countertop Register</h3>
-                <p className={styles.hardwareDesc}>
-                  Dual-screen countertop setup with client-facing display, instant tip suggestions, and contactless Apple Pay / Google Pay.
-                </p>
-                <button className={styles.primaryBtn} style={{ background: '#0f172a', color: '#ffffff' }}>
-                  Explore Register →
-                </button>
-              </div>
-            </div>
-
-            <div className={styles.hardwareCard}>
-              <div className={styles.hardwareImageWrap}>
-                <Image
-                  src="/salon_stylist_tablet.jpg"
-                  alt="pamperMe Mobile Reader"
-                  fill
-                  sizes="(max-width: 1024px) 100vw, 50vw"
-                  style={{ objectFit: 'cover' }}
-                />
-              </div>
-              <div>
-                <h3 className={styles.hardwareTitle}>pamperMe Handheld Card Reader</h3>
-                <p className={styles.hardwareDesc}>
-                  Pocket-sized Bluetooth card reader allowing stylists to checkout clients right from the chair with zero friction.
-                </p>
-                <button className={styles.primaryBtn} style={{ background: '#0f172a', color: '#ffffff' }}>
-                  Explore Card Reader →
-                </button>
-              </div>
-            </div>
-          </div>
-
-          <div className={styles.hardwarePromoBanner}>
-            <div>
-              <div className={styles.promoTitle}>Get a FREE card reader with your free trial</div>
-              <div className={styles.promoSubtitle}>Sign up today and receive a complimentary contactless card reader for your salon.</div>
-            </div>
-            <Link href="/pricing" className={styles.primaryBtn} style={{ background: '#ffffff', color: '#0f172a' }}>
-              Claim Offer Now →
+          {/* Block 3: Bottom CTA Button & Fine Print */}
+          <div className={styles.noExtraChargeBlockFooter}>
+            <Link href="/pricing#compare-plans" className={styles.seeFeaturesBtn}>
+              See all included features
             </Link>
+            <p className={styles.noExtraChargeDisclaimer}>
+              * Plans include 2,000 free SMS marketing messages per month. Appointment confirmations and reminders are always free.<br />
+              **Standard Mobile Payment processing fees apply.
+            </p>
           </div>
         </section>
 
@@ -651,6 +763,48 @@ export default function BusinessTypeTemplate({
                 </div>
               );
             })}
+          </div>
+        </section>
+
+        {/* ==========================================================================
+            10. "PROFESSIONALISM IN EVERY MOVE" - COMMUNITY CTA BANNER
+            ========================================================================== */}
+        <section className={styles.makeTimeSection}>
+          <div className={styles.makeTimeCrowdWrapper}>
+            <Image
+              src="/salon_pros_community.png"
+              alt="Community of salon and beauty professionals"
+              width={1376}
+              height={499}
+              className={styles.makeTimeCrowdImg}
+              priority
+            />
+          </div>
+          <div className={styles.makeTimeBanner}>
+            <h2 className={styles.makeTimeHeading}>Professionalism in every move</h2>
+            <div className={styles.makeTimeStoreBadgesRow}>
+              <a href="#" className={styles.makeTimeStoreBadge} aria-label="Download on the App Store">
+                <svg width="20" height="24" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M15.97 6.37c.61-.75 1.04-1.8 0.92-2.85-.9.04-2 .6-2.63 1.34-.56.65-1.04 1.71-.91 2.73 1.01.08 2.01-.47 2.62-1.22z" />
+                </svg>
+                <div className={styles.makeTimeStoreBadgeText}>
+                  <span className={styles.makeTimeStoreBadgeSubtitle}>Download on the</span>
+                  <span className={styles.makeTimeStoreBadgeTitle}>App Store</span>
+                </div>
+              </a>
+              <a href="#" className={styles.makeTimeStoreBadge} aria-label="Get it on Google Play">
+                <svg width="20" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M3.61 1.814L13.79 12 3.61 22.186A2.37 2.37 0 0 1 3 20.5V3.5c0-.663.226-1.272.61-1.686z" fill="#2196F3" />
+                  <path d="M17.56 8.236l-3.77 3.764 3.77 3.764 4.25-2.457c1.23-.71 1.23-1.905 0-2.614l-4.25-2.457z" fill="#FFC107" />
+                  <path d="M3.61 1.814L15.35 8.59l-1.56 3.41L3.61 1.814z" fill="#4CAF50" />
+                  <path d="M3.61 22.186L13.79 12l1.56 3.41-11.74 6.776z" fill="#F44336" />
+                </svg>
+                <div className={styles.makeTimeStoreBadgeText}>
+                  <span className={styles.makeTimeStoreBadgeSubtitle}>GET IT ON</span>
+                  <span className={styles.makeTimeStoreBadgeTitle}>Google Play</span>
+                </div>
+              </a>
+            </div>
           </div>
         </section>
       </main>

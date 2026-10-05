@@ -20,10 +20,12 @@ function useCountdownPrice(
     // If billing cycle changed (prices changed) but toggle didn't
     if (prevEnabledRef.current === isEnabled &&
       (prevDefaultPriceRef.current !== defaultPrice || prevTargetPriceRef.current !== targetPrice)) {
-      setCurrentPrice(isEnabled ? targetPrice : defaultPrice);
+      const updateTimer = setTimeout(() => {
+        setCurrentPrice(isEnabled ? targetPrice : defaultPrice);
+      }, 0);
       prevDefaultPriceRef.current = defaultPrice;
       prevTargetPriceRef.current = targetPrice;
-      return;
+      return () => clearTimeout(updateTimer);
     }
 
     // Only run animations when isEnabled changes
@@ -39,10 +41,13 @@ function useCountdownPrice(
     let holdTimeout: NodeJS.Timeout | null = null;
     let holdTimeout2: NodeJS.Timeout | null = null;
     let popTimeout: NodeJS.Timeout | null = null;
+    let initTimeout: NodeJS.Timeout | null = null;
 
     if (isEnabled) {
-      // 1. Immediately jump to peak price (e.g. 30 / 35)
-      setCurrentPrice(peakPrice);
+      // 1. Jump to peak price (e.g. 30 / 35)
+      initTimeout = setTimeout(() => {
+        setCurrentPrice(peakPrice);
+      }, 0);
       let val = peakPrice;
 
       // 2. Hold for 1 second
@@ -66,8 +71,10 @@ function useCountdownPrice(
       }, 1000);
     } else {
       // OFF Transition:
-      // 1. Immediately show 0
-      setCurrentPrice(0);
+      // 1. Show 0
+      initTimeout = setTimeout(() => {
+        setCurrentPrice(0);
+      }, 0);
       let val = 0;
 
       // 2. Count UP from 0 to offPeakPrice (15 for Standard, 22 for Teams) over 3 seconds (3000ms)
@@ -106,10 +113,11 @@ function useCountdownPrice(
     }
 
     return () => {
+      if (initTimeout) clearTimeout(initTimeout);
       if (holdTimeout) clearTimeout(holdTimeout);
       if (holdTimeout2) clearTimeout(holdTimeout2);
-      if (interval) clearInterval(interval);
       if (popTimeout) clearTimeout(popTimeout);
+      if (interval) clearInterval(interval);
     };
   }, [isEnabled, defaultPrice, targetPrice, peakPrice, offPeakPrice]);
 

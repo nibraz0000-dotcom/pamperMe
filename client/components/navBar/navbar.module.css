@@ -87,6 +87,162 @@
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
 }
 
+.loginBtn {
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 18px;
+  background-color: transparent;
+  border: 1px solid #cbd5e1;
+  border-radius: 9999px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #0f172a;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  font-family: inherit;
+  margin-left: 0.25rem;
+}
+
+.loginBtn:hover {
+  background-color: #f8fafc;
+  border-color: #94a3b8;
+  color: #000000;
+}
+
+/* Account Avatar Badge & Dropdown */
+.accountWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  margin-left: 0.5rem;
+}
+
+.avatarCircle {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background-color: #111827;
+  color: #ffffff;
+  border: 2px solid #ffffff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.avatarCircle:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.popupMenu {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  width: 260px;
+  background-color: #ffffff;
+  border-radius: 14px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12), 0 0 0 1px rgba(0, 0, 0, 0.06);
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  z-index: 1000;
+  animation: fadeIn 0.2s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.popupHeader {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 0.85rem;
+  padding-bottom: 0.85rem;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.popupAvatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background-color: #ea4335;
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 0.85rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.popupUserInfo {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.popupName {
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: #0f172a;
+}
+
+.popupDesc {
+  font-size: 0.78rem;
+  color: #64748b;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.popupLinks {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.menuItem,
+.menuItemLink {
+  background: transparent;
+  border: none;
+  text-align: left;
+  padding: 0.55rem 0.65rem;
+  font-size: 0.88rem;
+  color: #334155;
+  cursor: pointer;
+  border-radius: 6px;
+  text-decoration: none;
+  transition: background-color 0.2s ease, color 0.2s ease;
+  font-family: inherit;
+  display: block;
+}
+
+.menuItem:hover,
+.menuItemLink:hover {
+  background-color: #f8fafc;
+  color: #0f172a;
+}
+
+.signOutBtn {
+  color: #ef4444;
+  border-top: 1px solid #f1f5f9;
+  margin-top: 0.4rem;
+  padding-top: 0.65rem;
+}
+
+.signOutBtn:hover {
+  background-color: #fef2f2;
+  color: #dc2626;
+}
+
 .subNav {
   display: flex;
   justify-content: center;

@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import Navbar from '../navBar/Navbar';
 import Footer from '../footer/Footer';
 import styles from './businessType.module.css';
@@ -12,96 +13,133 @@ export interface BusinessTypeProps {
   heroSubtitle?: string;
 }
 
-const FAQ_ITEMS = [
-  {
-    question: "What is Salon software?",
-    bullets: [
-      "24/7 online appointment booking",
-      "Integrated point of sale & payments",
-      "Client profiles & color formula records",
-      "Stylist shift scheduling & commissions",
-    ],
-    conclusion:
-      "Beyond automated booking and point of sale, salon software gives your team complete peace of mind to focus on creative craft and elevating client loyalty.",
-  },
-  {
-    question: "How much should I expect to pay for salon software?",
-    bullets: [
-      "Predictable flat monthly subscription tiers",
-      "Competitive, transparent processing rates",
-      "Zero hidden cancellation fees or contracts",
-      "Free 14-day full feature trial",
-    ],
-    conclusion:
-      "With transparent subscription tiers and low card rates, modern platforms eliminate surprise overhead so salon owners can invest more into growing their business.",
-  },
-  {
-    question: "How can I use salon software to help me grow my business?",
-    bullets: [
-      "Automated SMS & email rebooking campaigns",
-      "Custom gift cards, packages & memberships",
-      "Automated 5-star Google review requests",
-      "Real-time revenue & chair utilization analytics",
-    ],
-    conclusion:
-      "Combining automated marketing with intelligent rebooking keeps appointment books filled consistently, driving higher customer lifetime value with minimal daily effort.",
-  },
-  {
-    question: "Does most salon software include an integrated payment system?",
-    bullets: [
-      "Card-on-file capture for no-show protection",
-      "Contactless Apple Pay, Google Pay & tap cards",
-      "Customizable tip screens & split checks",
-      "Instant next-day payout deposits to your bank",
-    ],
-    conclusion:
-      "Built-in processing unifies appointment checkouts with card protection policies, giving salon clients a frictionless visit while safeguarding your daily revenue.",
-  },
-  {
-    question: "Is customer support typically included with salon software?",
-    bullets: [
-      "24/7 dedicated live chat & phone support",
-      "Free 1-on-1 team onboarding & training",
-      "Complimentary client data migration service",
-      "Extensive knowledge base & video tutorials",
-    ],
-    conclusion:
-      "Dedicated onboarding and complimentary data transfer guarantee that your staff transitions seamlessly without any disruption to your regular salon schedule.",
-  },
-  {
-    question: "How can I integrate salon software into my business operations?",
-    bullets: [
-      "Embed booking widgets on your website & socials",
-      "Fast 1-click import of clients & service menus",
-      "Custom stylist logins with role permissions",
-      "Sync seamlessly with Google Reserve & Instagram",
-    ],
-    conclusion:
-      "With intuitive setup wizards and seamless social booking links, your salon can start accepting appointments and managing team schedules in less than an hour.",
-  },
-  {
-    question: "What should I consider when purchasing salon software?",
-    bullets: [
-      "Ease of use on mobile phones and tablets",
-      "Automated appointment reminders to stop no-shows",
-      "Flexible booth rental & commission structures",
-      "Dedicated hardware reliability and POS speed",
-    ],
-    conclusion:
-      "Prioritize an intuitive mobile experience with strong deposit policies that saves front-desk hours while protecting stylist earnings and chair turnover.",
-  },
-  {
-    question: "What devices work with pamperMe?",
-    bullets: [
-      "iOS & Android smartphones and tablets",
-      "Mac & Windows desktop web browsers",
-      "Dual-screen countertop register hardware",
-      "Pocket Bluetooth contactless card readers",
-    ],
-    conclusion:
-      "Cloud synchronization across all smartphones, tablets, and dedicated POS terminals ensures you can monitor operations and take payments from any chair, anytime.",
-  },
-];
+const pathMap: Record<string, string> = {
+  '/acupuncture': 'Acupuncture',
+  '/aesthetic-clinic': 'Aesthetic Clinic',
+  '/barber': 'Barbershop',
+  '/barre-studio': 'Barre Studio',
+  '/booth-renter': 'Booth Renter',
+  '/brow-and-lash': 'Brow and Lash Studio',
+  '/brow-lash': 'Brow and Lash Studio',
+  '/chiropractor': 'Chiropractor',
+  '/coaching': 'Coaching',
+  '/cross-training': 'Cross Training Gym',
+  '/cycling': 'Cycling Studio',
+  '/dance-studio': 'Dance Studio',
+  '/gym': 'Gym',
+  '/hair-removal': 'Hair Removal Clinic',
+  '/makeup': 'Makeup Artist',
+  '/martial-arts': 'Martial Arts Studio',
+  '/massage': 'Massage Studio',
+  '/med-spa': 'Med Spa',
+  '/mental-health': 'Mental Health Clinic',
+  '/nail': 'Nail Salon',
+  '/nutritionist': 'Nutritionist',
+  '/personal-trainer': 'Personal Trainer',
+  '/pet-grooming': 'Pet Grooming Salon',
+  '/physical-therapy': 'Physical Therapy Clinic',
+  '/pilates': 'Pilates Studio',
+  '/salon': 'Salon',
+  '/spa': 'Spa',
+  '/sports-facility': 'Sports Facility',
+  '/tanning': 'Tanning Salon',
+  '/tattoo': 'Tattoo Studio',
+  '/weight-loss-clinic': 'Weight Loss Clinic',
+  '/yoga': 'Yoga Studio'
+};
+
+function getFaqs(businessType: string) {
+  return [
+    {
+      question: `What is ${businessType} software?`,
+      bullets: [
+        "24/7 online appointment booking",
+        "Integrated point of sale & payments",
+        "Client profiles & service records",
+        "Staff shift scheduling & commissions",
+      ],
+      conclusion:
+        `Beyond automated booking and point of sale, ${businessType.toLowerCase()} software gives your team complete peace of mind to focus on their craft and elevating client loyalty.`,
+    },
+    {
+      question: `How much should I expect to pay for ${businessType} software?`,
+      bullets: [
+        "Predictable flat monthly subscription tiers",
+        "Competitive, transparent processing rates",
+        "Zero hidden cancellation fees or contracts",
+        "Free 14-day full feature trial",
+      ],
+      conclusion:
+        "With transparent subscription tiers and low card rates, modern platforms eliminate surprise overhead so owners can invest more into growing their business.",
+    },
+    {
+      question: `How can I use ${businessType} software to help me grow my business?`,
+      bullets: [
+        "Automated SMS & email rebooking campaigns",
+        "Custom gift cards, packages & memberships",
+        "Automated 5-star Google review requests",
+        "Real-time revenue & utilization analytics",
+      ],
+      conclusion:
+        "Combining automated marketing with intelligent rebooking keeps appointment books filled consistently, driving higher customer lifetime value with minimal daily effort.",
+    },
+    {
+      question: `Does most ${businessType} software include an integrated payment system?`,
+      bullets: [
+        "Card-on-file capture for no-show protection",
+        "Contactless Apple Pay, Google Pay & tap cards",
+        "Customizable tip screens & split checks",
+        "Instant next-day payout deposits to your bank",
+      ],
+      conclusion:
+        "Built-in processing unifies checkouts with card protection policies, giving clients a frictionless visit while safeguarding your daily revenue.",
+    },
+    {
+      question: `Is customer support typically included with ${businessType} software?`,
+      bullets: [
+        "24/7 dedicated live chat & phone support",
+        "Free 1-on-1 team onboarding & training",
+        "Complimentary client data migration service",
+        "Extensive knowledge base & video tutorials",
+      ],
+      conclusion:
+        "Dedicated onboarding and complimentary data transfer guarantee that your staff transitions seamlessly without any disruption to your regular schedule.",
+    },
+    {
+      question: `How can I integrate ${businessType} software into my business operations?`,
+      bullets: [
+        "Embed booking widgets on your website & socials",
+        "Fast 1-click import of clients & service menus",
+        "Custom staff logins with role permissions",
+        "Sync seamlessly with Google Reserve & Instagram",
+      ],
+      conclusion:
+        "With intuitive setup wizards and seamless social booking links, your business can start accepting appointments and managing team schedules in less than an hour.",
+    },
+    {
+      question: `What should I consider when purchasing ${businessType} software?`,
+      bullets: [
+        "Ease of use on mobile phones and tablets",
+        "Automated appointment reminders to stop no-shows",
+        "Flexible staff & commission structures",
+        "Dedicated hardware reliability and POS speed",
+      ],
+      conclusion:
+        "Prioritize an intuitive mobile experience with strong deposit policies that saves front-desk hours while protecting staff earnings.",
+    },
+    {
+      question: `What devices work with pamperMe?`,
+      bullets: [
+        "iOS & Android smartphones and tablets",
+        "Mac & Windows desktop web browsers",
+        "Dual-screen countertop register hardware",
+        "Pocket Bluetooth contactless card readers",
+      ],
+      conclusion:
+        "Cloud synchronization across all smartphones, tablets, and dedicated POS terminals ensures you can monitor operations and take payments from anywhere, anytime.",
+    },
+  ];
+}
 
 const BRAND_PARTNERS = [
   {
@@ -314,6 +352,10 @@ export default function BusinessTypeTemplate({
   const [isExpanded, setIsExpanded] = useState(false);
   const sectionRef = useRef<HTMLElement>(null);
 
+  const pathname = usePathname();
+  const businessType = pathMap[pathname] || 'Salon';
+  const faqItems = getFaqs(businessType);
+
   const toggleFaq = (index: number) => {
     setOpenFaqIndex((prev) => (prev === index ? null : index));
   };
@@ -356,7 +398,7 @@ export default function BusinessTypeTemplate({
             <p className={styles.heroSubtitle}>{heroSubtitle}</p>
 
             <div className={styles.heroActions}>
-              <Link href="/pricing" className={styles.primaryBtn}>
+              <Link href="/free-trial" className={styles.primaryBtn}>
                 Start Free Trial
               </Link>
               <span className={styles.heroMicrocopy}>No credit card required</span>
@@ -721,7 +763,7 @@ export default function BusinessTypeTemplate({
           <h2 className={styles.faqTitle}>FAQ</h2>
 
           <div className={styles.faqList}>
-            {FAQ_ITEMS.map((item, index) => {
+            {faqItems.map((item, index) => {
               const isOpen = openFaqIndex === index;
               return (
                 <div key={index} className={styles.faqItem}>
@@ -782,29 +824,10 @@ export default function BusinessTypeTemplate({
           </div>
           <div className={styles.makeTimeBanner}>
             <h2 className={styles.makeTimeHeading}>Professionalism in every move</h2>
-            <div className={styles.makeTimeStoreBadgesRow}>
-              <a href="#" className={styles.makeTimeStoreBadge} aria-label="Download on the App Store">
-                <svg width="20" height="24" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M15.97 6.37c.61-.75 1.04-1.8 0.92-2.85-.9.04-2 .6-2.63 1.34-.56.65-1.04 1.71-.91 2.73 1.01.08 2.01-.47 2.62-1.22z" />
-                </svg>
-                <div className={styles.makeTimeStoreBadgeText}>
-                  <span className={styles.makeTimeStoreBadgeSubtitle}>Download on the</span>
-                  <span className={styles.makeTimeStoreBadgeTitle}>App Store</span>
-                </div>
-              </a>
-              <a href="#" className={styles.makeTimeStoreBadge} aria-label="Get it on Google Play">
-                <svg width="20" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M3.61 1.814L13.79 12 3.61 22.186A2.37 2.37 0 0 1 3 20.5V3.5c0-.663.226-1.272.61-1.686z" fill="#2196F3" />
-                  <path d="M17.56 8.236l-3.77 3.764 3.77 3.764 4.25-2.457c1.23-.71 1.23-1.905 0-2.614l-4.25-2.457z" fill="#FFC107" />
-                  <path d="M3.61 1.814L15.35 8.59l-1.56 3.41L3.61 1.814z" fill="#4CAF50" />
-                  <path d="M3.61 22.186L13.79 12l1.56 3.41-11.74 6.776z" fill="#F44336" />
-                </svg>
-                <div className={styles.makeTimeStoreBadgeText}>
-                  <span className={styles.makeTimeStoreBadgeSubtitle}>GET IT ON</span>
-                  <span className={styles.makeTimeStoreBadgeTitle}>Google Play</span>
-                </div>
-              </a>
-            </div>
+
+            <Link href="/free-trial" className={styles.ctaBtn}>
+              Start Free Trial
+            </Link>
           </div>
         </section>
       </main>

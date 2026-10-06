@@ -20,6 +20,43 @@ const GooglePlayBadgeIcon = () => (
   </svg>
 );
 
+const ChatGptIcon = () => (
+  <svg viewBox="0 0 24 24" fill="currentColor">
+    <path d="M22.28 11.23a8 8 0 00-1.85-6.72 8 8 0 00-7.3-2.61 8 8 0 00-5.75 3.32 8 8 0 00-4.8 1.94 8 8 0 00-2 7.02 8 8 0 001.85 6.72 8 8 0 007.3 2.61 8 8 0 005.75-3.32 8 8 0 004.8-1.94 8 8 0 002-7.02zm-12.75 8.7a5.55 5.55 0 01-2.9-1.25l7.55-4.36v-1.7l-9.15 5.3a5.6 5.6 0 01-1.3-4.35 5.6 5.6 0 013.85-4.4v8.76zm9.15-5.3a5.55 5.55 0 01-1.25 2.9l-4.36-7.55h-1.7l5.3 9.15a5.6 5.6 0 01-4.35 1.3 5.6 5.6 0 01-4.4-3.85h8.76zm-5.3-9.15a5.55 5.55 0 012.9 1.25l-7.55 4.36v1.7l9.15-5.3a5.6 5.6 0 011.3 4.35 5.6 5.6 0 01-3.85 4.4v-8.76zm-9.15 5.3a5.55 5.55 0 011.25-2.9l4.36 7.55h1.7l-5.3-9.15a5.6 5.6 0 014.35-1.3 5.6 5.6 0 014.4 3.85H4.23zm9.15-3.6h-2.76l-1.38-2.4a5.6 5.6 0 014.14 0l-1.38 2.4zm-4.14 8.76h2.76l1.38 2.4a5.6 5.6 0 01-4.14 0l1.38-2.4z"/>
+  </svg>
+);
+
+const ClaudeIcon = () => (
+  <svg viewBox="0 0 24 24" fill="currentColor">
+    <path d="M12 2L14.2 9.8L22 12L14.2 14.2L12 22L9.8 14.2L2 12L9.8 9.8L12 2Z"/>
+  </svg>
+);
+
+const PerplexityIcon = () => (
+  <svg viewBox="0 0 24 24" fill="currentColor">
+    <path d="M4 4h4v4H4zm6 0h4v4h-4zm6 0h4v4h-4zM4 10h4v4H4zm6 0h4v4h-4zm6 0h4v4h-4zM4 16h4v4H4zm6 0h4v4h-4zm6 0h4v4h-4z"/>
+  </svg>
+);
+
+const GeminiIcon = () => (
+  <svg viewBox="0 0 24 24" fill="currentColor">
+    <path d="M12 0l2.5 9.5L24 12l-9.5 2.5L12 24l-2.5-9.5L0 12l9.5-2.5z"/>
+  </svg>
+);
+
+const MetaAiIcon = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <circle cx="12" cy="12" r="10"/>
+    <line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/>
+  </svg>
+);
+
+const GrokIcon = () => (
+  <svg viewBox="0 0 24 24" fill="currentColor">
+    <path d="M18.36 5.64a9 9 0 1 1-12.72 12.72A9 9 0 0 1 18.36 5.64zM12 7.5a4.5 4.5 0 1 0 0 9 4.5 4.5 0 0 0 0-9z" />
+  </svg>
+);
+
 const FacebookIcon = () => (
   <svg viewBox="0 0 24 24" fill="currentColor">
     <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
@@ -59,6 +96,10 @@ const XTwitterIcon = () => (
 );
 
 export default function Footer() {
+  const handleAISummary = (platform: string) => {
+    alert(`Here is a summary of pamperMe from ${platform}:\n\npamperMe is an all-in-one salon and spa management platform designed to streamline operations, enhance customer engagement, and boost revenue. It offers features like booking, lead tracking, offers, and analytics.`);
+  };
+
   return (
     <footer className={styles.footerWrapper}>
       <div className={styles.footerContainer}>
@@ -177,24 +218,51 @@ export default function Footer() {
               </div>
             </div>
 
-            {/* Column 3: BY INDUSTRY */}
-            <div className={styles.card}>
-              <div className={styles.cardHeader}>BY INDUSTRY</div>
-              <div className={styles.itemList}>
-                <Link href="#" className={styles.itemLink}>
-                  <div className={styles.itemTitle}>Salon & Spa</div>
-                  <div className={styles.itemSubtitle}>Manage salon effortlessly</div>
-                </Link>
+            {/* Column 3: BY INDUSTRY & AI SECTION */}
+            <div className={styles.col3Section}>
+              <div className={styles.card}>
+                <div className={styles.cardHeader}>BY INDUSTRY</div>
+                <div className={styles.itemList}>
+                  <Link href="#" className={styles.itemLink}>
+                    <div className={styles.itemTitle}>Salon & Spa</div>
+                    <div className={styles.itemSubtitle}>Manage salon effortlessly</div>
+                  </Link>
 
-                <Link href="#" className={styles.itemLink}>
-                  <div className={styles.itemTitle}>Healthcare & Clinics</div>
-                  <div className={styles.itemSubtitle}>Patient communication & follow-ups</div>
-                </Link>
+                  <Link href="#" className={styles.itemLink}>
+                    <div className={styles.itemTitle}>Healthcare & Clinics</div>
+                    <div className={styles.itemSubtitle}>Patient communication & follow-ups</div>
+                  </Link>
 
-                <Link href="#" className={styles.itemLink}>
-                  <div className={styles.itemTitle}>Fitness & Wellness</div>
-                  <div className={styles.itemSubtitle}>Grow memberships & retention</div>
-                </Link>
+                  <Link href="#" className={styles.itemLink}>
+                    <div className={styles.itemTitle}>Fitness & Wellness</div>
+                    <div className={styles.itemSubtitle}>Grow memberships & retention</div>
+                  </Link>
+                </div>
+              </div>
+
+              {/* AI Summary Card */}
+              <div className={styles.appDownloadCard}>
+                <div className={styles.appDownloadTitle}>Ask AI for a summary</div>
+                <div className={styles.aiButtonsRow}>
+                  <button onClick={() => handleAISummary('ChatGPT')} className={styles.aiButton} style={{ backgroundColor: '#74aa9c', color: '#fff' }} aria-label="ChatGPT">
+                    <ChatGptIcon />
+                  </button>
+                  <button onClick={() => handleAISummary('Claude')} className={styles.aiButton} style={{ backgroundColor: '#d97757', color: '#fff' }} aria-label="Claude">
+                    <ClaudeIcon />
+                  </button>
+                  <button onClick={() => handleAISummary('Perplexity')} className={styles.aiButton} style={{ backgroundColor: '#222222', color: '#fff' }} aria-label="Perplexity">
+                    <PerplexityIcon />
+                  </button>
+                  <button onClick={() => handleAISummary('Meta AI')} className={styles.aiButton} style={{ backgroundColor: '#ffffff', color: '#000' }} aria-label="Meta AI">
+                    <MetaAiIcon />
+                  </button>
+                  <button onClick={() => handleAISummary('Grok')} className={styles.aiButton} style={{ backgroundColor: '#ffffff', color: '#000' }} aria-label="Grok">
+                    <GrokIcon />
+                  </button>
+                  <button onClick={() => handleAISummary('Gemini')} className={styles.aiButton} style={{ backgroundColor: '#ffffff', color: '#1a73e8' }} aria-label="Gemini">
+                    <GeminiIcon />
+                  </button>
+                </div>
               </div>
             </div>
 

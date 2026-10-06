@@ -1,0 +1,759 @@
+.container {
+  min-height: 100vh;
+  background-color: #ffffff;
+  color: #0f172a;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* Top Progress Bar */
+.progressBarTrack {
+  width: 100%;
+  height: 4px;
+  background-color: #f1f5f9;
+  display: flex;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+
+.progressBarSegment {
+  flex: 1;
+  height: 100%;
+  transition: all 0.3s ease;
+}
+
+.progressBarSegmentActive {
+  background-color: #0f172a;
+}
+
+.progressBarSegmentInactive {
+  background-color: #f1f5f9;
+}
+
+/* Header Navigation */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 40px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.backBtn {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  color: #0f172a;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-decoration: none;
+}
+
+.backBtn:hover {
+  background: #f8fafc;
+  border-color: #cbd5e1;
+  transform: translateX(-2px);
+}
+
+.headerActions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.closeBtn {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  color: #475569;
+  font-size: 14px;
+  font-weight: 500;
+  padding: 9px 20px;
+  border-radius: 9999px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+}
+
+.closeBtn:hover {
+  background: #f8fafc;
+  color: #0f172a;
+  border-color: #cbd5e1;
+}
+
+.nextBtn {
+  background: #0f172a;
+  color: #ffffff;
+  border: 1px solid #0f172a;
+  font-size: 14px;
+  font-weight: 600;
+  padding: 9px 24px;
+  border-radius: 9999px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s ease;
+}
+
+.nextBtn:hover:not(:disabled) {
+  background: #1e293b;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.15);
+}
+
+.nextBtn:disabled {
+  background: #f1f5f9;
+  border-color: #e2e8f0;
+  color: #94a3b8;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* Main Content Area */
+.mainContent {
+  flex: 1;
+  max-width: 660px;
+  width: 100%;
+  margin: 36px auto;
+  padding: 0 24px 60px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+}
+
+.heading {
+  font-size: 36px;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  margin: 0 0 10px 0;
+  color: #0f172a;
+  line-height: 1.2;
+}
+
+.subHeading {
+  font-size: 15px;
+  color: #64748b;
+  margin: 0 0 32px 0;
+  line-height: 1.5;
+}
+
+/* Search Bar */
+.searchWrapper {
+  position: relative;
+  width: 100%;
+  margin-bottom: 24px;
+}
+
+.searchIcon {
+  position: absolute;
+  left: 18px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #94a3b8;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.searchInput {
+  width: 100%;
+  background-color: #ffffff;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 16px 20px 16px 50px;
+  font-size: 15px;
+  color: #0f172a;
+  outline: none;
+  transition: all 0.2s ease;
+  box-sizing: border-box;
+}
+
+.searchInput:focus {
+  border-color: #0f172a;
+  box-shadow: 0 0 0 3px rgba(15, 23, 42, 0.08);
+}
+
+.searchInput::placeholder {
+  color: #94a3b8;
+}
+
+/* Empty Search Prompt State */
+.searchPlaceholderPrompt {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 50px 20px;
+  text-align: center;
+  color: #94a3b8;
+  border: 1.5px dashed #e2e8f0;
+  border-radius: 14px;
+  background-color: #fafafa;
+}
+
+.searchPromptIcon {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: #f1f5f9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 12px;
+  color: #64748b;
+}
+
+.searchPromptText {
+  font-size: 14px;
+  font-weight: 500;
+  color: #64748b;
+  margin: 0 0 4px 0;
+}
+
+.searchPromptSubtext {
+  font-size: 13px;
+  color: #94a3b8;
+  margin: 0;
+}
+
+/* Business Cards List */
+.businessList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  animation: fadeIn 0.25s ease;
+}
+
+.businessCard {
+  background: #ffffff;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 14px;
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: left;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.businessCard:hover {
+  border-color: #cbd5e1;
+  background-color: #f8fafc;
+  transform: translateY(-1px);
+}
+
+.businessCardActive {
+  background: #ffffff;
+  border-color: #0f172a;
+  box-shadow: 0 0 0 2px #0f172a, 0 8px 20px rgba(15, 23, 42, 0.08);
+}
+
+.cardLeft {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.thumbnailLogo {
+  width: 52px;
+  height: 52px;
+  border-radius: 10px;
+  background-color: #0f172a;
+  border: 1px solid #334155;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  color: #f59e0b;
+  font-size: 12px;
+  letter-spacing: 1px;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.thumbnailImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.businessInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.businessName {
+  font-size: 15.5px;
+  font-weight: 600;
+  color: #0f172a;
+}
+
+.businessLocations {
+  font-size: 13px;
+  color: #64748b;
+}
+
+.businessOwner {
+  font-size: 13px;
+  color: #475569;
+}
+
+.viewProfileBtn {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  color: #334155;
+  font-size: 13px;
+  font-weight: 500;
+  padding: 8px 18px;
+  border-radius: 9999px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.viewProfileBtn:hover {
+  background: #f1f5f9;
+  border-color: #cbd5e1;
+  color: #0f172a;
+}
+
+/* Step 2: Message Box */
+.messageLabelContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.messageLabel {
+  font-size: 14px;
+  font-weight: 600;
+  color: #0f172a;
+}
+
+.charCounter {
+  font-size: 13px;
+  color: #64748b;
+}
+
+.messageTextarea {
+  width: 100%;
+  min-height: 150px;
+  background-color: #ffffff;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 14px;
+  padding: 16px 20px;
+  font-size: 15px;
+  color: #0f172a;
+  font-family: inherit;
+  resize: vertical;
+  outline: none;
+  transition: all 0.2s ease;
+  box-sizing: border-box;
+}
+
+.messageTextarea:focus {
+  border-color: #0f172a;
+  box-shadow: 0 0 0 3px rgba(15, 23, 42, 0.08);
+}
+
+.messageTextarea::placeholder {
+  color: #94a3b8;
+}
+
+/* Step 3: Plain Seamless Transfer & Success Animation */
+.plainAnimationContainer {
+  min-height: 100vh;
+  background: #ffffff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 40px 24px;
+  box-sizing: border-box;
+  position: relative;
+  overflow: hidden;
+  animation: fadeIn 0.35s ease forwards;
+}
+
+.stageArea {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 520px;
+  min-height: 240px;
+  position: relative;
+}
+
+/* Phase 1: Two Nodes Transfer Stage */
+.transferStage {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  width: 100%;
+  margin-bottom: 28px;
+  animation: fadeIn 0.3s ease;
+}
+
+.userNodeCircle {
+  width: 68px;
+  height: 68px;
+  border-radius: 50%;
+  background-color: #f8fafc;
+  border: 2px solid #cbd5e1;
+  color: #0f172a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 16px;
+  box-shadow: 0 10px 25px rgba(15, 23, 42, 0.08);
+  flex-shrink: 0;
+  position: relative;
+  animation: pulseUser 1.5s ease-in-out infinite alternate;
+}
+
+.transferTrackLine {
+  flex: 1;
+  height: 4px;
+  background: #f1f5f9;
+  border-radius: 9999px;
+  position: relative;
+  overflow: hidden;
+  max-width: 150px;
+}
+
+.transferDotPulse {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 45px;
+  background: linear-gradient(90deg, transparent, #0f172a 50%, transparent);
+  border-radius: 9999px;
+  animation: sendPulseWave 0.9s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+.shopNodeCircle {
+  width: 68px;
+  height: 68px;
+  border-radius: 50%;
+  background-color: #0f172a;
+  border: 2px solid #0f172a;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 10px 25px rgba(15, 23, 42, 0.15);
+  flex-shrink: 0;
+  position: relative;
+}
+
+/* Phase 2: Shop Node Moves to Center & Confirms */
+.centeredConfirmedStage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  animation: centerPop 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+.confirmedShopCircle {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  background: #0f172a;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  box-shadow: 0 16px 36px rgba(15, 23, 42, 0.22);
+  margin-bottom: 24px;
+}
+
+.checkBadgeOverlay {
+  position: absolute;
+  bottom: -4px;
+  right: -4px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background-color: #10b981; /* Emerald green check badge */
+  border: 3px solid #ffffff;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 10px rgba(16, 185, 129, 0.35);
+  animation: checkPop 0.35s 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.3) both;
+}
+
+.confirmedTitle {
+  font-size: 26px;
+  font-weight: 700;
+  color: #0f172a;
+  letter-spacing: -0.02em;
+  margin: 0 0 8px 0;
+  animation: slideUp 0.4s ease forwards;
+}
+
+.confirmedSubtitle {
+  font-size: 15px;
+  color: #64748b;
+  margin: 0;
+  line-height: 1.45;
+  animation: slideUp 0.4s 0.1s ease forwards;
+}
+
+.zoomOutExit {
+  animation: exitBoom 0.6s cubic-bezier(0.7, 0, 0.3, 1) forwards;
+}
+
+@keyframes pulseUser {
+  0% {
+    transform: scale(0.97);
+  }
+  100% {
+    transform: scale(1.03);
+  }
+}
+
+@keyframes sendPulseWave {
+  0% {
+    left: -45px;
+  }
+  100% {
+    left: 100%;
+  }
+}
+
+@keyframes centerPop {
+  0% {
+    transform: scale(0.7);
+    opacity: 0.5;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes checkPop {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes exitBoom {
+  0% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.08);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.85);
+  }
+}
+
+@keyframes sendTravel {
+  0% {
+    left: -40px;
+  }
+  100% {
+    left: 100%;
+  }
+}
+
+@keyframes rippleSpread {
+  0% {
+    transform: scale(0.9);
+    opacity: 0.6;
+  }
+  100% {
+    transform: scale(1.4);
+    opacity: 0;
+  }
+}
+
+@keyframes popScale {
+  0% {
+    transform: scale(0.5);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes drawCheck {
+  0% {
+    stroke-dashoffset: 30;
+    stroke-dasharray: 30;
+    opacity: 0;
+  }
+  100% {
+    stroke-dashoffset: 0;
+    stroke-dasharray: 30;
+    opacity: 1;
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes fillProgress {
+  0% {
+    width: 0%;
+  }
+  100% {
+    width: 100%;
+  }
+}
+
+/* Profile Preview Modal */
+.modalBackdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.5);
+  backdrop-filter: blur(6px);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.modalBox {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 20px;
+  max-width: 500px;
+  width: 100%;
+  padding: 28px;
+  position: relative;
+  box-shadow: 0 20px 45px rgba(15, 23, 42, 0.15);
+  color: #0f172a;
+}
+
+.modalCloseBtn {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: #f1f5f9;
+  border: none;
+  color: #64748b;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 15px;
+}
+
+.modalCloseBtn:hover {
+  background: #e2e8f0;
+  color: #0f172a;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes pulsePop {
+  0% {
+    transform: scale(0.96);
+    box-shadow: 0 10px 24px rgba(15, 23, 42, 0.15);
+  }
+  100% {
+    transform: scale(1.04);
+    box-shadow: 0 20px 40px rgba(15, 23, 42, 0.25);
+  }
+}
+
+@keyframes slideUpText {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 640px) {
+  .header {
+    padding: 16px 20px;
+  }
+  .heading {
+    font-size: 28px;
+  }
+  .mainContent {
+    margin: 20px auto;
+    padding: 0 16px 40px;
+  }
+  .businessCard {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 14px;
+  }
+  .viewProfileBtn {
+    align-self: flex-end;
+  }
+}

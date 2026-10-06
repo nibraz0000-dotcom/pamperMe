@@ -7,6 +7,45 @@
   --border-color: #eaeaea;
   --font-primary: var(--font-geist-sans), sans-serif;
   --font-serif: var(--font-playfair), "Playfair Display", Georgia, serif;
+
+  /* Dashboard Theme Variables (Light default) */
+  --dash-bg: #f8fafc;
+  --dash-surface: #ffffff;
+  --dash-sidebar: #ffffff;
+  --dash-text: #0f172a;
+  --dash-text-sec: #64748b;
+  --dash-border: #e2e8f0;
+  --dash-border-hover: #cbd5e1;
+  --dash-nav-hover: #f1f5f9;
+  --dash-nav-active-bg: #f8fafc;
+  --dash-nav-active-text: #6366f1;
+  --dash-btn-bg: #0f172a;
+  --dash-btn-text: #ffffff;
+  --dash-btn-sec-bg: #ffffff;
+  --dash-btn-sec-text: #0f172a;
+  --dash-card-hover: #f1f5f9;
+  --dash-shadow: rgba(0, 0, 0, 0.05);
+  --dash-amber: #f59e0b;
+}
+
+[data-theme="dark"] {
+  --dash-bg: #0c0d10;
+  --dash-surface: #121318;
+  --dash-sidebar: #101115;
+  --dash-text: #ffffff;
+  --dash-text-sec: #94a3b8;
+  --dash-border: #1e2027;
+  --dash-border-hover: #343744;
+  --dash-nav-hover: #181920;
+  --dash-nav-active-bg: #1e1b4b;
+  --dash-nav-active-text: #a5b4fc;
+  --dash-btn-bg: #ffffff;
+  --dash-btn-text: #0c0d10;
+  --dash-btn-sec-bg: #1a1b22;
+  --dash-btn-sec-text: #e2e8f0;
+  --dash-card-hover: #16181f;
+  --dash-shadow: rgba(0, 0, 0, 0.4);
+  --dash-amber: #fcd34d;
 }
 
 * {

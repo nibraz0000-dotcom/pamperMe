@@ -1,0 +1,64 @@
+.layout {
+  display: flex;
+  min-height: 100vh;
+  background-color: var(--dash-bg);
+  color: var(--dash-text);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  overflow-x: hidden;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  background-color: var(--dash-bg);
+  transition: background-color 0.3s ease;
+}
+
+.topBar {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  padding: 18px 36px;
+  border-bottom: 1px solid var(--dash-border);
+  background-color: var(--dash-surface);
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.userBadgeCircle {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background-color: var(--dash-nav-hover);
+  color: var(--dash-text);
+  font-size: 14px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--dash-border-hover);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.userBadgeCircle:hover {
+  background-color: var(--dash-border);
+}
+
+.contentWrapper {
+  padding: 36px 48px;
+  max-width: 1000px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+@media (max-width: 768px) {
+  .layout {
+    flex-direction: column;
+  }
+  .contentWrapper {
+    padding: 24px 18px;
+  }
+}

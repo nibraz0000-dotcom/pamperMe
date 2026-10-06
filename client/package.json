@@ -24,6 +24,8 @@
     "eslint": "^9",
     "eslint-config-next": "16.3.6",
     "postcss": "^8.5.28",
+    "stylelint": "^17.16.0",
+    "stylelint-config-standard": "^40.0.0",
     "tailwindcss": "^4.3.3",
     "typescript": "^5"
   }

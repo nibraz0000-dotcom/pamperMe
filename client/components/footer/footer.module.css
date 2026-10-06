@@ -164,6 +164,13 @@
   gap: 1.25rem;
 }
 
+.col3Section {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 1.25rem;
+}
+
 .topRightRow {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -186,7 +193,9 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   gap: 0.85rem;
+  height: 155px;
   transition: border-color 0.2s ease, transform 0.2s ease;
 }
 
@@ -200,6 +209,39 @@
   color: #ffffff;
   text-align: center;
   letter-spacing: -0.01em;
+}
+
+/* AI Summary Section */
+.aiButtonsRow {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.5rem;
+  width: 100%;
+  justify-content: center;
+}
+
+.aiButton {
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+}
+
+.aiButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 14px rgba(0,0,0,0.4);
+}
+
+.aiButton svg {
+  width: 18px;
+  height: 18px;
 }
 
 .storeBadgesRow {

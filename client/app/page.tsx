@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import styles from "./page.module.css";
 import Navbar from "../components/navBar/Navbar";
 import Footer from "../components/footer";
@@ -18,8 +19,7 @@ export default function Home() {
           </h1>
 
           <div className={styles.heroActions}>
-            <button className="btn-primary">Start free trial</button>
-            <button className="btn-secondary">Book a demo</button>
+            <Link href="/free-trial" className="btn-primary">Start free trial</Link>
           </div>
 
           <div className={styles.heroImageContainer}>

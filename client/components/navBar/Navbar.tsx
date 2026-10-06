@@ -73,14 +73,47 @@ const MarketplaceIcon = () => (
   </svg>
 );
 
+import GoogleOneTapPrompt from '../auth/GoogleOneTapPrompt';
+import { getStoredUser, logoutUser, UserSession, AUTH_EVENT_NAME } from '../../utils/auth';
+
 export default function Navbar() {
   const pathname = usePathname();
   const [activeMenu, setActiveMenu] = useState<string | null>(null);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isFooterHidden, setIsFooterHidden] = useState(false);
+  const [currentUser, setCurrentUser] = useState<UserSession | null>(null);
+  const [showAccountMenu, setShowAccountMenu] = useState(false);
+  const accountMenuRef = useRef<HTMLDivElement | null>(null);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   const lastScrollYRef = useRef(0);
   const headerRef = useRef<HTMLDivElement | null>(null);
+
+  // Sync auth state
+  useEffect(() => {
+    setCurrentUser(getStoredUser());
+    const handleAuthChange = () => {
+      setCurrentUser(getStoredUser());
+    };
+    window.addEventListener(AUTH_EVENT_NAME, handleAuthChange);
+    return () => {
+      window.removeEventListener(AUTH_EVENT_NAME, handleAuthChange);
+    };
+  }, []);
+
+  // Click outside to close account menu
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (accountMenuRef.current && !accountMenuRef.current.contains(e.target as Node)) {
+        setShowAccountMenu(false);
+      }
+    };
+    if (showAccountMenu) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [showAccountMenu]);
 
   const closeMenuImmediately = () => {
     if (timeoutRef.current) {
@@ -141,8 +174,8 @@ export default function Navbar() {
           setIsFooterHidden(false);
         }
       } else {
-      setIsFooterHidden(false);
-    }
+        setIsFooterHidden(false);
+      }
 
       lastScrollYRef.current = currentScrollY;
     };
@@ -178,6 +211,9 @@ export default function Navbar() {
         </div>
       )}
 
+      {/* Google One Tap Prompt on Homepage after 5 seconds */}
+      {pathname === '/' && <GoogleOneTapPrompt delayMs={5000} />}
+
       <div
         ref={headerRef}
         className={`${styles.stickyHeader} ${isScrolled ? styles.scrolled : ''} ${isFooterHidden ? styles.navbarHidden : ''}`}
@@ -193,8 +229,68 @@ export default function Navbar() {
               <MarketplaceIcon />
               <span>Marketplace</span>
             </Link>
-            <button className={styles.marketplaceBtn}>Start free trial</button>
-            <Link href="/login" className={styles.marketplaceBtn}>Log In</Link>
+
+            <Link
+              href={currentUser ? "/user-account/workspace" : "/user-account"}
+              className={styles.marketplaceBtn}
+            >
+              Start free trial
+            </Link>
+
+            {currentUser ? (
+              <div className={styles.accountWrapper} ref={accountMenuRef}>
+                <button
+                  type="button"
+                  className={styles.avatarCircle}
+                  onClick={() => setShowAccountMenu(!showAccountMenu)}
+                  aria-label="User Account"
+                  title={currentUser.name}
+                >
+                  {currentUser.avatarText || 'AR'}
+                </button>
+
+                {showAccountMenu && (
+                  <div className={styles.popupMenu}>
+                    <div className={styles.popupHeader}>
+                      <div className={styles.popupAvatar}>
+                        {currentUser.avatarText || 'AR'}
+                      </div>
+                      <div className={styles.popupUserInfo}>
+                        <div className={styles.popupName}>{currentUser.name}</div>
+                        <div className={styles.popupDesc}>{currentUser.email}</div>
+                      </div>
+                    </div>
+
+                    <div className={styles.popupLinks}>
+                      <Link
+                        href="/user-account/workspace"
+                        className={styles.menuItemLink}
+                        onClick={() => setShowAccountMenu(false)}
+                      >
+                        Workspace Overview
+                      </Link>
+                      <Link
+                        href="/account-type"
+                        className={styles.menuItemLink}
+                        onClick={() => setShowAccountMenu(false)}
+                      >
+                        Set Up Account
+                      </Link>
+                      <button
+                        type="button"
+                        className={`${styles.menuItem} ${styles.signOutBtn}`}
+                        onClick={() => {
+                          logoutUser();
+                          setShowAccountMenu(false);
+                        }}
+                      >
+                        Sign Out
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            ) : null}
           </div>
         </nav>
 
@@ -212,16 +308,16 @@ export default function Navbar() {
                 <div className={styles.megaColumn}>
                   <div className={styles.megaTitle}>Beauty <span>›</span></div>
                   <div className={styles.megaList}>
-                    <Link href="#" className={styles.megaLink} style={{ '--accent-color': '#6cb4ee' } as React.CSSProperties}><div className={styles.megaIcon}><Store size={14} /></div><span className={styles.megaText}>Booth Renter</span></Link>
+                    <Link href="/booth-renter" className={styles.megaLink} style={{ '--accent-color': '#6cb4ee' } as React.CSSProperties}><div className={styles.megaIcon}><Store size={14} /></div><span className={styles.megaText}>Booth Renter</span></Link>
                     <Link href="/salon" className={styles.megaLink} style={{ '--accent-color': '#b19cd9' } as React.CSSProperties}><div className={styles.megaIcon}><Scissors size={14} /></div><span className={styles.megaText}>Salon</span></Link>
-                    <Link href="#" className={styles.megaLink} style={{ '--accent-color': '#d0f0c0' } as React.CSSProperties}><div className={styles.megaIcon}><Eye size={14} /></div><span className={styles.megaText}>Brow & Lash</span></Link>
-                    <Link href="#" className={styles.megaLink} style={{ '--accent-color': '#ffb347' } as React.CSSProperties}><div className={styles.megaIcon}><SprayCan size={14} /></div><span className={styles.megaText}>Barber</span></Link>
-                    <Link href="#" className={styles.megaLink} style={{ '--accent-color': '#40e0d0' } as React.CSSProperties}><div className={styles.megaIcon}><Sparkles size={14} /></div><span className={styles.megaText}>Nail</span></Link>
-                    <Link href="#" className={styles.megaLink} style={{ '--accent-color': '#d0f0c0' } as React.CSSProperties}><div className={styles.megaIcon}><Zap size={14} /></div><span className={styles.megaText}>Hair Removal</span></Link>
-                    <Link href="#" className={styles.megaLink} style={{ '--accent-color': '#ffb347' } as React.CSSProperties}><div className={styles.megaIcon}><Brush size={14} /></div><span className={styles.megaText}>Makeup</span></Link>
-                    <Link href="#" className={styles.megaLink} style={{ '--accent-color': '#6cb4ee' } as React.CSSProperties}><div className={styles.megaIcon}><Sun size={14} /></div><span className={styles.megaText}>Tanning</span></Link>
-                    <Link href="#" className={styles.megaLink} style={{ '--accent-color': '#b19cd9' } as React.CSSProperties}><div className={styles.megaIcon}><PenTool size={14} /></div><span className={styles.megaText}>Tattoo</span></Link>
-                    <Link href="#" className={styles.megaLink} style={{ '--accent-color': '#40e0d0' } as React.CSSProperties}><div className={styles.megaIcon}><PawPrint size={14} /></div><span className={styles.megaText}>Pet Grooming</span></Link>
+                    <Link href="/brow-and-lash" className={styles.megaLink} style={{ '--accent-color': '#d0f0c0' } as React.CSSProperties}><div className={styles.megaIcon}><Eye size={14} /></div><span className={styles.megaText}>Brow & Lash</span></Link>
+                    <Link href="/barber" className={styles.megaLink} style={{ '--accent-color': '#ffb347' } as React.CSSProperties}><div className={styles.megaIcon}><SprayCan size={14} /></div><span className={styles.megaText}>Barber</span></Link>
+                    <Link href="/nail" className={styles.megaLink} style={{ '--accent-color': '#40e0d0' } as React.CSSProperties}><div className={styles.megaIcon}><Sparkles size={14} /></div><span className={styles.megaText}>Nail</span></Link>
+                    <Link href="/hair-removal" className={styles.megaLink} style={{ '--accent-color': '#d0f0c0' } as React.CSSProperties}><div className={styles.megaIcon}><Zap size={14} /></div><span className={styles.megaText}>Hair Removal</span></Link>
+                    <Link href="/makeup" className={styles.megaLink} style={{ '--accent-color': '#ffb347' } as React.CSSProperties}><div className={styles.megaIcon}><Brush size={14} /></div><span className={styles.megaText}>Makeup</span></Link>
+                    <Link href="/tanning" className={styles.megaLink} style={{ '--accent-color': '#6cb4ee' } as React.CSSProperties}><div className={styles.megaIcon}><Sun size={14} /></div><span className={styles.megaText}>Tanning</span></Link>
+                    <Link href="/tattoo" className={styles.megaLink} style={{ '--accent-color': '#b19cd9' } as React.CSSProperties}><div className={styles.megaIcon}><PenTool size={14} /></div><span className={styles.megaText}>Tattoo</span></Link>
+                    <Link href="/pet-grooming" className={styles.megaLink} style={{ '--accent-color': '#40e0d0' } as React.CSSProperties}><div className={styles.megaIcon}><PawPrint size={14} /></div><span className={styles.megaText}>Pet Grooming</span></Link>
                   </div>
                 </div>
 
@@ -229,17 +325,17 @@ export default function Navbar() {
                 <div className={styles.megaColumn}>
                   <div className={styles.megaTitle}>Wellness <span>›</span></div>
                   <div className={styles.megaList}>
-                    <Link href="#" className={styles.megaLink} style={{ '--accent-color': '#40e0d0' } as React.CSSProperties}><div className={styles.megaIcon}><Flower2 size={14} /></div><span className={styles.megaText}>Spa</span></Link>
-                    <Link href="#" className={styles.megaLink} style={{ '--accent-color': '#b19cd9' } as React.CSSProperties}><div className={styles.megaIcon}><Sparkles size={14} /></div><span className={styles.megaText}>Aesthetic Clinic</span></Link>
-                    <Link href="#" className={styles.megaLink} style={{ '--accent-color': '#6cb4ee' } as React.CSSProperties}><div className={styles.megaIcon}><HeartPulse size={14} /></div><span className={styles.megaText}>Med Spa</span></Link>
-                    <Link href="#" className={styles.megaLink} style={{ '--accent-color': '#d0f0c0' } as React.CSSProperties}><div className={styles.megaIcon}><Scale size={14} /></div><span className={styles.megaText}>Weight Loss Clinic</span></Link>
-                    <Link href="#" className={styles.megaLink} style={{ '--accent-color': '#ffb347' } as React.CSSProperties}><div className={styles.megaIcon}><Hand size={14} /></div><span className={styles.megaText}>Massage</span></Link>
-                    <Link href="#" className={styles.megaLink} style={{ '--accent-color': '#b19cd9' } as React.CSSProperties}><div className={styles.megaIcon}><Pin size={14} /></div><span className={styles.megaText}>Acupuncture</span></Link>
-                    <Link href="#" className={styles.megaLink} style={{ '--accent-color': '#40e0d0' } as React.CSSProperties}><div className={styles.megaIcon}><Bone size={14} /></div><span className={styles.megaText}>Chiropractor</span></Link>
-                    <Link href="#" className={styles.megaLink} style={{ '--accent-color': '#6cb4ee' } as React.CSSProperties}><div className={styles.megaIcon}><Brain size={14} /></div><span className={styles.megaText}>Mental Health</span></Link>
-                    <Link href="#" className={styles.megaLink} style={{ '--accent-color': '#d0f0c0' } as React.CSSProperties}><div className={styles.megaIcon}><Apple size={14} /></div><span className={styles.megaText}>Nutritionist</span></Link>
-                    <Link href="#" className={styles.megaLink} style={{ '--accent-color': '#ffb347' } as React.CSSProperties}><div className={styles.megaIcon}><Target size={14} /></div><span className={styles.megaText}>Coaching</span></Link>
-                    <Link href="#" className={styles.megaLink} style={{ '--accent-color': '#b19cd9' } as React.CSSProperties}><div className={styles.megaIcon}><Accessibility size={14} /></div><span className={styles.megaText}>Physical Therapy</span></Link>
+                    <Link href="/spa" className={styles.megaLink} style={{ '--accent-color': '#40e0d0' } as React.CSSProperties}><div className={styles.megaIcon}><Flower2 size={14} /></div><span className={styles.megaText}>Spa</span></Link>
+                    <Link href="/aesthetic-clinic" className={styles.megaLink} style={{ '--accent-color': '#b19cd9' } as React.CSSProperties}><div className={styles.megaIcon}><Sparkles size={14} /></div><span className={styles.megaText}>Aesthetic Clinic</span></Link>
+                    <Link href="/med-spa" className={styles.megaLink} style={{ '--accent-color': '#6cb4ee' } as React.CSSProperties}><div className={styles.megaIcon}><HeartPulse size={14} /></div><span className={styles.megaText}>Med Spa</span></Link>
+                    <Link href="/weight-loss-clinic" className={styles.megaLink} style={{ '--accent-color': '#d0f0c0' } as React.CSSProperties}><div className={styles.megaIcon}><Scale size={14} /></div><span className={styles.megaText}>Weight Loss Clinic</span></Link>
+                    <Link href="/massage" className={styles.megaLink} style={{ '--accent-color': '#ffb347' } as React.CSSProperties}><div className={styles.megaIcon}><Hand size={14} /></div><span className={styles.megaText}>Massage</span></Link>
+                    <Link href="/acupuncture" className={styles.megaLink} style={{ '--accent-color': '#b19cd9' } as React.CSSProperties}><div className={styles.megaIcon}><Pin size={14} /></div><span className={styles.megaText}>Acupuncture</span></Link>
+                    <Link href="/chiropractor" className={styles.megaLink} style={{ '--accent-color': '#40e0d0' } as React.CSSProperties}><div className={styles.megaIcon}><Bone size={14} /></div><span className={styles.megaText}>Chiropractor</span></Link>
+                    <Link href="/mental-health" className={styles.megaLink} style={{ '--accent-color': '#6cb4ee' } as React.CSSProperties}><div className={styles.megaIcon}><Brain size={14} /></div><span className={styles.megaText}>Mental Health</span></Link>
+                    <Link href="/nutritionist" className={styles.megaLink} style={{ '--accent-color': '#d0f0c0' } as React.CSSProperties}><div className={styles.megaIcon}><Apple size={14} /></div><span className={styles.megaText}>Nutritionist</span></Link>
+                    <Link href="/coaching" className={styles.megaLink} style={{ '--accent-color': '#ffb347' } as React.CSSProperties}><div className={styles.megaIcon}><Target size={14} /></div><span className={styles.megaText}>Coaching</span></Link>
+                    <Link href="/physical-therapy" className={styles.megaLink} style={{ '--accent-color': '#b19cd9' } as React.CSSProperties}><div className={styles.megaIcon}><Accessibility size={14} /></div><span className={styles.megaText}>Physical Therapy</span></Link>
                   </div>
                 </div>
 
@@ -247,16 +343,16 @@ export default function Navbar() {
                 <div className={styles.megaColumn}>
                   <div className={styles.megaTitle}>Fitness <span>›</span></div>
                   <div className={styles.megaList}>
-                    <Link href="#" className={styles.megaLink} style={{ '--accent-color': '#d0f0c0' } as React.CSSProperties}><div className={styles.megaIcon}><Flower size={14} /></div><span className={styles.megaText}>Yoga</span></Link>
-                    <Link href="#" className={styles.megaLink} style={{ '--accent-color': '#ffb347' } as React.CSSProperties}><div className={styles.megaIcon}><Dumbbell size={14} /></div><span className={styles.megaText}>Gym</span></Link>
-                    <Link href="#" className={styles.megaLink} style={{ '--accent-color': '#6cb4ee' } as React.CSSProperties}><div className={styles.megaIcon}><UserCheck size={14} /></div><span className={styles.megaText}>Personal Trainer</span></Link>
-                    <Link href="#" className={styles.megaLink} style={{ '--accent-color': '#40e0d0' } as React.CSSProperties}><div className={styles.megaIcon}><Swords size={14} /></div><span className={styles.megaText}>Martial Arts</span></Link>
-                    <Link href="#" className={styles.megaLink} style={{ '--accent-color': '#b19cd9' } as React.CSSProperties}><div className={styles.megaIcon}><Activity size={14} /></div><span className={styles.megaText}>Pilates</span></Link>
-                    <Link href="#" className={styles.megaLink} style={{ '--accent-color': '#ffb347' } as React.CSSProperties}><div className={styles.megaIcon}><Footprints size={14} /></div><span className={styles.megaText}>Barre Studio</span></Link>
-                    <Link href="#" className={styles.megaLink} style={{ '--accent-color': '#6cb4ee' } as React.CSSProperties}><div className={styles.megaIcon}><Flame size={14} /></div><span className={styles.megaText}>Cross Training</span></Link>
-                    <Link href="#" className={styles.megaLink} style={{ '--accent-color': '#d0f0c0' } as React.CSSProperties}><div className={styles.megaIcon}><Bike size={14} /></div><span className={styles.megaText}>Cycling</span></Link>
-                    <Link href="#" className={styles.megaLink} style={{ '--accent-color': '#b19cd9' } as React.CSSProperties}><div className={styles.megaIcon}><Music size={14} /></div><span className={styles.megaText}>Dance Studio</span></Link>
-                    <Link href="#" className={styles.megaLink} style={{ '--accent-color': '#40e0d0' } as React.CSSProperties}><div className={styles.megaIcon}><Trophy size={14} /></div><span className={styles.megaText}>Sports facility</span></Link>
+                    <Link href="/yoga" className={styles.megaLink} style={{ '--accent-color': '#d0f0c0' } as React.CSSProperties}><div className={styles.megaIcon}><Flower size={14} /></div><span className={styles.megaText}>Yoga</span></Link>
+                    <Link href="/gym" className={styles.megaLink} style={{ '--accent-color': '#ffb347' } as React.CSSProperties}><div className={styles.megaIcon}><Dumbbell size={14} /></div><span className={styles.megaText}>Gym</span></Link>
+                    <Link href="/personal-trainer" className={styles.megaLink} style={{ '--accent-color': '#6cb4ee' } as React.CSSProperties}><div className={styles.megaIcon}><UserCheck size={14} /></div><span className={styles.megaText}>Personal Trainer</span></Link>
+                    <Link href="/martial-arts" className={styles.megaLink} style={{ '--accent-color': '#40e0d0' } as React.CSSProperties}><div className={styles.megaIcon}><Swords size={14} /></div><span className={styles.megaText}>Martial Arts</span></Link>
+                    <Link href="/pilates" className={styles.megaLink} style={{ '--accent-color': '#b19cd9' } as React.CSSProperties}><div className={styles.megaIcon}><Activity size={14} /></div><span className={styles.megaText}>Pilates</span></Link>
+                    <Link href="/barre-studio" className={styles.megaLink} style={{ '--accent-color': '#ffb347' } as React.CSSProperties}><div className={styles.megaIcon}><Footprints size={14} /></div><span className={styles.megaText}>Barre Studio</span></Link>
+                    <Link href="/cross-training" className={styles.megaLink} style={{ '--accent-color': '#6cb4ee' } as React.CSSProperties}><div className={styles.megaIcon}><Flame size={14} /></div><span className={styles.megaText}>Cross Training</span></Link>
+                    <Link href="/cycling" className={styles.megaLink} style={{ '--accent-color': '#d0f0c0' } as React.CSSProperties}><div className={styles.megaIcon}><Bike size={14} /></div><span className={styles.megaText}>Cycling</span></Link>
+                    <Link href="/dance-studio" className={styles.megaLink} style={{ '--accent-color': '#b19cd9' } as React.CSSProperties}><div className={styles.megaIcon}><Music size={14} /></div><span className={styles.megaText}>Dance Studio</span></Link>
+                    <Link href="/sports-facility" className={styles.megaLink} style={{ '--accent-color': '#40e0d0' } as React.CSSProperties}><div className={styles.megaIcon}><Trophy size={14} /></div><span className={styles.megaText}>Sports facility</span></Link>
                   </div>
                 </div>
 

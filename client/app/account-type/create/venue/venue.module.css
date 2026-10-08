@@ -155,6 +155,35 @@
   transform: scale(0.98);
 }
 
+.btnOutline {
+  background-color: transparent;
+  color: #fff;
+  border: 1px solid #404040;
+  border-radius: 8px;
+  padding: 10px 20px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btnOutline:hover {
+  background-color: #1a1a1a;
+  border-color: #555;
+}
+
+.btnSelected {
+  background-color: rgba(147, 51, 234, 0.15);
+  color: #c084fc;
+  border: 1px solid rgba(147, 51, 234, 0.4);
+  border-radius: 8px;
+  padding: 10px 20px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
 .content {
   max-width: 640px;
   margin: 40px auto 0 auto;
@@ -693,6 +722,11 @@
   border-color: #52525b;
 }
 
+.modalInputError {
+  border-color: #ef4444 !important;
+  box-shadow: 0 0 0 1px #ef4444;
+}
+
 .modalInputDisabled {
   opacity: 0.6;
   cursor: not-allowed;
@@ -809,6 +843,18 @@
   background: #0f1115;
   overflow: hidden;
   user-select: none;
+}
+
+.step2MapWrapper {
+  position: relative;
+  width: 100%;
+  height: 300px;
+  background: #0f1115;
+  overflow: hidden;
+  user-select: none;
+  border-radius: 14px;
+  margin-top: 20px;
+  border: 1px solid #262626;
 }
 
 .mapCanvas {
@@ -946,4 +992,83 @@
   border-color: #444;
 }
 
+@keyframes slideInUp {
+  from {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
 
+.tutorialPopup {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  background-color: #1a1a1a;
+  border: 1px solid #333;
+  border-radius: 12px;
+  padding: 16px;
+  width: 300px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  animation: slideInUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.tutorialTitle {
+  font-size: 14px;
+  font-weight: 600;
+  color: #fff;
+  padding-right: 20px;
+}
+
+.tutorialThumbnail {
+  width: 100%;
+  height: 160px;
+  background-color: #262626;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  cursor: pointer;
+  overflow: hidden;
+}
+
+.playIcon {
+  width: 48px;
+  height: 48px;
+  background-color: rgba(147, 51, 234, 0.8);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  transition: transform 0.2s;
+}
+
+.tutorialThumbnail:hover .playIcon {
+  transform: scale(1.1);
+}
+
+.closePopupBtn {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: transparent;
+  border: none;
+  color: #999;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+}
+
+.closePopupBtn:hover {
+  color: #fff;
+  background: #333;
+}

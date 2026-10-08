@@ -172,7 +172,7 @@ export async function GET(request: Request) {
   // 1. Try Photon (OpenStreetMap geocoder)
   try {
     const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 2500);
+    const timeout = setTimeout(() => controller.abort(), 1000);
 
     const photonRes = await fetch(
       `https://photon.komoot.io/api/?q=${encodeURIComponent(query)}&limit=7`,

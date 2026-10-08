@@ -61,38 +61,16 @@ export default function AccountTypePage() {
 
         <div className={styles.setupCardsList}>
           {/* Option 1: Create a new business account */}
-          <button
-            type="button"
-            className={`${styles.setupOptionCard} ${selectedSetupOption === 'create' ? styles.setupOptionCardActive : ''}`}
-            onClick={() => setSelectedSetupOption(selectedSetupOption === 'create' ? null : 'create')}
+          <Link
+            href="/account-type/create"
+            className={styles.setupOptionCard}
           >
             <div className={styles.setupCardLeft}>
               <div className={styles.setupCardTitle}>Create a new business account</div>
               <div className={styles.setupCardSubtitle}>Run your business on pamperMe</div>
             </div>
             <span className={styles.setupCardArrow}>→</span>
-          </button>
-
-          {selectedSetupOption === 'create' && (
-            <div className={styles.setupSubForm}>
-              <div className={styles.setupSubFormTitle}>Set up your business profile</div>
-              <input
-                type="text"
-                placeholder="Business or Salon Name (e.g. Luxe Studio)"
-                className={styles.setupSubInput}
-                value={businessName}
-                onChange={(e) => setBusinessName(e.target.value)}
-                autoFocus
-              />
-              <button
-                type="button"
-                className={styles.setupSubmitBtn}
-                onClick={() => alert(`Business "${businessName || 'Luxe Studio'}" created successfully!`)}
-              >
-                Continue to Dashboard →
-              </button>
-            </div>
-          )}
+          </Link>
 
           {/* Option 2: Join an existing business */}
           <Link
